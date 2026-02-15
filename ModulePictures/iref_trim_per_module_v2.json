@@ -1,0 +1,650 @@
+[
+    {
+        "serialNumber": "20UPGM23210148",
+        "IREF_TRIM_1": 13,
+        "IREF_TRIM_2": 11,
+        "IREF_TRIM_3": 8,
+        "IREF_TRIM_4": 6,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210174",
+        "IREF_TRIM_1": 9,
+        "IREF_TRIM_2": 7,
+        "IREF_TRIM_3": 9,
+        "IREF_TRIM_4": 5,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210493",
+        "IREF_TRIM_1": 5,
+        "IREF_TRIM_2": 3,
+        "IREF_TRIM_3": 12,
+        "IREF_TRIM_4": 10,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23210491",
+        "IREF_TRIM_1": 11,
+        "IREF_TRIM_2": 12,
+        "IREF_TRIM_3": 9,
+        "IREF_TRIM_4": 10,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210496",
+        "IREF_TRIM_1": 11,
+        "IREF_TRIM_2": 15,
+        "IREF_TRIM_3": 9,
+        "IREF_TRIM_4": 9,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210703",
+        "IREF_TRIM_1": 13,
+        "IREF_TRIM_2": 9,
+        "IREF_TRIM_3": 11,
+        "IREF_TRIM_4": 13,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23211110",
+        "IREF_TRIM_1": 8,
+        "IREF_TRIM_2": 8,
+        "IREF_TRIM_3": 2,
+        "IREF_TRIM_4": 12,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210059",
+        "IREF_TRIM_1": 12,
+        "IREF_TRIM_2": 9,
+        "IREF_TRIM_3": 8,
+        "IREF_TRIM_4": 12,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210421",
+        "IREF_TRIM_1": 8,
+        "IREF_TRIM_2": 8,
+        "IREF_TRIM_3": 15,
+        "IREF_TRIM_4": 10,
+        "REWORKED_WIRE_BONDS": "['many (>5)']"
+    },
+    {
+        "serialNumber": "20UPGM23210058",
+        "IREF_TRIM_1": 9,
+        "IREF_TRIM_2": 12,
+        "IREF_TRIM_3": 14,
+        "IREF_TRIM_4": 10,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23210488",
+        "IREF_TRIM_1": 8,
+        "IREF_TRIM_2": 9,
+        "IREF_TRIM_3": 6,
+        "IREF_TRIM_4": 13,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23211238",
+        "IREF_TRIM_1": 5,
+        "IREF_TRIM_2": 6,
+        "IREF_TRIM_3": 10,
+        "IREF_TRIM_4": 11,
+        "REWORKED_WIRE_BONDS": "['few (1-5)']"
+    },
+    {
+        "serialNumber": "20UPGM23211370",
+        "IREF_TRIM_1": 11,
+        "IREF_TRIM_2": 11,
+        "IREF_TRIM_3": 13,
+        "IREF_TRIM_4": 6,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23211237",
+        "IREF_TRIM_1": 11,
+        "IREF_TRIM_2": 7,
+        "IREF_TRIM_3": 9,
+        "IREF_TRIM_4": 7,
+        "REWORKED_WIRE_BONDS": "['few (1-5)']"
+    },
+    {
+        "serialNumber": "20UPGM23210492",
+        "IREF_TRIM_1": 9,
+        "IREF_TRIM_2": 9,
+        "IREF_TRIM_3": 5,
+        "IREF_TRIM_4": 12,
+        "REWORKED_WIRE_BONDS": "['3']"
+    },
+    {
+        "serialNumber": "20UPGM23210704",
+        "IREF_TRIM_1": 6,
+        "IREF_TRIM_2": 10,
+        "IREF_TRIM_3": 10,
+        "IREF_TRIM_4": 6,
+        "REWORKED_WIRE_BONDS": "['many (>5)']"
+    },
+    {
+        "serialNumber": "20UPGM23210173",
+        "IREF_TRIM_1": 6,
+        "IREF_TRIM_2": 13,
+        "IREF_TRIM_3": 11,
+        "IREF_TRIM_4": 9,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210487",
+        "IREF_TRIM_1": 12,
+        "IREF_TRIM_2": 11,
+        "IREF_TRIM_3": 14,
+        "IREF_TRIM_4": 7,
+        "REWORKED_WIRE_BONDS": "['few (1-5)']"
+    },
+    {
+        "serialNumber": "20UPGM23210740",
+        "IREF_TRIM_1": 10,
+        "IREF_TRIM_2": 7,
+        "IREF_TRIM_3": 8,
+        "IREF_TRIM_4": 9,
+        "REWORKED_WIRE_BONDS": "['few (1-5)']"
+    },
+    {
+        "serialNumber": "20UPGM23210079",
+        "IREF_TRIM_1": 6,
+        "IREF_TRIM_2": 7,
+        "IREF_TRIM_3": 13,
+        "IREF_TRIM_4": 10,
+        "REWORKED_WIRE_BONDS": "['few (1-5)']"
+    },
+    {
+        "serialNumber": "20UPGM23211239",
+        "IREF_TRIM_1": 7,
+        "IREF_TRIM_2": 8,
+        "IREF_TRIM_3": 9,
+        "IREF_TRIM_4": 14,
+        "REWORKED_WIRE_BONDS": "['few (1-5)']"
+    },
+    {
+        "serialNumber": "20UPGM23211240",
+        "IREF_TRIM_1": 12,
+        "IREF_TRIM_2": 11,
+        "IREF_TRIM_3": 6,
+        "IREF_TRIM_4": 6,
+        "REWORKED_WIRE_BONDS": "['few (1-5)']"
+    },
+    {
+        "serialNumber": "20UPGM23210952",
+        "IREF_TRIM_1": 7,
+        "IREF_TRIM_2": 4,
+        "IREF_TRIM_3": 4,
+        "IREF_TRIM_4": 11,
+        "REWORKED_WIRE_BONDS": "['none']"
+    },
+    {
+        "serialNumber": "20UPGM23211222",
+        "IREF_TRIM_1": 5,
+        "IREF_TRIM_2": 5,
+        "IREF_TRIM_3": 3,
+        "IREF_TRIM_4": 10,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23211816",
+        "IREF_TRIM_1": 8,
+        "IREF_TRIM_2": 8,
+        "IREF_TRIM_3": 9,
+        "IREF_TRIM_4": 7,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210571",
+        "IREF_TRIM_1": 4,
+        "IREF_TRIM_2": 7,
+        "IREF_TRIM_3": 5,
+        "IREF_TRIM_4": 5,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23211132",
+        "IREF_TRIM_1": 10,
+        "IREF_TRIM_2": 12,
+        "IREF_TRIM_3": 10,
+        "IREF_TRIM_4": 7,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23211273",
+        "IREF_TRIM_1": 13,
+        "IREF_TRIM_2": 8,
+        "IREF_TRIM_3": 6,
+        "IREF_TRIM_4": 6,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23210111",
+        "IREF_TRIM_1": 13,
+        "IREF_TRIM_2": 5,
+        "IREF_TRIM_3": 10,
+        "IREF_TRIM_4": 9,
+        "REWORKED_WIRE_BONDS": "['3']"
+    },
+    {
+        "serialNumber": "20UPGM23211689",
+        "IREF_TRIM_1": 7,
+        "IREF_TRIM_2": 9,
+        "IREF_TRIM_3": 9,
+        "IREF_TRIM_4": 13,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23210321",
+        "IREF_TRIM_1": 10,
+        "IREF_TRIM_2": 10,
+        "IREF_TRIM_3": 10,
+        "IREF_TRIM_4": 12,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23210323",
+        "IREF_TRIM_1": 13,
+        "IREF_TRIM_2": 13,
+        "IREF_TRIM_3": 11,
+        "IREF_TRIM_4": 12,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23211429",
+        "IREF_TRIM_1": 8,
+        "IREF_TRIM_2": 6,
+        "IREF_TRIM_3": 14,
+        "IREF_TRIM_4": 9,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23211432",
+        "IREF_TRIM_1": 6,
+        "IREF_TRIM_2": 14,
+        "IREF_TRIM_3": 11,
+        "IREF_TRIM_4": 7,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23211820",
+        "IREF_TRIM_1": 7,
+        "IREF_TRIM_2": 5,
+        "IREF_TRIM_3": 5,
+        "IREF_TRIM_4": 10,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23210485",
+        "IREF_TRIM_1": 8,
+        "IREF_TRIM_2": 8,
+        "IREF_TRIM_3": 15,
+        "IREF_TRIM_4": 7,
+        "REWORKED_WIRE_BONDS": "['3']"
+    },
+    {
+        "serialNumber": "20UPGM23210738",
+        "IREF_TRIM_1": 10,
+        "IREF_TRIM_2": 9,
+        "IREF_TRIM_3": 8,
+        "IREF_TRIM_4": 12,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210951",
+        "IREF_TRIM_1": 14,
+        "IREF_TRIM_2": 6,
+        "IREF_TRIM_3": 8,
+        "IREF_TRIM_4": 11,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210080",
+        "IREF_TRIM_1": 10,
+        "IREF_TRIM_2": 7,
+        "IREF_TRIM_3": 8,
+        "IREF_TRIM_4": 6,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210020",
+        "IREF_TRIM_1": 8,
+        "IREF_TRIM_2": 7,
+        "IREF_TRIM_3": 2,
+        "IREF_TRIM_4": 10,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23210018",
+        "IREF_TRIM_1": 11,
+        "IREF_TRIM_2": 8,
+        "IREF_TRIM_3": 9,
+        "IREF_TRIM_4": 10,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23211812",
+        "IREF_TRIM_1": 6,
+        "IREF_TRIM_2": 11,
+        "IREF_TRIM_3": 10,
+        "IREF_TRIM_4": 7,
+        "REWORKED_WIRE_BONDS": "['3']"
+    },
+    {
+        "serialNumber": "20UPGM23210109",
+        "IREF_TRIM_1": 13,
+        "IREF_TRIM_2": 7,
+        "IREF_TRIM_3": 6,
+        "IREF_TRIM_4": 7,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23211740",
+        "IREF_TRIM_1": 9,
+        "IREF_TRIM_2": 8,
+        "IREF_TRIM_3": 7,
+        "IREF_TRIM_4": 8,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23210569",
+        "IREF_TRIM_1": 12,
+        "IREF_TRIM_2": 8,
+        "IREF_TRIM_3": 11,
+        "IREF_TRIM_4": 7,
+        "REWORKED_WIRE_BONDS": "['3']"
+    },
+    {
+        "serialNumber": "20UPGM23211811",
+        "IREF_TRIM_1": 13,
+        "IREF_TRIM_2": 6,
+        "IREF_TRIM_3": 10,
+        "IREF_TRIM_4": 13,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23211783",
+        "IREF_TRIM_1": 11,
+        "IREF_TRIM_2": 9,
+        "IREF_TRIM_3": 9,
+        "IREF_TRIM_4": 7,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23210494",
+        "IREF_TRIM_1": 12,
+        "IREF_TRIM_2": 14,
+        "IREF_TRIM_3": 12,
+        "IREF_TRIM_4": 10,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23211111",
+        "IREF_TRIM_1": 9,
+        "IREF_TRIM_2": 6,
+        "IREF_TRIM_3": 12,
+        "IREF_TRIM_4": 10,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210737",
+        "IREF_TRIM_1": 13,
+        "IREF_TRIM_2": 11,
+        "IREF_TRIM_3": 6,
+        "IREF_TRIM_4": 9,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210422",
+        "IREF_TRIM_1": 9,
+        "IREF_TRIM_2": 11,
+        "IREF_TRIM_3": 7,
+        "IREF_TRIM_4": 12,
+        "REWORKED_WIRE_BONDS": "['few (1-5)']"
+    },
+    {
+        "serialNumber": "20UPGM23210060",
+        "IREF_TRIM_1": 15,
+        "IREF_TRIM_2": 10,
+        "IREF_TRIM_3": 14,
+        "IREF_TRIM_4": 11,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210078",
+        "IREF_TRIM_1": 10,
+        "IREF_TRIM_2": 6,
+        "IREF_TRIM_3": 8,
+        "IREF_TRIM_4": 11,
+        "REWORKED_WIRE_BONDS": "['few (1-5)']"
+    },
+    {
+        "serialNumber": "20UPGM23210423",
+        "IREF_TRIM_1": 13,
+        "IREF_TRIM_2": 13,
+        "IREF_TRIM_3": 5,
+        "IREF_TRIM_4": 7,
+        "REWORKED_WIRE_BONDS": "['few (1-5)']"
+    },
+    {
+        "serialNumber": "20UPGM23210739",
+        "IREF_TRIM_1": 9,
+        "IREF_TRIM_2": 6,
+        "IREF_TRIM_3": 9,
+        "IREF_TRIM_4": 9,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23211224",
+        "IREF_TRIM_1": 8,
+        "IREF_TRIM_2": 4,
+        "IREF_TRIM_3": 6,
+        "IREF_TRIM_4": 9,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23211221",
+        "IREF_TRIM_1": 6,
+        "IREF_TRIM_2": 6,
+        "IREF_TRIM_3": 8,
+        "IREF_TRIM_4": 3,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23211223",
+        "IREF_TRIM_1": 10,
+        "IREF_TRIM_2": 8,
+        "IREF_TRIM_3": 9,
+        "IREF_TRIM_4": 9,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23210250",
+        "IREF_TRIM_1": 11,
+        "IREF_TRIM_2": 9,
+        "IREF_TRIM_3": 15,
+        "IREF_TRIM_4": 10,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23211355",
+        "IREF_TRIM_1": 11,
+        "IREF_TRIM_2": 9,
+        "IREF_TRIM_3": 6,
+        "IREF_TRIM_4": 10,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23211356",
+        "IREF_TRIM_1": 8,
+        "IREF_TRIM_2": 10,
+        "IREF_TRIM_3": 6,
+        "IREF_TRIM_4": 8,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23210595",
+        "IREF_TRIM_1": 12,
+        "IREF_TRIM_2": 12,
+        "IREF_TRIM_3": 10,
+        "IREF_TRIM_4": 7,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23210964",
+        "IREF_TRIM_1": 6,
+        "IREF_TRIM_2": 8,
+        "IREF_TRIM_3": 13,
+        "IREF_TRIM_4": 7,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210110",
+        "IREF_TRIM_1": 10,
+        "IREF_TRIM_2": 9,
+        "IREF_TRIM_3": 12,
+        "IREF_TRIM_4": 11,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23210962",
+        "IREF_TRIM_1": 9,
+        "IREF_TRIM_2": 7,
+        "IREF_TRIM_3": 10,
+        "IREF_TRIM_4": 12,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23210593",
+        "IREF_TRIM_1": 6,
+        "IREF_TRIM_2": 8,
+        "IREF_TRIM_3": 5,
+        "IREF_TRIM_4": 5,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23211571",
+        "IREF_TRIM_1": 6,
+        "IREF_TRIM_2": 7,
+        "IREF_TRIM_3": 8,
+        "IREF_TRIM_4": 10,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23211308",
+        "IREF_TRIM_1": 9,
+        "IREF_TRIM_2": 10,
+        "IREF_TRIM_3": 7,
+        "IREF_TRIM_4": 8,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23211497",
+        "IREF_TRIM_1": 12,
+        "IREF_TRIM_2": 12,
+        "IREF_TRIM_3": 7,
+        "IREF_TRIM_4": 10,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23211690",
+        "IREF_TRIM_1": 11,
+        "IREF_TRIM_2": 15,
+        "IREF_TRIM_3": 13,
+        "IREF_TRIM_4": 7,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23211818",
+        "IREF_TRIM_1": 11,
+        "IREF_TRIM_2": 8,
+        "IREF_TRIM_3": 8,
+        "IREF_TRIM_4": 9,
+        "REWORKED_WIRE_BONDS": "[None]"
+    },
+    {
+        "serialNumber": "20UPGM23211499",
+        "IREF_TRIM_1": 7,
+        "IREF_TRIM_2": 10,
+        "IREF_TRIM_3": 13,
+        "IREF_TRIM_4": 8,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23210676",
+        "IREF_TRIM_1": 9,
+        "IREF_TRIM_2": 10,
+        "IREF_TRIM_3": 3,
+        "IREF_TRIM_4": 6,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23211441",
+        "IREF_TRIM_1": 7,
+        "IREF_TRIM_2": 15,
+        "IREF_TRIM_3": 10,
+        "IREF_TRIM_4": 11,
+        "REWORKED_WIRE_BONDS": "['1']"
+    },
+    {
+        "serialNumber": "20UPGM23210820",
+        "IREF_TRIM_1": 10,
+        "IREF_TRIM_2": 8,
+        "IREF_TRIM_3": 7,
+        "IREF_TRIM_4": 5,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23211071",
+        "IREF_TRIM_1": 9,
+        "IREF_TRIM_2": 6,
+        "IREF_TRIM_3": 12,
+        "IREF_TRIM_4": 8,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23210497",
+        "IREF_TRIM_1": 14,
+        "IREF_TRIM_2": 10,
+        "IREF_TRIM_3": 10,
+        "IREF_TRIM_4": 12,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23211424",
+        "IREF_TRIM_1": 11,
+        "IREF_TRIM_2": 8,
+        "IREF_TRIM_3": 12,
+        "IREF_TRIM_4": 9,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23211069",
+        "IREF_TRIM_1": 8,
+        "IREF_TRIM_2": 5,
+        "IREF_TRIM_3": 11,
+        "IREF_TRIM_4": 7,
+        "REWORKED_WIRE_BONDS": "['2']"
+    },
+    {
+        "serialNumber": "20UPGM23210495",
+        "IREF_TRIM_1": 5,
+        "IREF_TRIM_2": 9,
+        "IREF_TRIM_3": 8,
+        "IREF_TRIM_4": 4,
+        "REWORKED_WIRE_BONDS": "['many (>5)']"
+    },
+    {
+        "serialNumber": "20UPGM23210025",
+        "IREF_TRIM_1": 4,
+        "IREF_TRIM_2": 9,
+        "IREF_TRIM_3": 8,
+        "IREF_TRIM_4": 9,
+        "REWORKED_WIRE_BONDS": "['2']"
+    }
+]
