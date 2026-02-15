@@ -1,11 +1,24 @@
+DONE : 
+- Trouver les mires (targets) sur l'image câblée
+- Restreindre la zone de recherche pour les fils
+
+
+
+
 TODO : 
 
+#1
+- Trouver les positions de base des fils (et des pads) pour pouvoir benchmarker
+
+#2
 - Se mettre dans une perspective bien (perspectivewarp)
-- Restreindre la zone de recherche
-- Appliquer un filtre pour supprimer les reflets (?)
-- Trouver les positions de base des fils (des pads) pour pouvoir benchmarker
+
+#3
 - Faire un squelette (ligne de 1 pixel) pour simplifier la forme des fils
 - Utiliser un filtre sur la région restreinte pour isoler les formes tubulaires des fils (Frangi/Meijering)
 - Analyser la connectivité des fils entre eux.
 - Autre option : Adaptive Threshold (cv2.adaptiveThreshold ?) ou Sauvola/Niblack filter.
 - Peut-être connectedComponent de OpenCV pour prendre en compte la courbure
+
+#BONUS
+- Appliquer un filtre pour supprimer les reflets (?)
