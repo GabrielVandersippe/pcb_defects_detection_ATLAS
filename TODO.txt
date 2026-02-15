@@ -7,5 +7,5 @@ TODO :
 - Faire un squelette (ligne de 1 pixel) pour simplifier la forme des fils
 - Utiliser un filtre sur la région restreinte pour isoler les formes tubulaires des fils (Frangi/Meijering)
 - Analyser la connectivité des fils entre eux.
-- Autre option : Adaptive Threshold (like cv2.adaptiveThreshold) or a Sauvola/Niblack filter.
-- Peut être connectedComponent de OpenCV
+- Autre option : Adaptive Threshold (cv2.adaptiveThreshold ?) ou Sauvola/Niblack filter.
+- Peut-être connectedComponent de OpenCV pour prendre en compte la courbure
