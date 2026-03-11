@@ -171,8 +171,9 @@ def mouse_callback_ref(event, x, y, flags, param):
             state['current_view'] = img[y_start:y_end, x_start:x_end]
 
     elif event == cv.EVENT_LBUTTONDBLCLK:
-        state['points'][-1].append((x + state['offset_x'], y + state['offset_y']))
-        print(f"Reference point added: ({x+ state['offset_x']}, {y+ state['offset_y']})")
+        num_pad = len(state['points'])
+        key = "PAD" + str(num_pad)
+        state['points'][key].append((x + state['offset_x'], y + state['offset_y']))
 
         cv.circle(state['current_view'], (x, y), 2, (0, 0, 255), -1)
 
@@ -186,7 +187,7 @@ def magnifying_glass_ref(path):
         'current_view': img.copy(),
         'offset_x': 0,
         'offset_y': 0,
-        'points': [[]]
+        'points': {"PAD1" : []}
     }
 
     cv.namedWindow("Main PCB View", cv.WINDOW_NORMAL)
@@ -205,7 +206,9 @@ def magnifying_glass_ref(path):
             state['current_view'] = img.copy()
             state['offset_x'], state['offset_y'] = 0, 0
         elif key == ord('d'): #Create a new row in points list
-            state['points'].append([])
+            num_pad = len(state['points'])+1
+            key = "PAD" + str(num_pad)
+            state['points'][key] = []
         elif key == ord('p'): # Pop last point
             if state['points'] and state['points'][-1]:
                 removed_point = state['points'][-1].pop()
