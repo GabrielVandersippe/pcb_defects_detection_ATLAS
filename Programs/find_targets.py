@@ -101,21 +101,36 @@ def mires_template_matching(img_input:np.ndarray, draw = False):
         slice_centers = unique_centers(slice_centers, sorted_idx, nbmires)
         
         
-        # S'il y a moins de slices que prevu, on prévient qu'il y a une erreur TODO changer ces erreurs en l'appel de failsafes avant de se resoudre a une erreur
+        # S'il y a moins de slices que prevu, on prévient qu'il y a une erreur 
         if len(slice_centers) < nbmires:
-            print(f"Warning : was looking for {nbmires}, found {len(slice_centers)}. Results may be less reliable.")
+
+            # Option de secours : recherche de cercles sur le masque (Failsafe)
+            circles = cv.HoughCircles(mask,cv.HOUGH_GRADIENT,1,minDist = 100,
+                                    param1=300,param2=15,minRadius=15 ,maxRadius=30)
+            if circles is not None:
+                circles = np.int32(np.around(circles))
+                for circle in circles[0,:nbmires]:
+                    center = (circle[0]+beg2%length,circle[1]+beg1%height)
+                    slice_centers.append(center)
+                    if draw:
+                        cv.circle(cimg, center, circle[2], (0,0,255), 3)
+                        cv.circle(cimg, center,2,(0,0,255),3)
+
+            # Si rien trouvé, on renvoie un warning
+        if len(slice_centers) < nbmires:
+            print(f"Warning : was looking for {nbmires} targets, found {len(slice_centers)}. Results may be less reliable. Issue is shown in another window.")
             cv.imshow("Issue", mask)
             cv.waitKey(0)
             cv.destroyAllWindows()
 
             if len(slice_centers) == 0:
-                slice_centers = [None for _ in range(nbmires)]
+                slice_centers = [(-1,-1) for _ in range(nbmires)]
             else :
                 if slice_centers[0][1] < height//2 : #Si la mire sont dans la partie haute de l'image, on suppose que c'est la mire du haut qui a été trouvée
-                    slice_centers += [None] #On met None à la fin de la liste pour la mire du bas
+                    slice_centers += [(-1,-1)] #On met -1 à la fin de la liste pour la mire du bas
                 else : 
-                    slice_centers = [None] + slice_centers #On met None au début de la liste pour la mire du haut
-
+                    slice_centers = [(-1,-1)] + slice_centers #On met -1 au début de la liste pour la mire du haut
+            
         centers.extend(slice_centers)
 
     if draw :
@@ -132,11 +147,11 @@ def mires_template_matching(img_input:np.ndarray, draw = False):
 
 def compute_homography_center(uncabled_img, cabled_img, crop_ratio=0.4, debug=False):
     """
-    Compute homography between uncabled and cabled PCB images by matching ORB features in central region
+    Calcule une homographie entre images cablees et non cablees par matching de la région centrale
 
     Arguments :
 
-    crop_ratio = fraction of width/height to keep around center (0.4 => 40% of the image around the center kept)
+    crop_ratio = ratio hauteur/largeur conservée autour du centre (0.4 = 40%)
     """
 
     # On convertit en grayscale
@@ -157,23 +172,23 @@ def compute_homography_center(uncabled_img, cabled_img, crop_ratio=0.4, debug=Fa
 
     orb = cv.ORB_create(nfeatures=3000) #Les features que l'on veut trouver dans cette région centrale
 
-    kp1, des1 = orb.detectAndCompute(uncbld_crop, None)
-    kp2, des2 = orb.detectAndCompute(cbld_crop, None)
+    keypoints1, descriptors1 = orb.detectAndCompute(uncbld_crop, None)
+    keypoints2, descriptors2 = orb.detectAndCompute(cbld_crop, None)
 
     #On fait matcher ces descriptions
-    bf = cv.BFMatcher(cv.NORM_HAMMING, crossCheck=True)
-    matches = bf.match(des1, des2)
+    matcher = cv.DescriptorMatcher_create(cv.DESCRIPTOR_MATCHER_BRUTEFORCE_HAMMING)
+    matches = matcher.match(descriptors1, descriptors2, None)
 
     # on  conserve les bons matchs
     matches = sorted(matches, key=lambda x: x.distance)
-    good = matches[: max(50, len(matches)//3) ]  # on garde le meilleur tiers, avec au moins 50
+    good_matches = matches[: max(50, len(matches)//3) ]  # on garde le meilleur tiers, avec au moins 50
 
-    if len(good) < 10:
+    if len(good_matches) < 10:
         raise ValueError("Not enough matches in center region to compute homography.")
 
     #on fait les correspondances
-    pts1 = np.float32([kp1[m.queryIdx].pt for m in good])
-    pts2 = np.float32([kp2[m.trainIdx].pt for m in good])
+    pts1 = np.float32([keypoints1[m.queryIdx].pt for m in good_matches])
+    pts2 = np.float32([keypoints2[m.trainIdx].pt for m in good_matches])
 
     # Et pour finir on remet ces coordonnees dans l'image entiere non croppee
     pts1[:,0] += offset1[0]
@@ -182,7 +197,7 @@ def compute_homography_center(uncabled_img, cabled_img, crop_ratio=0.4, debug=Fa
     pts2[:,1] += offset2[1]
 
     # on peut alors enfin finir en trouvant l'homographie entre l'image non cablee et l'image cablee !!
-    H, mask = cv.findHomography(pts1, pts2, cv.RANSAC, 5.0)
+    H, mask = cv.findHomography(pts1, pts2, cv.RANSAC)
     if H is None:
         raise ValueError("Homography computation failed.")
 
@@ -195,15 +210,21 @@ def compute_homography_center(uncabled_img, cabled_img, crop_ratio=0.4, debug=Fa
 
 def warp_points(points, H):
     """
-    Apply homography to an array of N points (x,y)
+    Appliquer l'homographie à une liste de points
     """
-    pts = np.float32(points).reshape(-1,1,2)
-    warped = cv.perspectiveTransform(pts, H)
-    return warped.reshape(-1,2)
+
+    warped = []
+    for point in points :
+        print(point)
+        if point[0] != -1:
+            warped.append(np.int32(cv.perspectiveTransform(np.float32(point).reshape(-1,1,2), H).reshape(-1,2))[0])
+        else:
+            warped.append([-1,-1])
+    return np.array(warped)
 
 
 
-def find_targets_wired(path:str):
+def find_targets_wired(path:str, draw=False):
     """
     Find the positions of the 8 targets on the wired PCB, or an error if it could not.
 
@@ -218,7 +239,7 @@ def find_targets_wired(path:str):
 
     H = compute_homography_center(uncabled_img, cabled_img)
 
-    unwired_centers = mires_template_matching(uncabled_img)
+    unwired_centers = mires_template_matching(uncabled_img, draw)
     wired_centers = warp_points(unwired_centers, H).astype(np.int32)
 
     return wired_centers
