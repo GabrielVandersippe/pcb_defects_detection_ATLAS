@@ -193,7 +193,7 @@ def magnifying_glass_ref(path):
     cv.setMouseCallback("Main PCB View", mouse_callback_ref , param=state)
 
     print("--- Magnifying Tool Instructions ---")
-    print("Drag and drop to enhance | Press 'r' to reset view | Press 'q' to finish viewing")
+    print("Drag and drop to enhance | Press 'r' to reset view | Press 'q' to finish viewing | Double click to set a point | 'd' to change group | 'p' to remove point")
 
     while True:
         cv.imshow("Main PCB View", state['current_view'])
