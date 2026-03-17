@@ -1,6 +1,7 @@
 DONE : 
 - Trouver les mires (targets) sur l'image câblée
 - Restreindre la zone de recherche pour les fils
+- Avoir une référence pour les pistes en cuivre, avec une image de référence fonctionnelle
 
 
 

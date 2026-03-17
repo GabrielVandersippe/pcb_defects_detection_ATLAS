@@ -81,8 +81,12 @@ def mouse_callback(event, x, y, flags, param):
         print((x + state['offset_x'], y + state['offset_y']))
 
 
-def magnifying_glass(path):
-    img = cv.imread(path)
+def magnifying_glass(src):
+
+    if type(src) == str:
+        img = cv.imread(src)
+    else:
+        img = src
 
     state = {
         'current_view': img.copy(),

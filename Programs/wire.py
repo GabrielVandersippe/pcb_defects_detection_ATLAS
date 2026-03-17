@@ -9,8 +9,8 @@ from count import expected_wire_number, extract_serial_number, wire_pos
 
 # open the json with the iref for each module
 
-with open("ModulePictures/iref_trim_per_module_v2.json", "r") as f:
-    data = json.load(f)
+# with open("ModulePictures/iref_trim_per_module_v2.json", "r") as f:
+#     data = json.load(f)
 
 # Utils functions for analyzing pixels in general
 
@@ -207,4 +207,4 @@ def analyseWires(filename: str):
     print("Wires expected : " + str(n_expected))
     print("Wires detected : " + str(n_detected))
 
-analyseWires("ModulePictures\P1004_20UPGM23211223_AfterBonding_NOK.jpg")
+#analyseWires("ModulePictures\P1004_20UPGM23211223_AfterBonding_NOK.jpg")
