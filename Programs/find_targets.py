@@ -215,7 +215,6 @@ def warp_points(points, H):
 
     warped = []
     for point in points :
-        print(point)
         if point[0] != -1:
             warped.append(np.int32(cv.perspectiveTransform(np.float32(point).reshape(-1,1,2), H).reshape(-1,2))[0])
         else:

@@ -76,10 +76,17 @@ def mouse_callback(event, x, y, flags, param):
             state['offset_y'] += y_start
 
             state['current_view'] = img[y_start:y_end, x_start:x_end]
+    
+    elif event == cv.EVENT_LBUTTONDBLCLK:
+        print((x + state['offset_x'], y + state['offset_y']))
 
 
-def magnifying_glass(path):
-    img = cv.imread(path)
+def magnifying_glass(src):
+
+    if type(src) == str:
+        img = cv.imread(src)
+    else:
+        img = src
 
     state = {
         'current_view': img.copy(),
@@ -90,7 +97,7 @@ def magnifying_glass(path):
     cv.namedWindow("Main PCB View", cv.WINDOW_NORMAL)
     cv.setMouseCallback("Main PCB View", mouse_callback, param=state)
 
-    print("--- Magnifying Tool Instructions ---")
+    print("--- Magnifying Glass ---")
     print("Drag and drop to enhance | Press 'r' to reset view | Press 'q' to finish viewing")
 
     while True:
@@ -193,7 +200,7 @@ def magnifying_glass_ref(path):
     cv.namedWindow("Main PCB View", cv.WINDOW_NORMAL)
     cv.setMouseCallback("Main PCB View", mouse_callback_ref , param=state)
 
-    print("--- Magnifying Tool Instructions ---")
+    print("--- Magnifying Glass ---")
     print("Drag and drop to enhance | Press 'r' to reset view | Press 'q' to finish viewing | Double click to set a point | 'd' to change group | 'p' to remove point")
 
     while True:

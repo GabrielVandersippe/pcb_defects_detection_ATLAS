@@ -1,6 +1,7 @@
 DONE : 
 - Trouver les mires (targets) sur l'image câblée
 - Restreindre la zone de recherche pour les fils
+- Avoir une référence pour les pistes en cuivre, avec une image de référence fonctionnelle
 
 
 
@@ -8,12 +9,9 @@ DONE :
 TODO : 
 
 #1
-- Trouver les positions de base des fils (et des pads) pour pouvoir benchmarker
+- Trouver les positions de base des fils pour pouvoir benchmarker
 
 #2
-- Se mettre dans une perspective bien (perspectivewarp)
-
-#3
 - Faire un squelette (ligne de 1 pixel) pour simplifier la forme des fils
 - Utiliser un filtre sur la région restreinte pour isoler les formes tubulaires des fils (Frangi/Meijering)
 - Analyser la connectivité des fils entre eux.
