@@ -18,3 +18,7 @@ TODO :
 - Faire un mapping entre les fils et les pistes
 - Faire le check de position des fils
 - Hyperparamètres qui permettent de régler l'agressivité du filtrage pour avoir plus/moins de faux négatifs.
+- Faire une intégration CLI qui permette d'utiliser facilement les fonctions, de les régler pour obtenir plus/moins d'informations.
+- Réglage Daltonien ?
+- Documentation du code
+- Rassembler le code dans un fichier .zip que l'on peut envoyer ou qqc comme ça
