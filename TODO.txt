@@ -6,13 +6,12 @@ DONE :
 - Détection des soudures au bout des fils, pour les fils normaux
 - Check du nombre de fils
 - Check des contacts
-
+- Réglé problème de fils disjoints du côté droit
 
 
 
 TODO : 
 
-- Régler le problème de fils disjoints du côté droit
 - Régler le problème des fils trop courts des deux côtés (pour deux fils / côté)
 - Donner la position de toutes les pistes
 - Faire un mapping entre les fils et les pistes
@@ -22,3 +21,4 @@ TODO :
 - Réglage Daltonien ?
 - Documentation du code
 - Rassembler le code dans un fichier .zip que l'on peut envoyer ou qqc comme ça
+- Régler le problème de la détection des arches à droite.
