@@ -77,4 +77,3 @@ pad142 = [[2284,1001],[2662,1025]]
 pads = np.array([pad101,pad102,pad103,pad104,pad105,pad106,pad107,pad108,pad109,pad110,pad111,pad112,pad113,pad114,pad115,pad116,pad117,pad118,pad119,pad120,pad121,pad122,pad123,pad124,pad125,pad126,pad127,pad128,pad129,pad130,pad131,pad132,pad133,pad134,pad135,pad136,pad137,pad138,pad139,pad140,pad141,pad142,pad143,pad144,pad145,pad146])
 
 pads_nouveau_repere = np.array([np.dot(mat_passage,pads[i]-np.flip(np.array([centre,centre]),axis=1)) for i in range(46)]).astype(np.int16)
-print(pads_nouveau_repere)
