@@ -38,7 +38,7 @@ def mouse_callback(event, x, y, flags, param):
         h_z, w_z = zoom_view.shape[:2]
         
         # -------------------------------------
-        ## Writing the coordinates on the zoomed view
+        ## Ecriture des coordonnees sur la vue zoomée
 
         coord_text = f"X:{x} Y:{y}"
         font = cv.FONT_HERSHEY_SIMPLEX
@@ -57,7 +57,7 @@ def mouse_callback(event, x, y, flags, param):
         cv.line(zoom_view, (w_z//2, 0), (w_z//2, h_z), (0, 255, 0), 1)
         cv.line(zoom_view, (0, h_z//2), (w_z, h_z//2), (0, 255, 0), 1)
         
-        cv.imshow("Magnifying Glass", zoom_view)
+        cv.imshow("Loupe", zoom_view)
     
 
     if event == cv.EVENT_LBUTTONDOWN:
@@ -93,14 +93,14 @@ def magnifying_glass(src):
         'offset_y': 0
     }
 
-    cv.namedWindow("Main PCB View", cv.WINDOW_NORMAL)
-    cv.setMouseCallback("Main PCB View", mouse_callback, param=state)
+    cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
+    cv.setMouseCallback("Vue Principale", mouse_callback, param=state)
 
-    print("--- Magnifying Glass ---")
-    print("Drag and drop to enhance | Press 'r' to reset view | Press 'q' to finish viewing")
+    print("--- Loupe ---")
+    print("Glisser-déposer pour zoomer | Appuyer sur 'r' pour réinitialiser la vue | Appuyer sur 'q' pour quitter")
 
     while True:
-        cv.imshow("Main PCB View", state['current_view'])
+        cv.imshow("Vue Principale", state['current_view'])
         key = cv.waitKey(1) & 0xFF 
         
         if key == ord('q'):

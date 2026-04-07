@@ -45,7 +45,7 @@ def mires_template_matching(img_input:np.ndarray, draw = False):
 
     Returns : np.ndarray : array of centers
     """
-    assert img_input is not None, "file could not be read, check with os.path.exists()" #Vérifier si l'image existe
+    assert img_input is not None, "Le fichien n'a pas pu être lu, vérifier avec os.path.exists()" #Vérifier si l'image existe
 
     template = cv.imread("ModulePictures/Template_Thresh_cropped.png", cv.IMREAD_GRAYSCALE)
 
@@ -117,8 +117,8 @@ def mires_template_matching(img_input:np.ndarray, draw = False):
 
             # Si rien trouvé, on renvoie un warning
         if len(slice_centers) < nbmires:
-            print(f"Warning : was looking for {nbmires} targets, found {len(slice_centers)}. Results may be less reliable. Issue is shown in another window.")
-            cv.imshow("Issue", mask)
+            print(f"Attention : devait trouver {nbmires} mires, n'en a trouvé que {len(slice_centers)}. Les résultats peuvent être moins précis. Le problème est affiché dans une autre fenêtre.")
+            cv.imshow("Problème", mask)
             cv.waitKey(0)
             cv.destroyAllWindows()
 
@@ -144,7 +144,7 @@ def mires_template_matching(img_input:np.ndarray, draw = False):
 
 
 
-def compute_homography_center(uncabled_img, cabled_img, crop_ratio=0.4, debug=False):
+def compute_homography_center(uncabled_img, cabled_img, crop_ratio=0.4):
     """
     Calcule une homographie entre images cablees et non cablees par matching de la région centrale
 
@@ -183,7 +183,7 @@ def compute_homography_center(uncabled_img, cabled_img, crop_ratio=0.4, debug=Fa
     good_matches = matches[: max(50, len(matches)//3) ]  # on garde le meilleur tiers, avec au moins 50
 
     if len(good_matches) < 10:
-        raise ValueError("Not enough matches in center region to compute homography.")
+        raise ValueError("Trop peu de correspondances pour calculer l'homographie.")
 
     #on fait les correspondances
     pts1 = np.float32([keypoints1[m.queryIdx].pt for m in good_matches])
@@ -198,10 +198,7 @@ def compute_homography_center(uncabled_img, cabled_img, crop_ratio=0.4, debug=Fa
     # on peut alors enfin finir en trouvant l'homographie entre l'image non cablee et l'image cablee !!
     H, mask = cv.findHomography(pts1, pts2, cv.RANSAC)
     if H is None:
-        raise ValueError("Homography computation failed.")
-
-    if debug:
-        print("Matches kept:", np.sum(mask))
+        raise ValueError("Échec du calcul de l'homographie.")
     
     return H
 

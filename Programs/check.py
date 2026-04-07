@@ -51,7 +51,7 @@ def run_check (path, draw = False) :
     wires = bounding_map_pads_pistes()
 
     nb_shorts = 0
-    tracks = find_tracks(path) # TODO : ajouter les tracks
+    tracks = find_tracks(path) # TODO : ajouter la détection des fils dans les bons tracks.
 
     # 2. Vérifier si des fils qui ne se touchent pas sont bien câblés.
     for label,endpoint in endpoints_left.items():
@@ -86,15 +86,13 @@ def run_check (path, draw = False) :
     for short in short_list_right: 
         cv.circle(cimg, (short[0] + ROI[2][0], short[1] + ROI[3][1]), 4, (0, 255, 0), 2)
 
-    magnifying_glass(cimg)
-    
-
 
     if ok :
         print_success("Module correctement cablé")
     else :
         print_error("Module incorrect")
         print_info("Nombre des fils : " + "/" + str(n_expected)) # insérer le nombre de fils comptés
+        magnifying_glass(cimg)
         # afficher les zones (1/2/3/4) des fils manquants s'il y en a
         # afficher les zones des fils mal branchés s'il y en a
         # afficher les zones des fils qui se touchent s'il y en a
