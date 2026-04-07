@@ -56,6 +56,7 @@ def run_check (path, draw = False) :
     # 2. Vérifier si des fils qui ne se touchent pas sont bien câblés.
     for label,endpoint in endpoints_left.items():
         if endpoint == None:
+            ok = False
             nb_shorts += 1
             # Mettre le fil en rouge, TODO ou en orange si OK en termes de pistes d'arivées.
             cimg[ROI[1][1]:ROI[1][0], ROI[0][0]:ROI[0][1]][labels_left == label] = [0,0,255]
@@ -70,6 +71,7 @@ def run_check (path, draw = False) :
 
     for label, endpoint in endpoints_right.items():
         if endpoint == None:
+            ok = False
             nb_shorts += 1
             # Mettre le fil en rouge, TODO ou en orange si OK en termes de pistes d'arivée.
             cimg[ROI[3][1]:ROI[3][0], ROI[2][0]:ROI[2][1]][labels_right == label] = [0,0,255]
