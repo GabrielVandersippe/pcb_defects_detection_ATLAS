@@ -1,5 +1,5 @@
 import cv2
-# import scipy.signal
+import scipy.signal
 
 # Theoretical number of wires
 

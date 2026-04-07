@@ -24,7 +24,14 @@ def trouver_la_paire(fichier:str, dossier:str) -> str :
     """
 
     bname=os.path.basename(fichier)
-    if "After" in bname:
+
+    if "Ref_img" in bname :
+        if "unbonded" in bname:
+            return os.path.join(dossier, "Ref_img_bonded.jpg")
+        else : 
+            return os.path.join(dossier, "Ref_img_unbonded.jpg")
+
+    elif "After" in bname:
         name=bname[:bname.find("After")]
         for f in os.listdir(dossier):
             if "Reception" in os.path.basename(f):
