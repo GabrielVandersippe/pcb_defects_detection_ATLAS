@@ -93,7 +93,7 @@ def run_check (path, draw = False) :
         print_success("Module correctement cablé")
     else :
         print_error("Module incorrect")
-        print_info("Nombre des fils : " + "/" + str(n_expected)) # insérer le nombre de fils comptés
+        print_info(f"Nombre des fils : {n_detected}/{n_expected}") # insérer le nombre de fils comptés
         magnifying_glass(cimg)
         # afficher les zones (1/2/3/4) des fils manquants s'il y en a
         # afficher les zones des fils mal branchés s'il y en a
