@@ -49,7 +49,6 @@ def run_check (path, draw = False) :
     trim_nb = iref_trim(serial_number, data)
     bounding_map_trim(trim_nb)
     wires = bounding_map_pads_pistes()
-    print(wires)
 
     nb_shorts = 0
     tracks = find_tracks(path) # TODO : ajouter les tracks
