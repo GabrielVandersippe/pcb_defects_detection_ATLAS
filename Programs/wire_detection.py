@@ -1,12 +1,12 @@
 import cv2 as cv
 import numpy as np
-from utils import *
-from data import *
-from find_targets import *
-from debug_tools import *
-from wire import *
-from count import *
-from tracks import *
+from Programs.utils import *
+from Programs.data import *
+from Programs.find_targets import *
+from Programs.debug_tools import *
+from Programs.wire import *
+from Programs.count import *
+from Programs.tracks import *
 
 
 

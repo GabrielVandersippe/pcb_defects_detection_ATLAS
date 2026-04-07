@@ -1,8 +1,7 @@
 import cv2 as cv
 import numpy as np
-import matplotlib.pyplot as plt
-from utils import *
-from data import *
+from Programs.utils import *
+from Programs.data import *
 
 
 
@@ -48,7 +47,7 @@ def mires_template_matching(img_input:np.ndarray, draw = False):
     """
     assert img_input is not None, "file could not be read, check with os.path.exists()" #Vérifier si l'image existe
 
-    template = cv.imread("../ModulePictures/Template_Thresh_cropped.png", cv.IMREAD_GRAYSCALE)
+    template = cv.imread("ModulePictures/Template_Thresh_cropped.png", cv.IMREAD_GRAYSCALE)
 
     # Preprocess
     gray = cv.cvtColor(img_input, cv.COLOR_BGR2GRAY)
@@ -234,7 +233,7 @@ def find_targets_wired(path:str, draw=False):
     Returns : np.ndarray : array of centers
     """
     cabled_img = cv.imread(path)
-    uncabled_img = cv.imread(trouver_la_paire(path, "../ModulePictures"))
+    uncabled_img = cv.imread(trouver_la_paire(path, "ModulePictures"))
 
     H = compute_homography_center(uncabled_img, cabled_img)
 

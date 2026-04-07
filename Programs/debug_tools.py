@@ -1,9 +1,8 @@
 import cv2 as cv
-import numpy as np
 import matplotlib.pyplot as plt
-from utils import *
-from data import *
-from find_targets import *
+from Programs.utils import *
+from Programs.data import *
+from Programs.find_targets import *
 
 
 def draw_area(img, pt1, pt2):

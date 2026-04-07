@@ -1,18 +1,18 @@
 import cv2 as cv
 import numpy as np
-from utils import *
-from data import *
-from find_targets import *
-from debug_tools import *
+from Programs.utils import *
+from Programs.data import *
+from Programs.find_targets import *
+from Programs.debug_tools import *
 import json
 
 def find_tracks(path, draw = False):
 
-    ref_unbonded = "../ModulePictures/Ref_img_unbonded.jpg"
-    ref_bonded = "../ModulePictures/Ref_img_bonded.jpg"
+    ref_unbonded = "ModulePictures/Ref_img_unbonded.jpg"
+    ref_bonded = "ModulePictures/Ref_img_bonded.jpg"
 
     targets_dst = find_targets_wired(path)
-    targets_ref = find_targets_wired(ref_bonded) # Changer par la ref
+    targets_ref = find_targets_wired(ref_bonded)
 
     H1 = cv.findHomography(targets_ref, targets_dst, cv.RANSAC)[0]
     H2 = compute_homography_center(cv.imread(ref_unbonded),cv.imread(ref_bonded))
@@ -21,7 +21,7 @@ def find_tracks(path, draw = False):
     if draw :
         img = cv.imread(path).copy()
 
-    with open("REF_TRACKS.json") as f:
+    with open("Programs/REF_TRACKS.json") as f:
         data = json.load(f)
         for track_idx, track in data.items():
 
