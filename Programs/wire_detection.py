@@ -109,7 +109,7 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False):
 
         if seen_labels[label]:  # On verifie qu'on ne voit qu'une fois chaque label, sinon c'est qu'il y a un court-circuit
 
-            edge_dict[label] = None
+            edge_dict[label] = (None, edge_dict[label][1].append(idx_wire))
 
             vkernel = cv.getStructuringElement(cv.MORPH_RECT, (1,7)) # Rectangle 1x7
             hkernel = cv.getStructuringElement(cv.MORPH_RECT, (25,3))
@@ -152,9 +152,9 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False):
                     
                     solderx = edgex + 15
                     soldery = edgey - 15/np.tan(theta)
-                    edge_dict[label] = ((solderx,int(soldery)), idx_wire)
+                    edge_dict[label] = ((solderx,int(soldery)), [idx_wire])
                 else : 
-                    edge_dict[label] = ((edgex,edgey), idx_wire)
+                    edge_dict[label] = ((edgex,edgey), [idx_wire])
 
             else :
                 left_pixels_y = np.where(region[:, 6] > 0)[0]
@@ -170,9 +170,9 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False):
                     
                     solderx = edgex - 15
                     soldery = edgey + 15/np.tan(theta)
-                    edge_dict[label] = ((solderx,int(soldery)), idx_wire)
+                    edge_dict[label] = ((solderx,int(soldery)), [idx_wire])
                 else : 
-                    edge_dict[label] = ((edgex,edgey), idx_wire)
+                    edge_dict[label] = ((edgex,edgey), [idx_wire])
 
             if draw : 
                 cv.circle(cimg, (int(edge_dict[label][0]), int(edge_dict[label][1])),4, (0, 255, 0), 2)

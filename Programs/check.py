@@ -8,9 +8,7 @@ bounding_map_without_trim()
 
 def run_check (path, draw = False) :
 
-
     ok = True
-
 
     img = cv.imread(path)
     ROI = find_ROI(img)
@@ -41,61 +39,74 @@ def run_check (path, draw = False) :
         n_detected = len(y_left) + len(y_right)
         print("Wires expected : " + str(n_expected))
         print("Wires detected : " + str(n_detected))
-        ok = n_expected == n_detected
 
-    # Ajouter Logique pour ne faire la suite que si on a le bon nombre de câbles !
-
-    serial_number = extract_serial_number(path)
-    trim_nb = iref_trim(serial_number, data)
-    bounding_map_trim(trim_nb)
-    wires = bounding_map_pads_pistes()
-
-    nb_shorts = 0
-    tracks = find_tracks(path) # TODO : ajouter la détection des fils dans les bons tracks.
-
-    # 2. Vérifier si des fils qui ne se touchent pas sont bien câblés.
-    for label,endpoint in endpoints_left.items():
-        if endpoint == None:
-            ok = False
-            nb_shorts += 1
-            # Mettre le fil en rouge, TODO ou en orange si OK en termes de pistes d'arivées.
-            cimg[ROI[1][1]:ROI[1][0], ROI[0][0]:ROI[0][1]][labels_left == label] = [0,0,255]
-            
-        else :
-            (endpoint_location, wire_idx) = endpoint
-            cv.circle(cimg, (endpoint_location[0] + ROI[0][0], endpoint_location[1] + ROI[1][1]), 4, (255, 0, 0), 2)
-            
-            # 3. TODO Vérifier si les fils vont bien au bon endroit
-            # is_in_right_track = cv.pointPolygonTest(tracks[wires[wire_idx]], endpoint_location)
-
-
-    for label, endpoint in endpoints_right.items():
-        if endpoint == None:
-            ok = False
-            nb_shorts += 1
-            # Mettre le fil en rouge, TODO ou en orange si OK en termes de pistes d'arivée.
-            cimg[ROI[3][1]:ROI[3][0], ROI[2][0]:ROI[2][1]][labels_right == label] = [0,0,255]
-
-        else :
-            (endpoint_location, wire_idx) = endpoint
-            cv.circle(cimg, (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), 4, (255, 0, 0), 2) 
-            
-            # 3. TODO Vérifier si les fils vont bien au bon endroit
-
-    print(f'{nb_shorts} courts-circuits potentiels détectés.')
-    for short in short_list_left: 
-        cv.circle(cimg, (short[0] + ROI[0][0], short[1] + ROI[1][1]), 4, (0, 255, 0), 2)
-    for short in short_list_right: 
-        cv.circle(cimg, (short[0] + ROI[2][0], short[1] + ROI[3][1]), 4, (0, 255, 0), 2)
-
-
-    if ok :
-        print_success("Module correctement cablé")
-    else :
+    if n_expected != n_detected: 
         print_error("Module incorrect")
-        print_info(f"Nombre des fils : {n_detected}/{n_expected}") # insérer le nombre de fils comptés
-        magnifying_glass(cimg)
-        # afficher les zones (1/2/3/4) des fils manquants s'il y en a
-        # afficher les zones des fils mal branchés s'il y en a
-        # afficher les zones des fils qui se touchent s'il y en a
-        # afficher des images du cablage
+        print_info(f"Nombre des fils : {n_detected}/{n_expected}")
+        # TODO : dire où il manque des fils
+        
+    else :
+        serial_number = extract_serial_number(path)
+        trim_nb = iref_trim(serial_number, data)
+        bounding_map_trim(trim_nb)
+        wires = bounding_map_pads_pistes() # wires[i] donne le (pad, piste) associés au fil i. 
+        # Format pad : XYYY, X n° du GA, YYY n°du pad
+        # Format piste : XYY, X n° du GA, YY n°de piste
+
+        nb_shorts = 0
+        tracks = find_tracks(path) # TODO : ajouter la détection des fils dans les bons tracks.
+
+        # 2. Vérifier si des fils qui ne se touchent pas sont bien câblés.
+        for label,endpoint in endpoints_left.items():
+
+            if endpoint != None:
+                (endpoint_location, wire_idx) = endpoint
+                cv.circle(cimg, (endpoint_location[0] + ROI[0][0], endpoint_location[1] + ROI[1][1]), 4, (255, 0, 0), 2)
+                
+                # 3. TODO Vérifier si les fils vont bien au bon endroit
+                pad, track = wires[wire_idx[0]]
+                # in_track = cv.pointPolygonTest(tracks[track%100], endpoint_location)
+            
+            else:
+                nb_shorts += 1
+                _, track = wires[wire_idx[0]]
+                i=0
+                while i < len(wire_idx) and wires[wire_idx[i]][1] == track : 
+                    i+=1
+                # Mettre le fil en rouge, ou en orange s'ils arrivent tous sur une même piste.
+                color = [0, 128*(i==len(wire_idx)), 255]
+                cimg[ROI[1][1]:ROI[1][0], ROI[0][0]:ROI[0][1]][labels_left == label] = color
+                
+            
+
+
+        for label, endpoint in endpoints_right.items():
+            if endpoint == None:
+                ok = False
+                nb_shorts += 1
+                # Mettre le fil en rouge, TODO ou en orange si OK en termes de pistes d'arivée.
+                cimg[ROI[3][1]:ROI[3][0], ROI[2][0]:ROI[2][1]][labels_right == label] = [0,0,255]
+
+            else :
+                (endpoint_location, wire_idx) = endpoint
+                cv.circle(cimg, (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), 4, (255, 0, 0), 2) 
+                
+                # 3. TODO Vérifier si les fils vont bien au bon endroit
+
+        print(f'{nb_shorts} courts-circuits potentiels détectés.')
+        for short in short_list_left: 
+            cv.circle(cimg, (short[0] + ROI[0][0], short[1] + ROI[1][1]), 4, (0, 255, 0), 2)
+        for short in short_list_right: 
+            cv.circle(cimg, (short[0] + ROI[2][0], short[1] + ROI[3][1]), 4, (0, 255, 0), 2)
+
+
+        if ok :
+            print_success("Module correctement cablé")
+        else :
+            print_error("Module incorrect")
+            print_info(f"Bon nombre de fils : {n_detected}/{n_expected}") 
+            magnifying_glass(cimg)
+            # afficher les zones (1/2/3/4) des fils manquants s'il y en a
+            # afficher les zones des fils mal branchés s'il y en a
+            # afficher les zones des fils qui se touchent s'il y en a
+            # afficher des images du cablage
