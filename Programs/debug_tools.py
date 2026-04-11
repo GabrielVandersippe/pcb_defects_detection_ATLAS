@@ -1,8 +1,9 @@
 import cv2 as cv
+import numpy as np
 import matplotlib.pyplot as plt
-from Programs.utils import *
-from Programs.data import *
-from Programs.find_targets import *
+from utils import *
+from data import *
+from find_targets import *
 
 
 def draw_area(img, pt1, pt2):
@@ -38,7 +39,7 @@ def mouse_callback(event, x, y, flags, param):
         h_z, w_z = zoom_view.shape[:2]
         
         # -------------------------------------
-        ## Ecriture des coordonnees sur la vue zoomée
+        ## Writing the coordinates on the zoomed view
 
         coord_text = f"X:{x} Y:{y}"
         font = cv.FONT_HERSHEY_SIMPLEX
@@ -57,7 +58,7 @@ def mouse_callback(event, x, y, flags, param):
         cv.line(zoom_view, (w_z//2, 0), (w_z//2, h_z), (0, 255, 0), 1)
         cv.line(zoom_view, (0, h_z//2), (w_z, h_z//2), (0, 255, 0), 1)
         
-        cv.imshow("Loupe", zoom_view)
+        cv.imshow("Magnifying Glass", zoom_view)
     
 
     if event == cv.EVENT_LBUTTONDOWN:
@@ -93,14 +94,14 @@ def magnifying_glass(src):
         'offset_y': 0
     }
 
-    cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
-    cv.setMouseCallback("Vue Principale", mouse_callback, param=state)
+    cv.namedWindow("Main PCB View", cv.WINDOW_NORMAL)
+    cv.setMouseCallback("Main PCB View", mouse_callback, param=state)
 
-    print("--- Loupe ---")
-    print("Glisser-déposer pour zoomer | Appuyer sur 'r' pour réinitialiser la vue | Appuyer sur 'q' pour quitter")
+    print("--- Magnifying Glass ---")
+    print("Drag and drop to enhance | Press 'r' to reset view | Press 'q' to finish viewing")
 
     while True:
-        cv.imshow("Vue Principale", state['current_view'])
+        cv.imshow("Main PCB View", state['current_view'])
         key = cv.waitKey(1) & 0xFF 
         
         if key == ord('q'):
@@ -222,3 +223,6 @@ def magnifying_glass_ref(path):
 
     cv.destroyAllWindows()
     return state['points']
+
+test = magnifying_glass_ref("P1015_20UPGM23210321_Reception_Glo_NoLight_AfterClean.jpg")
+print(test)
