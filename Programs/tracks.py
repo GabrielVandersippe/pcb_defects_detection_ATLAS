@@ -17,7 +17,7 @@ def find_tracks(path, draw = False):
     H1 = cv.findHomography(targets_ref, targets_dst, cv.RANSAC)[0]
     H2 = compute_homography_center(cv.imread(ref_unbonded),cv.imread(ref_bonded))
 
-    tracks = []
+    tracks = {}
     if draw :
         img = cv.imread(path).copy()
 
@@ -27,7 +27,7 @@ def find_tracks(path, draw = False):
 
             track_bonded = warp_points(track, H2).astype(np.int32)
             track_dst = warp_points(track_bonded, H1).astype(np.int32)
-            tracks.append(track_dst)
+            tracks[int(track_idx[5:])] = track_dst
     
             if draw :
                 if len(track_dst)==2 : 

@@ -1,5 +1,6 @@
 import cv2
 import scipy.signal
+import numpy as np
 
 # Theoretical number of wires
 
@@ -208,7 +209,7 @@ def wire_pos (image) :
     peaks_right, _ = scipy.signal.find_peaks(grey[high_right:low_right, right-35], distance=3, prominence=50, height=190, width=(0,9)) # -35 : gap between the right limit of the wire zone and the column with every wires
     real_peaks_left, real_left, real_peaks_right, real_right = peaks_left + high_left, left+35, peaks_right + high_right, right-35 # returning to the coordinates on the original picture
 
-    return(real_peaks_left, real_left, real_peaks_right, real_right)
+    return(real_peaks_left, real_left, np.flip(real_peaks_right), real_right)
 
 def test_wire_finding (file_name) :
     """Tests the wire finding algorithm by creating a test image with the detected wires marked by a black pixel

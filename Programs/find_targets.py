@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
-from utils import *
-from data import *
+from Programs.utils import *
+from Programs.data import *
 
 
 
