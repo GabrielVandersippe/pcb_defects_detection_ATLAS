@@ -93,6 +93,7 @@ def magnifying_glass(src):
     console.print("[blue][bold]Glisser-déposer[/bold] pour zoomer.")
     console.print("[blue]Appuyer sur [bold]'r'[/bold] pour réinitialiser la vue.")
     console.print("[blue]Appuyer sur [bold]'q'[/bold] pour quitter.")
+
     
 
     while True:
@@ -116,6 +117,12 @@ def create_masked_view(img, mask, color):
     
     return darkened
 
+def create_view_all_masks(img, masks, colors):
+    result = img.copy()
+    for i, mask in enumerate(masks):
+        result[mask > 0] = colors[i]
+    return result
+
 
 def magnifying_glass_final_result(src, crit_shorts_mask, non_crit_shorts_mask, crit_endpoints_mask, non_crit_endpoints_mask, pads_mask):
 
@@ -124,6 +131,8 @@ def magnifying_glass_final_result(src, crit_shorts_mask, non_crit_shorts_mask, c
               [0,255,0],    
               [255,0,0],
               [128,128,0]]
+    
+    masks = [crit_shorts_mask,non_crit_shorts_mask,crit_endpoints_mask,non_crit_endpoints_mask,pads_mask]
 
     if type(src) == str:
         img = cv.imread(src)
@@ -142,6 +151,7 @@ def magnifying_glass_final_result(src, crit_shorts_mask, non_crit_shorts_mask, c
     # 3 pour points d'arrivée mal câblés, 
     # 4 pour tous points d'arrivée
     # 5 pour tous points d'arrivée + pads
+    # 6 pour la vue avec tout
 
     cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
     cv.setMouseCallback("Vue Principale", mouse_callback, param=state)
@@ -152,7 +162,15 @@ def magnifying_glass_final_result(src, crit_shorts_mask, non_crit_shorts_mask, c
     console.print("[blue][bold]Glisser-déposer[/bold] pour zoomer.")
     console.print("[blue]Appuyer sur [bold]'r'[/bold] pour réinitialiser la vue.")
     console.print("[blue]Appuyer sur [bold]'q'[/bold] pour quitter.")
+    console.print("[red]***")
+    console.print("[blue]Appuyer sur [bold]'1'[/bold] pour la vue [bold white]non modifiée[/bold white].")
+    console.print("[blue]Appuyer sur [bold]'2'[/bold] pour la vue avec les [bold red]courts-circuits critiques[/bold red].")
+    console.print("[blue]Appuyer sur [bold]'3'[/bold] pour la vue avec les [bold dark_orange]courts-circuits non critiques[/bold dark_orange].")
+    console.print("[blue]Appuyer sur [bold]'4'[/bold] pour la vue avec les [bold dark_blue]terminaisons des fils mal câblés[/bold dark_blue].")
+    console.print("[blue]Appuyer sur [bold]'5'[/bold] pour la vue avec les [bold green]terminaisons de tous les fils[/bold green].")
+    console.print("[blue]Appuyer sur [bold]'6'[/bold] pour la vue avec les [bold cyan]terminaisons de tous les fils[/bold cyan].")
     
+    console.print("\n[blue]Appuyer sur [bold]'0'[/bold] pour la vue avec [bold magenta]toutes les modifications[/bold magenta].")
 
     while True:
         cv.imshow("Vue Principale", state['current_view'])
@@ -161,39 +179,63 @@ def magnifying_glass_final_result(src, crit_shorts_mask, non_crit_shorts_mask, c
         if key == ord('q'): # Quitter
             break
         elif key == ord('r'): # Reset 
-            state['current_view'] = img.copy()
+
+            if state['current_mode'] == 0:
+                state['current_view'] = img.copy()
+            elif state['current_mode'] == 1:
+                state['current_view'] = create_masked_view(img,crit_shorts_mask,colors[0])
+            elif state['current_mode'] == 2:
+                state['current_view'] = create_masked_view(img,non_crit_shorts_mask,colors[1])
+            elif state['current_mode'] == 3:
+                state['current_view'] = create_masked_view(img,crit_endpoints_mask,colors[2])
+            elif state['current_mode'] == 4:
+                state['current_view'] = create_masked_view(img,non_crit_endpoints_mask,colors[3])
+            elif state['current_mode'] == 5:
+                state['current_view'] = create_masked_view(img,pads_mask,colors[4])
+            elif state['current_mode'] == 6:
+                state['current_view'] = create_view_all_masks(img,masks,colors)
+
             state['offset_x'], state['offset_y'] = 0, 0
-            state['width'], state['height'] = img.shape
-            state['current_mode'] = 0
         elif key == ord('&') or key == ord('1'): # Normal view
             state['current_mode'] = 0
             h,w = state['current_view'].shape[:2]
             state['current_view'] = img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w]
         elif key == ord('é') or key== ord('2'): # courts-circuits critiques
+            h,w = state['current_view'].shape[:2]
             state['current_view'] = create_masked_view(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
                                                        crit_shorts_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
                                                        colors[0])
             state['current_mode'] = 1
         elif key == ord('"') or key== ord('3'): # courts-circuits non critiques
+            h,w = state['current_view'].shape[:2]
             state['current_view'] = create_masked_view(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
                                                        non_crit_shorts_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
-                                                       colors[0])
+                                                       colors[1])
             state['current_mode'] = 2
         elif key == ord("'") or key== ord('4'): # points d'arrivée mal câblés
+            h,w = state['current_view'].shape[:2]
             state['current_view'] = create_masked_view(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
                                                        crit_endpoints_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
-                                                       colors[0])
+                                                       colors[2])
             state['current_mode'] = 3
         elif key == ord('(') or key== ord('5'): # tous les points d'arrivée
+            h,w = state['current_view'].shape[:2]
             state['current_view'] = create_masked_view(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
                                                        non_crit_endpoints_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
-                                                       colors[0])
+                                                       colors[3])
             state['current_mode'] = 4
         elif key == ord('-') or key== ord('6'): # tous les pads
+            h,w = state['current_view'].shape[:2]
             state['current_view'] = create_masked_view(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
                                                        pads_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
-                                                       colors[0])
+                                                       colors[4])
             state['current_mode'] = 5
+        elif key == ord('à') or key== ord('0'): # tout
+            h,w = state['current_view'].shape[:2]
+            state['current_view'] = create_view_all_masks(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
+                                                       [mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w] for mask in masks], 
+                                                       colors)
+            state['current_mode'] = 6
         
 
     cv.destroyAllWindows()
