@@ -80,9 +80,10 @@ def run_check (path, draw = False) :
                 (endpoint_location, wire_idx) = endpoint
 
                 if endpoint_location != None:
-
                     # Vérifier si les fils vont bien au bon endroit
                     _, track_idx = wires[wire_idx[0]]
+                    if (track_idx == 230) or (track_idx == 231) : 
+                        endpoint_location = (endpoint_location[0] - 25, endpoint_location[1]) 
                     in_track = (cv.pointPolygonTest(tracks[track_idx], (endpoint_location[0] + ROI[0][0], endpoint_location[1] + ROI[1][1]), measureDist = True) >= -4)
                     if in_track:
                         cv.circle(cimg, (endpoint_location[0] + ROI[0][0], endpoint_location[1] + ROI[1][1]), 4, (0, 255, 0), 2)
@@ -109,6 +110,8 @@ def run_check (path, draw = False) :
                 if endpoint_location != None:
                     # Vérifier si les fils vont bien au bon endroit
                     _, track_idx = wires[wire_idx[0]]
+                    if (track_idx == 332) or (track_idx == 333) : 
+                        endpoint_location = (endpoint_location[0] + 25, endpoint_location[1]) 
                     in_track = (cv.pointPolygonTest(tracks[track_idx], (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), measureDist = True) >=-4)
                     if in_track:
                         cv.circle(cimg, (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), 4, (0, 255, 0), 2)
