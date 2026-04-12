@@ -8,6 +8,14 @@ map3 = np.zeros(198, dtype=int) # map[i-1] is the right position for pad i of GA
 map4 = np.zeros(198, dtype=int) # map[i-1] is the right position for pad i of GA4
 
 def trim (trim_, map_) :
+    """Modifies in place the IREF wires of the map to match a given trim
+
+    Arguments :
+    trim_ - int : the wanted trim
+    map_ - array of int : the map of one of the quarter (GA1/2/3/4)
+
+    Returns : None
+    """
     trim_list = np.array([[1, 1, 1, 1], 
                  [0, 1, 1, 1], 
                  [1, 0, 1, 1], 
@@ -27,6 +35,13 @@ def trim (trim_, map_) :
     map_[46:50] = trim_list[trim_] * 7
 
 def GA1_without_trim (map_ = map1) :
+    """Modifies in place the wires (except IREF) of the map of GA1
+
+    Arguments :
+    map_ - array of int : the map of the quarter GA1
+
+    Returns : None
+    """
     for i in range (6) :
         map_[i] = i + 1
     map_[7:13] = 7
@@ -61,6 +76,13 @@ def GA1_without_trim (map_ = map1) :
     map_[197] = 46
 
 def GA2_without_trim (map_ = map2) :
+    """Modifies in place the wires (except IREF) of the map of GA2
+
+    Arguments :
+    map_ - array of int : the map of the quarter GA2
+
+    Returns : None
+    """
     for i in range (6) :
         map_[i] = i + 1
     map_[7:13] = 7
@@ -98,6 +120,13 @@ def GA2_without_trim (map_ = map2) :
     map_[197] = 48 # diff GA1 (offset +2)
 
 def GA3_without_trim (map_ = map3) :
+    """Modifies in place the wires (except IREF) of the map of GA3
+
+    Arguments :
+    map_ - array of int : the map of the quarter GA3
+
+    Returns : None
+    """
     for i in range (6) :
         map_[i] = i + 1
     map_[7:13] = 7
@@ -130,6 +159,13 @@ def GA3_without_trim (map_ = map3) :
     map_[197] = 48 # diff GA1 (offset +2)
 
 def GA4_without_trim (map_ = map4) :
+    """Modifies in place the wires (except IREF) of the map of GA4
+
+    Arguments :
+    map_ - array of int : the map of the quarter GA4
+
+    Returns : None
+    """
     for i in range (6) :
         map_[i] = i + 1
     map_[7:13] = 7
@@ -167,12 +203,25 @@ def GA4_without_trim (map_ = map4) :
     map_[197] = 49 # diff GA1 (offset +3)
 
 def bounding_map_without_trim () :
+    """Modifies in place the wires (except IREF) of the map of GA1, GA2, GA3 and GA4
+
+    Arguments : None
+
+    Returns : None
+    """
     GA1_without_trim()
     GA2_without_trim()
     GA3_without_trim()
     GA4_without_trim()
 
-def bounding_map_trim (trim_) : # trim est un tuple de 4 éléments (GA1, GA2, GA3, GA4)
+def bounding_map_trim (trim_) :
+    """Modifies in place the IREF wires of the map of GA1, GA2, GA3 and GA4
+
+    Arguments :
+    trim_ - tuple of 4 ints : the wanted trims for each quarter
+
+    Returns : None
+    """
     trim(trim_[0],map1)
     trim(trim_[1],map2)
     trim(trim_[2],map3)
@@ -182,6 +231,15 @@ def bounding_map_trim (trim_) : # trim est un tuple de 4 éléments (GA1, GA2, G
 # bounding_map_trim(trim_nb)
 
 def list_pads_pistes (map_, offset_) : # offset_ = 1 pour GA1 ; 2 pour GA2 ; 3 pour GA3 et 4 pour GA4
+    """Creates a list of (pad, track) for each wire from a given map
+
+    Arguments :
+    map_ - array of int : the map
+    offset_ - int : the offset needed for the corresponding quarter (1 for GA1 ; 2 for GA2 ; 3 for GA3 ; 4 for GA4)
+
+    Returns : 
+    result - array of tuples of ints : the (pad, track) corresponding to each wire
+    """
     result = []
     for i in range (len(map_)) :
         x = map_[i]
@@ -190,6 +248,13 @@ def list_pads_pistes (map_, offset_) : # offset_ = 1 pour GA1 ; 2 pour GA2 ; 3 p
     return (result)
 
 def bounding_map_pads_pistes () :
+    """Creates a list of (pad, track) for the whole module, using the maps (map1, map2, map3 and map4) already updated
+
+    Arguments : None
+
+    Returns : 
+    result - array of tuples of ints : the (pad, track) corresponding to each wire
+    """
     result = list_pads_pistes(map1, 1)
     result = result + list_pads_pistes(map2, 2)
     result = result + list_pads_pistes(map3, 3)
