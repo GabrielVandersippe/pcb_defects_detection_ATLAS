@@ -218,13 +218,13 @@ def magnifying_glass_final_result(src, crit_shorts_mask, non_crit_shorts_mask, c
                                                        crit_endpoints_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
                                                        colors[2])
             state['current_mode'] = 3
-        elif key == ord('(') or key== ord('5'): # tous les points d'arrivée
+        elif key == ord('(') or key== ord('5'): # tous les points d'arrivée bien câblés
             h,w = state['current_view'].shape[:2]
             state['current_view'] = create_masked_view(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
                                                        non_crit_endpoints_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
                                                        colors[3])
             state['current_mode'] = 4
-        elif key == ord('-') or key== ord('6'): # tous les pads
+        elif key == ord('-') or key== ord('6'): # toutes les pistes
             h,w = state['current_view'].shape[:2]
             state['current_view'] = create_masked_view(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
                                                        pads_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
