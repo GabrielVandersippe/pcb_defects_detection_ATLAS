@@ -11,6 +11,15 @@ from Programs.tracks import *
 
 
 def kernel_wheel(shape):
+    """
+    Creates a list of kernels with a rotating diagonal, spanning diagonal to antidiagonal.
+
+    Arguments:
+    shape - tuple of int: the shape of the output kernel
+
+    Returns:
+    kernels - list of arrays
+    """
     x, y = shape
     kernels = []
     
@@ -35,6 +44,15 @@ def kernel_wheel(shape):
 
 
 def find_ROI(img):
+    """
+    Finds the regions where the wires are located.
+
+    Arguments:
+    img - np.ndarray: input image
+
+    Returns:
+    List of points defining the left and right ROI respectively.
+    """
     n = img.shape[1]
 
     high_left, low_left = crop_ligns(img[:,:n//2])
@@ -48,6 +66,16 @@ def find_ROI(img):
 
 
 def wire_threshold(img, side):
+    """
+    Extracts the shape of the wires using multiple thersholing methods and morphological operations
+
+    Arguments:
+    img - np.ndarray : input image
+    side - 'left' or 'right': side where we are currently operating
+
+    Returns:
+    clean - np.ndarray : processed version of the image.
+    """
 
     # Retire les portions les plus jaunes ou gris foncé de l'image
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
@@ -78,7 +106,21 @@ def wire_threshold(img, side):
 
 
 def find_shorts(mask, input_side, y_left_list, x_left, draw = False):
+    """
+    Finds the positions of the shorts, if there is any, and computes and approximated position for each unshorted wire.
 
+    Arguments :
+    mask - np.ndarray : the ROI of image that we want to analyse
+    input_side - 'left' of 'right' : the side that is currently beign processed.
+    y_left_list - array of int : the y position of the wires
+    x_left - int : the x position of the wires
+    draw - bool : whether the function should return visual aid regarding what it is doing
+
+    Returns : 
+    short_list - array of points : the list of shorts
+    edge_dict - dict that maps a label to a (endpoint, index), where 'endpoint' is the ending point of a wire, and index is an array of one (or more, if shorted) indices that represent the wires.
+    labels - mask containing every label, representing each the position of a wire.
+    """
     side = input_side.lower()
     if side != 'left' and side != 'right':
         raise Exception("Mauvais argument pour 'side'. Entrer 'left' ou 'right'.")

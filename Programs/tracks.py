@@ -7,7 +7,16 @@ from Programs.debug_tools import *
 import json
 
 def find_tracks(path, draw = False):
+    """
+    Finds the location of the tracks for a given image, from their location on the reference image.
 
+    Arguments:
+    path - str: input path for image
+    draw - bool: whether the function should show what it has computed.
+
+    Returns:
+    tracks - list of list of points: the positions of each track on the input image
+    """
     ref_unbonded = "ModulePictures/Ref_img_unbonded.jpg"
     ref_bonded = "ModulePictures/Ref_img_bonded.jpg"
 

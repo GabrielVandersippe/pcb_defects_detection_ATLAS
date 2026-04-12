@@ -8,6 +8,13 @@ import json
 bounding_map_without_trim()
 
 def run_check (path, draw = False) :
+    """
+    Runs the checks for a given image.
+
+    Arguments:
+    path - str: path of the image to analyse
+    draw - bool: whether the funciton should show additional information regarding the steps of the algorithm
+    """
 
     console.print("\n")
 
