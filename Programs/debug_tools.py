@@ -1,4 +1,5 @@
 import cv2 as cv
+from Programs.output import console
 import matplotlib.pyplot as plt
 from Programs.utils import *
 from Programs.data import *
@@ -11,15 +12,12 @@ def draw_area(img, pt1, pt2):
     plt.show()
 
 
-
-
-# -----------------------------------------------
-# Magnifying glass for an image using OpenCV : 
-# -----------------------------------------------
-drawing = False # true if mouse is pressed
+drawing = False
 ix,iy = -1,-1
 patch_size=100
 zoom_scale=4
+current_viewmode = 0 
+
 
 def mouse_callback(event, x, y, flags, param):
     global ix,iy,drawing, patch_size, zoom_scale
@@ -52,10 +50,6 @@ def mouse_callback(event, x, y, flags, param):
         cv.rectangle(zoom_view, (text_x - 5, text_y - text_h - 5), (w_z, h_z), (0, 0, 0), -1)
         cv.putText(zoom_view, coord_text, (text_x, text_y), font, font_scale, (0, 255, 0), thickness, cv.LINE_AA)
         #------------------------------------
-
-        # Draw a crosshair in the center of the zoom window
-        cv.line(zoom_view, (w_z//2, 0), (w_z//2, h_z), (0, 255, 0), 1)
-        cv.line(zoom_view, (0, h_z//2), (w_z, h_z//2), (0, 255, 0), 1)
         
         cv.imshow("Loupe", zoom_view)
     
@@ -75,9 +69,6 @@ def mouse_callback(event, x, y, flags, param):
             state['offset_y'] += y_start
 
             state['current_view'] = img[y_start:y_end, x_start:x_end]
-    
-    elif event == cv.EVENT_LBUTTONDBLCLK:
-        print((x + state['offset_x'], y + state['offset_y']))
 
 
 def magnifying_glass(src):
@@ -96,18 +87,94 @@ def magnifying_glass(src):
     cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
     cv.setMouseCallback("Vue Principale", mouse_callback, param=state)
 
-    print("--- Loupe ---")
-    print("Glisser-déposer pour zoomer | Appuyer sur 'r' pour réinitialiser la vue | Appuyer sur 'q' pour quitter")
+    console.rule("[bold blue]LOUPE")
+    console.print("")
+    console.print("[blue]Passer la souris sur la vue principale pour afficher la version zoomée.")
+    console.print("[blue][bold]Glisser-déposer[/bold] pour zoomer.")
+    console.print("[blue]Appuyer sur [bold]'r'[/bold] pour réinitialiser la vue.")
+    console.print("[blue]Appuyer sur [bold]'q'[/bold] pour quitter.")
+    
 
     while True:
         cv.imshow("Vue Principale", state['current_view'])
         key = cv.waitKey(1) & 0xFF 
         
-        if key == ord('q'):
+        if key == ord('q'): # Quitter
             break
-        elif key == ord('r'): # Reset functionality
+        elif key == ord('r'): # Reset 
             state['current_view'] = img.copy()
             state['offset_x'], state['offset_y'] = 0, 0
+        
+
+    cv.destroyAllWindows()
+
+
+def create_masked_view(img, mask, color):
+    result = img.copy()
+    darkened = cv.convertScaleAbs(result, alpha=0.3, beta=0)
+    darkened[mask > 0] = color
+    
+    return darkened
+
+
+def magnifying_glass_final_result(src, crit_shorts_mask, non_crit_shorts_mask, crit_endpoints_mask, non_crit_endpoints_mask, pads_mask):
+
+    colors = [[0,0,255],    #red for crit shorts
+              [0,128,255],  #orange for non crit, etc
+              [0,255,0],    
+              [255,0,0],
+              [128,128,0]]
+
+    if type(src) == str:
+        img = cv.imread(src)
+    else:
+        img = src
+
+    state = {
+        'current_view': img.copy(),
+        'offset_x': 0,
+        'offset_y': 0,
+        'current_mode': 0
+    }
+    # 0 pour vue normale
+    # 1 pour courts-circuits critiques 
+    # 2 pour courts-circuits non critiques
+    # 3 pour points d'arrivée mal câblés, 
+    # 4 pour tous points d'arrivée
+    # 5 pour tous points d'arrivée + pads
+
+    cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
+    cv.setMouseCallback("Vue Principale", mouse_callback, param=state)
+
+    console.rule("[bold blue]LOUPE")
+    console.print("")
+    console.print("[blue]Passer la souris sur la vue principale pour afficher la version zoomée.")
+    console.print("[blue][bold]Glisser-déposer[/bold] pour zoomer.")
+    console.print("[blue]Appuyer sur [bold]'r'[/bold] pour réinitialiser la vue.")
+    console.print("[blue]Appuyer sur [bold]'q'[/bold] pour quitter.")
+    
+
+    while True:
+        cv.imshow("Vue Principale", state['current_view'])
+        key = cv.waitKey(1) & 0xFF 
+        
+        if key == ord('q'): # Quitter
+            break
+        elif key == ord('r'): # Reset 
+            state['current_view'] = img.copy()
+            state['offset_x'], state['offset_y'] = 0, 0
+            state['width'], state['height'] = img.shape
+            state['current_mode'] = 0
+        elif key == ord('&') or key == ord('1'): # Normal view
+            state['current_mode'] = 0
+            h,w = state['current_view'].shape[:2]
+            state['current_view'] = img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w]
+        elif key == ord('é') or key== ord('2'): # courts-circuits critiques
+            print("piche")
+            create_masked_view(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
+                                                       crit_shorts_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
+                                                       colors[0])
+            state['current_mode'] = 1
         
 
     cv.destroyAllWindows()

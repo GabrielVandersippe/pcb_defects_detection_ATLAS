@@ -9,7 +9,7 @@ bounding_map_without_trim()
 
 def run_check (path, draw = False) :
 
-    ok = False
+    console.print("\n")
 
     img = cv.imread(path)
     ROI = find_ROI(img)
@@ -73,6 +73,16 @@ def run_check (path, draw = False) :
             # Format piste : XYY, X n° du GA, YY n°de piste
 
             nb_wires_off_track = 0
+            nb_crit_shorts_left = 0
+            nb_not_crit_shorts_left = 0
+            nb_crit_shorts_right = 0
+            nb_not_crit_shorts_right = 0
+
+            crit_shorts_mask = np.zeros(img.shape[:2], dtype=np.uint8)
+            non_crit_shorts_mask = np.zeros(img.shape[:2], dtype=np.uint8)
+            crit_endpoints_mask = np.zeros(img.shape[:2], dtype=np.uint8)
+            non_crit_endpoints_mask = np.zeros(img.shape[:2], dtype=np.uint8)
+            pads_mask = np.zeros(img.shape[:2], dtype=np.uint8)
 
             # 2. Vérifier si des fils qui ne se touchent pas sont bien câblés.
             for label,endpoint in endpoints_left.items():
@@ -86,10 +96,10 @@ def run_check (path, draw = False) :
                         endpoint_location = (endpoint_location[0] - 25, endpoint_location[1]) 
                     in_track = (cv.pointPolygonTest(tracks[track_idx], (endpoint_location[0] + ROI[0][0], endpoint_location[1] + ROI[1][1]), measureDist = True) >= -4)
                     if in_track:
-                        cv.circle(cimg, (endpoint_location[0] + ROI[0][0], endpoint_location[1] + ROI[1][1]), 4, (0, 255, 0), 2)
+                        cv.circle(non_crit_endpoints_mask, (endpoint_location[0] + ROI[0][0], endpoint_location[1] + ROI[1][1]), 4, 1, 2)
                     else:
                         nb_wires_off_track += 1
-                        cv.circle(cimg, (endpoint_location[0] + ROI[0][0], endpoint_location[1] + ROI[1][1]), 6, (255, 0, 0), 3)
+                        cv.circle(crit_endpoints_mask, (endpoint_location[0] + ROI[0][0], endpoint_location[1] + ROI[1][1]), 6, 1, 3)
                 
                 else:
                     # Coloriage des fils court-circuités.
@@ -98,8 +108,13 @@ def run_check (path, draw = False) :
                     while i < len(wire_idx) and wires[wire_idx[i]][1] == track_idx : 
                         i+=1
                     # Mettre le fil en rouge, ou en orange s'ils arrivent tous sur une même piste.
-                    color = [0, 128*(i==len(wire_idx)), 255]
-                    cimg[ROI[1][1]:ROI[1][0], ROI[0][0]:ROI[0][1]][labels_left == label] = color
+                    if i != len(wire_idx) : 
+                        nb_crit_shorts_left += 1
+                        crit_shorts_mask[ROI[1][1]:ROI[1][0], ROI[0][0]:ROI[0][1]][labels_left == label] = 1
+                    else : 
+                        nb_not_crit_shorts_left += 1
+                        non_crit_shorts_mask[ROI[1][1]:ROI[1][0], ROI[0][0]:ROI[0][1]][labels_left == label] = 1
+                    
                     
                 
 
@@ -114,10 +129,10 @@ def run_check (path, draw = False) :
                         endpoint_location = (endpoint_location[0] + 25, endpoint_location[1]) 
                     in_track = (cv.pointPolygonTest(tracks[track_idx], (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), measureDist = True) >=-4)
                     if in_track:
-                        cv.circle(cimg, (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), 4, (0, 255, 0), 2)
+                        cv.circle(non_crit_endpoints_mask, (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), 4, (0, 255, 0), 2)
                     else:
                         nb_wires_off_track += 1
-                        cv.circle(cimg, (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), 6, (255, 0, 0), 3)
+                        cv.circle(crit_endpoints_mask, (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), 6, (255, 0, 0), 3)
 
                 else :
                     # Coloriage des fils court-circuités.
@@ -126,29 +141,27 @@ def run_check (path, draw = False) :
                     while i < len(wire_idx) and wires[wire_idx[i]][1] == track_idx : 
                         i+=1
                     # Mettre le fil en rouge, ou en orange s'ils arrivent tous sur une même piste.
-                    color = [0, 128*(i==len(wire_idx)), 255]
-                    cimg[ROI[3][1]:ROI[3][0], ROI[2][0]:ROI[2][1]][labels_right == label] = color
+                    if i != len(wire_idx) : 
+                        nb_crit_shorts_right += 1 
+                        crit_shorts_mask[ROI[3][1]:ROI[3][0], ROI[2][0]:ROI[2][1]][labels_right == label] = 1
+                    else : 
+                        nb_not_crit_shorts_right += 1
+                        non_crit_shorts_mask[ROI[3][1]:ROI[3][0], ROI[2][0]:ROI[2][1]][labels_right == label] = 1
 
             for track in tracks.values():
-                if len(track)==2 : 
-                    cv.rectangle(cimg,track[0], track[1], (255, 128, 0), 1)
-                elif len(track)>0 :
-                    cv.polylines(cimg,[np.array(track).reshape((-1,1,2))], True, (255, 128, 0), 1)
+                if len(track)>0 :
+                    cv.polylines(pads_mask,[np.array(track).reshape((-1,1,2))], True, 1, 1)
 
-            for short in short_list_left: 
-                cv.circle(cimg, (short[0] + ROI[0][0], short[1] + ROI[1][1]), 4, (0, 255, 0), 2)
-            for short in short_list_right: 
-                cv.circle(cimg, (short[0] + ROI[2][0], short[1] + ROI[3][1]), 4, (0, 255, 0), 2)
+            # for short in short_list_left: 
+            #     cv.circle(cimg, (short[0] + ROI[0][0], short[1] + ROI[1][1]), 4, (0, 255, 0), 2)
+            # for short in short_list_right: 
+            #     cv.circle(cimg, (short[0] + ROI[2][0], short[1] + ROI[3][1]), 4, (0, 255, 0), 2)
 
             print_info("Vérification du câblage effectuée.")
 
-        if ok :
-            print_success("Module correctement cablé")
-        else :
-            
-            afficher_bilan(n_detected, len(short_list_left), len(short_list_right), nb_wires_off_track)
-            magnifying_glass(cimg)
-            # afficher les zones (1/2/3/4) des fils manquants s'il y en a
-            # afficher les zones des fils mal branchés s'il y en a
-            # afficher les zones des fils qui se touchent s'il y en a
-            # afficher des images du cablage
+        afficher_bilan(n_detected, nb_not_crit_shorts_left, nb_not_crit_shorts_right, nb_crit_shorts_left, nb_crit_shorts_right, nb_wires_off_track)
+        magnifying_glass_final_result(cimg,crit_shorts_mask, non_crit_shorts_mask, crit_endpoints_mask, non_crit_endpoints_mask, pads_mask)
+        # afficher les zones (1/2/3/4) des fils manquants s'il y en a
+        # afficher les zones des fils mal branchés s'il y en a
+        # afficher les zones des fils qui se touchent s'il y en a
+        # afficher des images du cablage
