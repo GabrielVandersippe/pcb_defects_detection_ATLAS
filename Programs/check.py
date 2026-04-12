@@ -60,7 +60,9 @@ def run_check (path, draw = False) :
             if len(short_list_right) > 0 : print_error(f"{len(short_list_right)} potentiels courts-circuits à droite.")
             else : print_success("Aucun court-circuit à droite.")
 
-
+        with console.status(f"[bold blue]{"Détection des pistes..."}[/bold blue]", spinner = 'dots'):
+            tracks = find_tracks(path)
+        print_info("Pistes détectées.")
 
         with console.status(f"[bold blue]{"Vérification du câblage pour les fils non court-circuités..."}[/bold blue]", spinner = 'dots'):
             serial_number = extract_serial_number(path)
@@ -70,7 +72,6 @@ def run_check (path, draw = False) :
             # Format pad : XYYY, X n° du GA, YYY n°du pad
             # Format piste : XYY, X n° du GA, YY n°de piste
 
-            tracks = find_tracks(path) # TODO : ajouter la détection des fils dans les bons tracks.
             nb_wires_off_track = 0
 
             # 2. Vérifier si des fils qui ne se touchent pas sont bien câblés.
@@ -82,7 +83,7 @@ def run_check (path, draw = False) :
 
                     # Vérifier si les fils vont bien au bon endroit
                     _, track_idx = wires[wire_idx[0]]
-                    in_track = cv.pointPolygonTest(tracks[track_idx], endpoint_location, measureDist = False)
+                    in_track = (cv.pointPolygonTest(tracks[track_idx], (endpoint_location[0] + ROI[0][0], endpoint_location[1] + ROI[1][1]), measureDist = True) >= -4)
                     if in_track:
                         cv.circle(cimg, (endpoint_location[0] + ROI[0][0], endpoint_location[1] + ROI[1][1]), 4, (0, 255, 0), 2)
                     else:
@@ -101,7 +102,6 @@ def run_check (path, draw = False) :
                     
                 
 
-
             for label, endpoint in endpoints_right.items():
                 (endpoint_location, wire_idx) = endpoint
                 wire_idx = [idx + len(y_left) for idx in wire_idx]
@@ -109,7 +109,7 @@ def run_check (path, draw = False) :
                 if endpoint_location != None:
                     # Vérifier si les fils vont bien au bon endroit
                     _, track_idx = wires[wire_idx[0]]
-                    in_track = cv.pointPolygonTest(tracks[track_idx], endpoint_location, measureDist = False)
+                    in_track = (cv.pointPolygonTest(tracks[track_idx], (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), measureDist = True) >=-4)
                     if in_track:
                         cv.circle(cimg, (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), 4, (0, 255, 0), 2)
                     else:
@@ -126,7 +126,11 @@ def run_check (path, draw = False) :
                     color = [0, 128*(i==len(wire_idx)), 255]
                     cimg[ROI[3][1]:ROI[3][0], ROI[2][0]:ROI[2][1]][labels_right == label] = color
 
-
+            for track in tracks.values():
+                if len(track)==2 : 
+                    cv.rectangle(cimg,track[0], track[1], (255, 128, 0), 1)
+                elif len(track)>0 :
+                    cv.polylines(cimg,[np.array(track).reshape((-1,1,2))], True, (255, 128, 0), 1)
 
             for short in short_list_left: 
                 cv.circle(cimg, (short[0] + ROI[0][0], short[1] + ROI[1][1]), 4, (0, 255, 0), 2)

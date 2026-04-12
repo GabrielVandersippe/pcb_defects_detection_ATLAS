@@ -9,15 +9,15 @@ DONE :
 - Réglé problème de fils disjoints du côté droit
 - Réglé problème de la détection des arches à droite.
 - Réglé problème court-circuits en dehors de la ROI
+- Faire un mapping entre les fils et les pistes
+- Donner la position de toutes les pistes
+- Faire le check de position des fils
 
 
 
 TODO : 
 
 - Régler le problème des fils trop courts des deux côtés (pour deux fils / côté)
-- Donner la position de toutes les pistes
-- Faire un mapping entre les fils et les pistes
-- Faire le check de position des fils
 - Hyperparamètres qui permettent de régler l'agressivité du filtrage pour avoir plus/moins de faux négatifs.
 - Faire une intégration CLI qui permette d'utiliser facilement les fonctions, de les régler pour obtenir plus/moins d'informations.
 - Réglage Daltonien ?

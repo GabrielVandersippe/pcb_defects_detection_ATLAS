@@ -15,7 +15,7 @@ def find_tracks(path, draw = False):
     targets_ref = find_targets_wired(ref_bonded)
 
     H1 = cv.findHomography(targets_ref, targets_dst, cv.RANSAC)[0]
-    H2 = compute_homography_center(cv.imread(ref_unbonded),cv.imread(ref_bonded))
+    H2 = compute_homography_center(cv.imread(ref_unbonded),cv.imread(ref_bonded)) # TODO : ne pas le recalculer à chaque fois
 
     tracks = {}
     if draw :
@@ -24,15 +24,18 @@ def find_tracks(path, draw = False):
     with open("Programs/REF_TRACKS.json") as f:
         data = json.load(f)
         for track_idx, track in data.items():
+            
+            if len(track) == 2 :
+                x0, y0 = track[0]
+                x1, y1 = track[1]
+                track = np.array([[x0,y0], [x1,y0], [x1,y1], [x0,y1]])
 
             track_bonded = warp_points(track, H2).astype(np.int32)
             track_dst = warp_points(track_bonded, H1).astype(np.int32)
             tracks[int(track_idx[5:])] = track_dst
     
             if draw :
-                if len(track_dst)==2 : 
-                    cv.rectangle(img,track_dst[0], track_dst[1], (0, 255, 0), 3)
-                elif len(track_dst)>0 :
+                if len(track_dst)>0 :
                     cv.polylines(img,[np.array(track_dst).reshape((-1,1,2))], True, (0, 255, 0), 3)
 
     if draw :

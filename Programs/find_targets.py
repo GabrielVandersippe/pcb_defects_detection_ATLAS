@@ -144,7 +144,7 @@ def mires_template_matching(img_input:np.ndarray, draw = False):
 
 
 
-def compute_homography_center(uncabled_img, cabled_img, crop_ratio=0.4):
+def compute_homography_center(uncabled_img, cabled_img, crop_ratio=0.6):
     """
     Calcule une homographie entre images cablees et non cablees par matching de la région centrale
 
@@ -169,25 +169,28 @@ def compute_homography_center(uncabled_img, cabled_img, crop_ratio=0.4):
     uncbld_crop, offset1 = center_crop(uncbld_gray, crop_ratio)
     cbld_crop, offset2 = center_crop(cbld_gray, crop_ratio)
 
-    orb = cv.ORB_create(nfeatures=3000) #Les features que l'on veut trouver dans cette région centrale
+    sift = cv.SIFT_create(nfeatures=3000) #Les features que l'on veut trouver dans cette région centrale
 
-    keypoints1, descriptors1 = orb.detectAndCompute(uncbld_crop, None)
-    keypoints2, descriptors2 = orb.detectAndCompute(cbld_crop, None)
+    keypoints1, descriptors1 = sift.detectAndCompute(uncbld_crop, None)
+    keypoints2, descriptors2 = sift.detectAndCompute(cbld_crop, None)
 
     #On fait matcher ces descriptions
-    matcher = cv.DescriptorMatcher_create(cv.DESCRIPTOR_MATCHER_BRUTEFORCE_HAMMING)
-    matches = matcher.match(descriptors1, descriptors2, None)
+    matcher = cv.BFMatcher()
+    matches = matcher.knnMatch(descriptors1, descriptors2, k=2)
 
     # on  conserve les bons matchs
-    matches = sorted(matches, key=lambda x: x.distance)
-    good_matches = matches[: max(50, len(matches)//3) ]  # on garde le meilleur tiers, avec au moins 50
+    good = []
+    for m,n in matches:
+        if m.distance < 0.7*n.distance:
+            good.append(m)
 
-    if len(good_matches) < 10:
+
+    if len(good) < 10:
         raise ValueError("Trop peu de correspondances pour calculer l'homographie.")
 
     #on fait les correspondances
-    pts1 = np.float32([keypoints1[m.queryIdx].pt for m in good_matches])
-    pts2 = np.float32([keypoints2[m.trainIdx].pt for m in good_matches])
+    pts1 = np.float32([keypoints1[m.queryIdx].pt for m in good])
+    pts2 = np.float32([keypoints2[m.trainIdx].pt for m in good])
 
     # Et pour finir on remet ces coordonnees dans l'image entiere non croppee
     pts1[:,0] += offset1[0]
