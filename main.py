@@ -20,7 +20,8 @@ def main():
     args = parser.parse_args()
 
     if args.command == "check":
-        run_check(args.input)
+        path = "ModulePictures/" + args.input + ".jpg"
+        run_check(path)
     elif args.command == "show":
         img = cv.imread("result.jpg")
         afficher(img)
