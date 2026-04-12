@@ -129,7 +129,7 @@ def run_check (path, draw = False) :
                         endpoint_location = (endpoint_location[0] + 25, endpoint_location[1]) 
                     in_track = (cv.pointPolygonTest(tracks[track_idx], (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), measureDist = True) >=-4)
                     if in_track:
-                        cv.circle(non_crit_endpoints_mask, (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), 4, (0, 255, 0), 2)
+                        cv.circle(non_crit_endpoints_mask, (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), 4, 1, 2)
                     else:
                         nb_wires_off_track += 1
                         cv.circle(crit_endpoints_mask, (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), 6, (255, 0, 0), 3)
@@ -161,7 +161,3 @@ def run_check (path, draw = False) :
 
         afficher_bilan(n_detected, nb_not_crit_shorts_left, nb_not_crit_shorts_right, nb_crit_shorts_left, nb_crit_shorts_right, nb_wires_off_track)
         magnifying_glass_final_result(cimg,crit_shorts_mask, non_crit_shorts_mask, crit_endpoints_mask, non_crit_endpoints_mask, pads_mask)
-        # afficher les zones (1/2/3/4) des fils manquants s'il y en a
-        # afficher les zones des fils mal branchés s'il y en a
-        # afficher les zones des fils qui se touchent s'il y en a
-        # afficher des images du cablage

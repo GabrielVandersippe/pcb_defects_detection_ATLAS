@@ -170,11 +170,30 @@ def magnifying_glass_final_result(src, crit_shorts_mask, non_crit_shorts_mask, c
             h,w = state['current_view'].shape[:2]
             state['current_view'] = img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w]
         elif key == ord('é') or key== ord('2'): # courts-circuits critiques
-            print("piche")
-            create_masked_view(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
+            state['current_view'] = create_masked_view(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
                                                        crit_shorts_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
                                                        colors[0])
             state['current_mode'] = 1
+        elif key == ord('"') or key== ord('3'): # courts-circuits non critiques
+            state['current_view'] = create_masked_view(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
+                                                       non_crit_shorts_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
+                                                       colors[0])
+            state['current_mode'] = 2
+        elif key == ord("'") or key== ord('4'): # points d'arrivée mal câblés
+            state['current_view'] = create_masked_view(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
+                                                       crit_endpoints_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
+                                                       colors[0])
+            state['current_mode'] = 3
+        elif key == ord('(') or key== ord('5'): # tous les points d'arrivée
+            state['current_view'] = create_masked_view(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
+                                                       non_crit_endpoints_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
+                                                       colors[0])
+            state['current_mode'] = 4
+        elif key == ord('-') or key== ord('6'): # tous les pads
+            state['current_view'] = create_masked_view(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
+                                                       pads_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
+                                                       colors[0])
+            state['current_mode'] = 5
         
 
     cv.destroyAllWindows()
