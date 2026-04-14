@@ -23,3 +23,22 @@ TODO :
 - Réglage Daltonien ?
 - Documentation du code
 - Rassembler le code dans un fichier .zip que l'on peut envoyer ou qqc comme ça
+
+v1.1 (changements rapides pour envoyer en fin de la semaine) :
+- réglage de l'input : seulement le nom du module / plusieurs possibilité qui fonctionnent (avec et sans .jpg, etc.)
+- fichier config avec : répertoire de travail, suffixe des fichiers after et before bonding, langue anglais ou français
+- organisation des dossiers : code principal qui ne change pas / référence = IREF + images de référence / images à tester / config
+- possibilité de rentrer le IREF voulu dans la commande (--iref)
+- garder les proportions de l'image originelle quand on affiche le résultat pour la première fois 
+- force du zoom de la loupe configurable (via le fichier config)
+
+- investiguer le fait que ça ne fonctionne pas pour Julien quand la loupe n'est pas la fenêtre active ???
+
+v2.0 (changements plus longs) :
+- vérifier les pads (important pour vérifier les IREF)
+- changer la logique pour passer de numéro de fil à numéro de pad ?
+- vérifier les IREF et afficher dans le terminal
+- donner plus de détail (numéro de pad des fils défectueux)
+- effectuer les vérifications même s'il manque des câbles (et indiquer le numéro de pad des fils manquants)
+- réglage de l'aggressivité du programme : paramètres réglables ou plusieurs presets
+- tester le code sur un plus grand jeu de données
