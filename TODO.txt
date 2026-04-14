@@ -35,6 +35,7 @@ v1.1 (changements rapides pour envoyer en fin de la semaine) :
 - investiguer le fait que ça ne fonctionne pas pour Julien quand la loupe n'est pas la fenêtre active ???
 
 v2.0 (changements plus longs) :
+- mapper les pads (fonction python qui génère automatiquement pour ne pas avoir à faire 784 rectangles à la main)
 - vérifier les pads (important pour vérifier les IREF)
 - changer la logique pour passer de numéro de fil à numéro de pad ?
 - vérifier les IREF et afficher dans le terminal
