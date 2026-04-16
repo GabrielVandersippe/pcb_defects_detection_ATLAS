@@ -3,7 +3,7 @@ import numpy as np
 from Programs.utils import *
 from Programs.data import *
 
-
+import json
 
 
 def unique_centers(centers, idx, nbmires, min_dist = 30): #distance minimale entre deux centres
@@ -47,7 +47,7 @@ def mires_template_matching(img_input:np.ndarray, draw = False):
     """
     assert img_input is not None, "Le fichien n'a pas pu être lu, vérifier avec os.path.exists()" #Vérifier si l'image existe
 
-    template = cv.imread("ModulePictures/Template_Thresh_cropped.png", cv.IMREAD_GRAYSCALE)
+    template = cv.imread("Reference/Template_Thresh_cropped.png", cv.IMREAD_GRAYSCALE)
 
     # Preprocess
     gray = cv.cvtColor(img_input, cv.COLOR_BGR2GRAY)
@@ -232,8 +232,11 @@ def find_targets_wired(path:str, draw=False):
 
     Returns : np.ndarray : array of centers
     """
+    with open("Configuration/config.json", "r") as f:
+            config = json.load(f)
+
     cabled_img = cv.imread(path)
-    uncabled_img = cv.imread(trouver_la_paire(path, "ModulePictures"))
+    uncabled_img = cv.imread(trouver_la_paire(path, config["pictures_folder"]))
 
     H = compute_homography_center(uncabled_img, cabled_img)
 

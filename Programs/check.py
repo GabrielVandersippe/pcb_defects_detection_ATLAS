@@ -7,7 +7,7 @@ import json
 
 bounding_map_without_trim()
 
-def run_check (path, draw = False) :
+def run_check (path, iref = None, draw = False) :
     """
     Runs the checks for a given image.
 
@@ -15,6 +15,10 @@ def run_check (path, draw = False) :
     path - str: path of the image to analyse
     draw - bool: whether the funciton should show additional information regarding the steps of the algorithm
     """
+
+    with open("Configuration/config.json", "r") as f:
+            config = json.load(f)
+    lang = config["language"]
 
     console.print("\n")
 
@@ -37,44 +41,89 @@ def run_check (path, draw = False) :
 
     # 1. Vérifier si tous les fils sont présents : 
     with console.status(f"[bold blue]{"Décompte des fils..."}[/bold blue]", spinner = 'dots'):
-        with open("ModulePictures/iref_trim_per_module_v2.json", "r") as f:
+        with open("Reference/iref_trim_per_module_v2.json", "r") as f:
             data = json.load(f)
-            n_expected = expected_wire_number(extract_serial_number(path),data)
+            n_expected = expected_wire_number(extract_serial_number(path),data, iref_=iref)
             n_detected = len(y_left) + len(y_right)
 
-    print_info("Décompte des fils effectué.")
+    if lang == "en" :
+        print_info("Wire count completed.")
+    else :
+        print_info("Décompte des fils effectué.")
 
     if n_expected != n_detected: 
-        print_error(f"Nombre de fils incorrect : {n_detected}/{n_expected}")
+        if lang == "en" :
+            print_error(f"Incorrect number of wires : {n_detected}/{n_expected}")
+        else :
+            print_error(f"Nombre de fils incorrect : {n_detected}/{n_expected}")
         # TODO : dire où il manque des fils
         # TODO : commande pour forcer à poursuivre les calculs
 
 
 
     else :
-        print_success(f"Bon nombre de fils : {n_detected}/{n_expected}") 
-        with console.status(f"[bold blue]{"Recherche des courts-circuits..."}[/bold blue]", spinner = 'dots'):
+        if lang == "en" :
+            print_success(f"Correct number of wires : {n_detected}/{n_expected}")
+        else :
+            print_success(f"Bon nombre de fils : {n_detected}/{n_expected}")
+        
+        running_message = "Recherche des courts-circuits..."
+        if lang == "en" :
+            running_message = "Short circuit detection..."
+        
+        with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
 
 
             short_list_left, endpoints_left, labels_left = find_shorts(lmask, 'left', y_left_ROI, x_left_ROI, draw)
             short_list_right, endpoints_right, labels_right = find_shorts(rmask, 'right', y_right_ROI, x_right_ROI, draw)
 
-            print_info("Décompte des courts-circuits effectué.")
+            if lang == "en" :
+                print_info("Short circuit count completed.")
+            else :
+                print_info("Décompte des courts-circuits effectué.")
 
-            if len(short_list_left) > 0 : print_error(f"{len(short_list_left)} potentiels courts-circuits à gauche.")
-            else : print_success("Aucun court-circuit à gauche.")
+            if len(short_list_left) > 0 :
+                if lang == "en" :
+                    print_error(f"{len(short_list_left)} potential short circuits on the left.")
+                else : 
+                    print_error(f"{len(short_list_left)} potentiels courts-circuits à gauche.")
+            else : 
+                if lang == "en" :
+                    print_success("No short circuit on the left.")
+                else : 
+                    print_success("Aucun court-circuit à gauche.")
 
-            if len(short_list_right) > 0 : print_error(f"{len(short_list_right)} potentiels courts-circuits à droite.")
-            else : print_success("Aucun court-circuit à droite.")
+            if len(short_list_right) > 0 : 
+                if lang == "en" :
+                    print_error(f"{len(short_list_right)} potential short circuits on the right.")
+                else :
+                    print_error(f"{len(short_list_right)} potentiels courts-circuits à droite.")
+            else : 
+                if lang == "en" :
+                    print_success("No short circuit on the right.")
+                else : 
+                    print_success("Aucun court-circuit à droite.")
 
-        with console.status(f"[bold blue]{"Détection des pistes..."}[/bold blue]", spinner = 'dots'):
+        running_message = "Détection des pistes..."
+        if lang == "en" :
+            running_message = "Track detection..."
+        
+        with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
             tracks = find_tracks(path)
-        print_info("Pistes détectées.")
+        if lang == "en" :
+            print_info("Tracks detected.")
+        else : 
+            print_info("Pistes détectées.")
 
-        with console.status(f"[bold blue]{"Vérification du câblage pour les fils non court-circuités..."}[/bold blue]", spinner = 'dots'):
+        running_message = "Vérification du câblage pour les fils non court-circuités..."
+        if lang == "en" :
+            running_message = "Checking the wiring for wires that are not short-circuited..."
+        
+        with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
             serial_number = extract_serial_number(path)
-            trim_nb = iref_trim(serial_number, data)
-            bounding_map_trim(trim_nb)
+            if iref == None :
+                iref = iref_trim(serial_number, data)
+            bounding_map_trim(iref)
             wires = bounding_map_pads_pistes() # wires[i] donne le (pad, piste) associés au fil i. 
             # Format pad : XYYY, X n° du GA, YYY n°du pad
             # Format piste : XYY, X n° du GA, YY n°de piste
@@ -164,7 +213,10 @@ def run_check (path, draw = False) :
             # for short in short_list_right: 
             #     cv.circle(cimg, (short[0] + ROI[2][0], short[1] + ROI[3][1]), 4, (0, 255, 0), 2)
 
-            print_info("Vérification du câblage effectuée.")
+            if lang == "en" :
+                print_info("Wiring check completed.")
+            else : 
+                print_info("Vérification du câblage effectuée.")
 
         afficher_bilan(n_detected, nb_not_crit_shorts_left, nb_not_crit_shorts_right, nb_crit_shorts_left, nb_crit_shorts_right, nb_wires_off_track)
         magnifying_glass_final_result(cimg,crit_shorts_mask, non_crit_shorts_mask, crit_endpoints_mask, non_crit_endpoints_mask, pads_mask)
