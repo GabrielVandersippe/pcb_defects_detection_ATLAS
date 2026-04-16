@@ -16,6 +16,9 @@ def run_check (path, draw = False) :
     draw - bool: whether the funciton should show additional information regarding the steps of the algorithm
     """
 
+    with open("Configuration/config.json", "r") as f:
+            config = json.load(f)
+
     console.print("\n")
 
     img = cv.imread(path)
@@ -42,6 +45,8 @@ def run_check (path, draw = False) :
             n_expected = expected_wire_number(extract_serial_number(path),data)
             n_detected = len(y_left) + len(y_right)
 
+    if config["language"] == "en" :
+        print_info("Thread count completed.")
     print_info("Décompte des fils effectué.")
 
     if n_expected != n_detected: 

@@ -24,7 +24,13 @@ def main():
     args = parser.parse_args()
 
     if args.command == "check":
-        path = config["pictures_folder"] + "/" + args.input + config["pictures_format"]
+        path = args.input
+        if not(config["pictures_folder"] in path) :
+            path = config["pictures_folder"] + "/" + path
+        if not(config["suffix_after_bonding"] in path) :
+            path = path + "_" + config["suffix_after_bonding"]
+        if not(config["pictures_format"] in path) :
+            path = path + config["pictures_format"]
         run_check(path)
     elif args.command == "show":
         img = cv.imread("result.jpg")
