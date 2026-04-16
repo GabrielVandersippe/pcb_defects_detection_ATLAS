@@ -21,6 +21,11 @@ current_viewmode = 0
 
 
 def mouse_callback(event, x, y, flags, param):
+
+    with open("Configuration/config.json", "r") as f:
+        config = json.load(f)
+    lang = config["language"]
+
     global ix,iy,drawing, patch_size, zoom_scale
     
     state = param
@@ -52,7 +57,10 @@ def mouse_callback(event, x, y, flags, param):
         cv.putText(zoom_view, coord_text, (text_x, text_y), font, font_scale, (0, 255, 0), thickness, cv.LINE_AA)
         #------------------------------------
         
-        cv.imshow("Loupe", zoom_view)
+        if lang == "en" :
+            cv.imshow("Magnifying glass", zoom_view)
+        else :
+            cv.imshow("Loupe", zoom_view)
     
 
     if event == cv.EVENT_LBUTTONDOWN:
@@ -159,8 +167,8 @@ def magnifying_glass_final_result(src, crit_shorts_mask, non_crit_shorts_mask, c
     # 6 pour la vue avec tout
 
     if lang == "en" :
-        cv.namedWindow("Main view", cv.WINDOW_NORMAL)
-        cv.setMouseCallback("Main view", mouse_callback, param=state)
+        cv.namedWindow("Main View", cv.WINDOW_NORMAL)
+        cv.setMouseCallback("Main View", mouse_callback, param=state)
 
         console.rule("[bold blue]MAGNIFYING GLASS")
         console.print("")
