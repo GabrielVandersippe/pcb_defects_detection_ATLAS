@@ -5,6 +5,7 @@ from Programs.utils import *
 from Programs.data import *
 from Programs.find_targets import *
 
+import json
 
 def draw_area(img, pt1, pt2):
     cv.rectangle(img, pt1, pt2, (0, 255, 0), 20)
@@ -126,6 +127,10 @@ def create_view_all_masks(img, masks, colors):
 
 def magnifying_glass_final_result(src, crit_shorts_mask, non_crit_shorts_mask, crit_endpoints_mask, non_crit_endpoints_mask, pads_mask):
 
+    with open("Configuration/config.json", "r") as f:
+        config = json.load(f)
+    lang = config["language"]
+
     colors = [[0,0,255],    #red for crit shorts
               [0,128,255],  #orange for non crit, etc
               [0,255,0],    
@@ -153,27 +158,50 @@ def magnifying_glass_final_result(src, crit_shorts_mask, non_crit_shorts_mask, c
     # 5 pour tous points d'arrivée + pads
     # 6 pour la vue avec tout
 
-    cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
-    cv.setMouseCallback("Vue Principale", mouse_callback, param=state)
+    if lang == "en" :
+        cv.namedWindow("Main view", cv.WINDOW_NORMAL)
+        cv.setMouseCallback("Main view", mouse_callback, param=state)
 
-    console.rule("[bold blue]LOUPE")
-    console.print("")
-    console.print("[blue]Passer la souris sur la vue principale pour afficher la version zoomée.")
-    console.print("[blue][bold]Glisser-déposer[/bold] pour zoomer.")
-    console.print("[blue]Appuyer sur [bold]'r'[/bold] pour réinitialiser la vue.")
-    console.print("[blue]Appuyer sur [bold]'q'[/bold] pour quitter.")
-    console.print("[red]***")
-    console.print("[blue]Appuyer sur [bold]'1'[/bold] pour la vue [bold white]non modifiée[/bold white].")
-    console.print("[blue]Appuyer sur [bold]'2'[/bold] pour la vue avec les [bold red]courts-circuits critiques[/bold red].")
-    console.print("[blue]Appuyer sur [bold]'3'[/bold] pour la vue avec les [bold dark_orange]courts-circuits non critiques[/bold dark_orange].")
-    console.print("[blue]Appuyer sur [bold]'4'[/bold] pour la vue avec les [bold dark_blue]terminaisons des fils mal câblés[/bold dark_blue].")
-    console.print("[blue]Appuyer sur [bold]'5'[/bold] pour la vue avec les [bold green]terminaisons de tous les fils[/bold green].")
-    console.print("[blue]Appuyer sur [bold]'6'[/bold] pour la vue avec les [bold cyan]terminaisons de tous les fils[/bold cyan].")
+        console.rule("[bold blue]MAGNIFYING GLASS")
+        console.print("")
+        console.print("[blue]Hover your mouse over the main view to display the zoomed-in version.")
+        console.print("[blue][bold]Drag and drop[/bold] to zoom.")
+        console.print("[blue]Press [bold]'r'[/bold] to reset the view.")
+        console.print("[blue]Press [bold]'q'[/bold] to quit.")
+        console.print("[red]***")
+        console.print("[blue]Press [bold]'1'[/bold] for the [bold white]unmodified[/bold white] view.")
+        console.print("[blue]Press [bold]'2'[/bold] for the view showing the [bold red]critical short circuits[/bold red].")
+        console.print("[blue]Press [bold]'3'[/bold] for the view showing the [bold dark_orange]non-critical short circuits[/bold dark_orange].")
+        console.print("[blue]Press [bold]'4'[/bold] for the view showing the [bold dark_blue]incorrectly wired wire ends[/bold dark_blue].")
+        console.print("[blue]Press [bold]'5'[/bold] for the wiew showing the [bold green]ends of all the wires[/bold green].")
+        console.print("[blue]Press [bold]'6'[/bold] for the view showing the [bold cyan]tracks[/bold cyan].")
     
-    console.print("\n[blue]Appuyer sur [bold]'0'[/bold] pour la vue avec [bold magenta]toutes les modifications[/bold magenta].")
+        console.print("\n[blue]Press [bold]'0'[/bold] for the view showing [bold magenta]all the changes[/bold magenta].")
+    else :
+        cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
+        cv.setMouseCallback("Vue Principale", mouse_callback, param=state)
+
+        console.rule("[bold blue]LOUPE")
+        console.print("")
+        console.print("[blue]Passer la souris sur la vue principale pour afficher la version zoomée.")
+        console.print("[blue][bold]Glisser-déposer[/bold] pour zoomer.")
+        console.print("[blue]Appuyer sur [bold]'r'[/bold] pour réinitialiser la vue.")
+        console.print("[blue]Appuyer sur [bold]'q'[/bold] pour quitter.")
+        console.print("[red]***")
+        console.print("[blue]Appuyer sur [bold]'1'[/bold] pour la vue [bold white]non modifiée[/bold white].")
+        console.print("[blue]Appuyer sur [bold]'2'[/bold] pour la vue avec les [bold red]courts-circuits critiques[/bold red].")
+        console.print("[blue]Appuyer sur [bold]'3'[/bold] pour la vue avec les [bold dark_orange]courts-circuits non critiques[/bold dark_orange].")
+        console.print("[blue]Appuyer sur [bold]'4'[/bold] pour la vue avec les [bold dark_blue]terminaisons des fils mal câblés[/bold dark_blue].")
+        console.print("[blue]Appuyer sur [bold]'5'[/bold] pour la vue avec les [bold green]terminaisons de tous les fils[/bold green].")
+        console.print("[blue]Appuyer sur [bold]'6'[/bold] pour la vue avec les [bold cyan]pistes[/bold cyan].")
+    
+        console.print("\n[blue]Appuyer sur [bold]'0'[/bold] pour la vue avec [bold magenta]toutes les modifications[/bold magenta].")
 
     while True:
-        cv.imshow("Vue Principale", state['current_view'])
+        if lang == "en" :
+            cv.imshow("Main View", state['current_view'])
+        else :
+            cv.imshow("Vue Principale", state['current_view'])
         key = cv.waitKey(1) & 0xFF 
         
         if key == ord('q'): # Quitter

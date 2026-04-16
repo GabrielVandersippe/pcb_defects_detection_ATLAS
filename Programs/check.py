@@ -18,6 +18,7 @@ def run_check (path, draw = False) :
 
     with open("Configuration/config.json", "r") as f:
             config = json.load(f)
+    lang = config["language"]
 
     console.print("\n")
 
@@ -45,13 +46,13 @@ def run_check (path, draw = False) :
             n_expected = expected_wire_number(extract_serial_number(path),data)
             n_detected = len(y_left) + len(y_right)
 
-    if config["language"] == "en" :
+    if lang == "en" :
         print_info("Wire count completed.")
     else :
         print_info("Décompte des fils effectué.")
 
     if n_expected != n_detected: 
-        if config["language"] == "en" :
+        if lang == "en" :
             print_error(f"Incorrect number of wires : {n_detected}/{n_expected}")
         else :
             print_error(f"Nombre de fils incorrect : {n_detected}/{n_expected}")
@@ -61,13 +62,13 @@ def run_check (path, draw = False) :
 
 
     else :
-        if config["language"] == "en" :
+        if lang == "en" :
             print_success(f"Correct number of wires : {n_detected}/{n_expected}")
         else :
             print_success(f"Bon nombre de fils : {n_detected}/{n_expected}")
         
         running_message = "Recherche des courts-circuits..."
-        if config["language"] == "en" :
+        if lang == "en" :
             running_message = "Short circuit detection..."
         
         with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
@@ -76,47 +77,47 @@ def run_check (path, draw = False) :
             short_list_left, endpoints_left, labels_left = find_shorts(lmask, 'left', y_left_ROI, x_left_ROI, draw)
             short_list_right, endpoints_right, labels_right = find_shorts(rmask, 'right', y_right_ROI, x_right_ROI, draw)
 
-            if config["language"] == "en" :
+            if lang == "en" :
                 print_info("Short circuit count completed.")
             else :
                 print_info("Décompte des courts-circuits effectué.")
 
             if len(short_list_left) > 0 :
-                if config["language"] == "en" :
+                if lang == "en" :
                     print_error(f"{len(short_list_left)} potential short circuits on the left.")
                 else : 
                     print_error(f"{len(short_list_left)} potentiels courts-circuits à gauche.")
             else : 
-                if config["language"] == "en" :
+                if lang == "en" :
                     print_success("No short circuit on the left.")
                 else : 
                     print_success("Aucun court-circuit à gauche.")
 
             if len(short_list_right) > 0 : 
-                if config["language"] == "en" :
-                    print_error(f"{len(short_list_left)} potential short circuits on the right.")
+                if lang == "en" :
+                    print_error(f"{len(short_list_right)} potential short circuits on the right.")
                 else :
                     print_error(f"{len(short_list_right)} potentiels courts-circuits à droite.")
             else : 
-                if config["language"] == "en" :
+                if lang == "en" :
                     print_success("No short circuit on the right.")
                 else : 
                     print_success("Aucun court-circuit à droite.")
 
-        running_message = "Recherche des courts-circuits..."
-        if config["language"] == "en" :
-            running_message = ""
+        running_message = "Détection des pistes..."
+        if lang == "en" :
+            running_message = "Track detection..."
         
         with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
             tracks = find_tracks(path)
-        if config["language"] == "en" :
-            print_info("")
+        if lang == "en" :
+            print_info("Tracks detected.")
         else : 
             print_info("Pistes détectées.")
 
-        running_message = "Recherche des courts-circuits..."
-        if config["language"] == "en" :
-            running_message = ""
+        running_message = "Vérification du câblage pour les fils non court-circuités..."
+        if lang == "en" :
+            running_message = "Checking the wiring for wires that are not short-circuited..."
         
         with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
             serial_number = extract_serial_number(path)
@@ -211,8 +212,8 @@ def run_check (path, draw = False) :
             # for short in short_list_right: 
             #     cv.circle(cimg, (short[0] + ROI[2][0], short[1] + ROI[3][1]), 4, (0, 255, 0), 2)
 
-            if config["language"] == "en" :
-                print_info("")
+            if lang == "en" :
+                print_info("Wiring check completed.")
             else : 
                 print_info("Vérification du câblage effectuée.")
 
