@@ -3,6 +3,8 @@ import os
 import cv2 as cv
 import matplotlib.pyplot as plt
 
+import json
+
 ## Fonction utile pour normaliser un vecteur
 def normalize(v):
     norm = np.linalg.norm(v)
@@ -23,25 +25,30 @@ def trouver_la_paire(fichier:str, dossier:str) -> str :
     Returns : str : path to the matching file.
     """
 
+    with open("Configuration/config.json", "r") as f:
+            config = json.load(f)
+
     bname=os.path.basename(fichier)
+    after_bonding = config["suffix_after_bonding"]
+    before_bounding = config["suffix_before_bonding"]
 
     if "Ref_img" in bname :
         if "unbonded" in bname:
-            return os.path.join(dossier, "Ref_img_bonded.jpg")
+            return os.path.join("Reference", "Ref_img_bonded.jpg")
         else : 
-            return os.path.join(dossier, "Ref_img_unbonded.jpg")
+            return os.path.join("Reference", "Ref_img_unbonded.jpg")
 
-    elif "After" in bname:
-        name=bname[:bname.find("After")]
+    elif after_bonding in bname:
+        name=bname[:bname.find(after_bonding)]
         for f in os.listdir(dossier):
-            if "Reception" in os.path.basename(f):
-                if os.path.basename(f)[:os.path.basename(f).find("Reception")]==name:
+            if before_bounding in os.path.basename(f):
+                if os.path.basename(f)[:os.path.basename(f).find(before_bounding)]==name:
                     return os.path.join(dossier, f)
-    elif "Reception" in bname:
-        name=bname[:bname.find("Reception")]
+    elif before_bounding in bname:
+        name=bname[:bname.find(before_bounding)]
         for f in os.listdir(dossier):
-            if "After" in os.path.basename(f):
-                if os.path.basename(f)[:os.path.basename(f).find("After")]==name:
+            if after_bonding in os.path.basename(f):
+                if os.path.basename(f)[:os.path.basename(f).find(after_bonding)]==name:
                     return os.path.join(dossier, f)
     return "Pas de paire"
 

@@ -17,8 +17,8 @@ def find_tracks(path, draw = False):
     Returns:
     tracks - list of list of points: the positions of each track on the input image
     """
-    ref_unbonded = "ModulePictures/Ref_img_unbonded.jpg"
-    ref_bonded = "ModulePictures/Ref_img_bonded.jpg"
+    ref_unbonded = "Reference/Ref_img_unbonded.jpg"
+    ref_bonded = "Reference/Ref_img_bonded.jpg"
 
     targets_dst = find_targets_wired(path)
     targets_ref = find_targets_wired(ref_bonded)
