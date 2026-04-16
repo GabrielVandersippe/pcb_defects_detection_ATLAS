@@ -7,7 +7,7 @@ import json
 
 bounding_map_without_trim()
 
-def run_check (path, draw = False) :
+def run_check (path, iref = None, draw = False) :
     """
     Runs the checks for a given image.
 
@@ -43,7 +43,7 @@ def run_check (path, draw = False) :
     with console.status(f"[bold blue]{"Décompte des fils..."}[/bold blue]", spinner = 'dots'):
         with open("Reference/iref_trim_per_module_v2.json", "r") as f:
             data = json.load(f)
-            n_expected = expected_wire_number(extract_serial_number(path),data)
+            n_expected = expected_wire_number(extract_serial_number(path),data, iref_=iref)
             n_detected = len(y_left) + len(y_right)
 
     if lang == "en" :
@@ -121,8 +121,9 @@ def run_check (path, draw = False) :
         
         with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
             serial_number = extract_serial_number(path)
-            trim_nb = iref_trim(serial_number, data)
-            bounding_map_trim(trim_nb)
+            if iref == None :
+                iref = iref_trim(serial_number, data)
+            bounding_map_trim(iref)
             wires = bounding_map_pads_pistes() # wires[i] donne le (pad, piste) associés au fil i. 
             # Format pad : XYYY, X n° du GA, YYY n°du pad
             # Format piste : XYY, X n° du GA, YY n°de piste

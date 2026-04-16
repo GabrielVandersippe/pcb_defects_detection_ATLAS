@@ -43,7 +43,7 @@ def iref_trim (serial_number, data) :
     return (iref['IREF_TRIM_1'], iref['IREF_TRIM_2'], iref['IREF_TRIM_3'], iref['IREF_TRIM_4'])
 
 
-def expected_wire_number (serial_number, data) :
+def expected_wire_number (serial_number, data, iref_ = None) :
     """Calculates the theoretical number of wires of a module
 
     Arguments :
@@ -54,9 +54,10 @@ def expected_wire_number (serial_number, data) :
 
     Returns : int
     """
-    iref = iref_trim(serial_number, data)
+    if iref_ == None :
+        iref_ = iref_trim(serial_number, data)
     nb_wire_per_trim = [4, 3, 3, 2, 3, 2, 2, 1, 3, 2, 2, 1, 2, 1, 1, 0] # number of wires expected depending on iref
-    return (693 + nb_wire_per_trim[iref[0]] + nb_wire_per_trim[iref[1]] + nb_wire_per_trim[iref[2]] + nb_wire_per_trim[iref[3]]) # 693 wires independant of iref + number of iref wires
+    return (693 + nb_wire_per_trim[iref_[0]] + nb_wire_per_trim[iref_[1]] + nb_wire_per_trim[iref_[2]] + nb_wire_per_trim[iref_[3]]) # 693 wires independant of iref + number of iref wires
 
 
 # Counting the real number of wires
