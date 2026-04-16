@@ -37,7 +37,7 @@ def run_check (path, draw = False) :
 
     # 1. Vérifier si tous les fils sont présents : 
     with console.status(f"[bold blue]{"Décompte des fils..."}[/bold blue]", spinner = 'dots'):
-        with open("ModulePictures/iref_trim_per_module_v2.json", "r") as f:
+        with open("Reference/iref_trim_per_module_v2.json", "r") as f:
             data = json.load(f)
             n_expected = expected_wire_number(extract_serial_number(path),data)
             n_detected = len(y_left) + len(y_right)

@@ -9,7 +9,7 @@ from Programs.count import expected_wire_number, extract_serial_number, wire_pos
 
 # open the json with the iref for each module
 
-# with open("ModulePictures/iref_trim_per_module_v2.json", "r") as f:
+# with open("Reference/iref_trim_per_module_v2.json", "r") as f:
 #     data = json.load(f)
 
 # Utils functions for analyzing pixels in general
