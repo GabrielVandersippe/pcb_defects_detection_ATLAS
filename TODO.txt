@@ -29,8 +29,9 @@ v1.1 (changements rapides pour envoyer en fin de la semaine) :
 - fichier config avec : répertoire de travail, suffixe des fichiers after et before bonding, langue anglais ou français
 - organisation des dossiers : code principal qui ne change pas / référence = IREF + images de référence / images à tester / config
 - possibilité de rentrer le IREF voulu dans la commande (--iref)
-- garder les proportions de l'image originelle quand on affiche le résultat pour la première fois 
 - force du zoom de la loupe configurable (via le fichier config)
+- garder les proportions de l'image originelle quand on affiche le résultat pour la première fois 
+
 
 - investiguer le fait que ça ne fonctionne pas pour Julien quand la loupe n'est pas la fenêtre active ???
 

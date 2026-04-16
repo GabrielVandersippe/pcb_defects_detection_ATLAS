@@ -7,23 +7,22 @@ from Programs.find_targets import *
 
 import json
 
+with open("Configuration/config.json", "r") as f:
+        config = json.load(f)
+
+drawing = False # true if mouse is pressed
+ix,iy = -1,-1
+patch_size=int(400/config["zoom"]) # 100 by default
+zoom_scale=config["zoom"] # 4 by default
+current_viewmode = 0 
+
 def draw_area(img, pt1, pt2):
     cv.rectangle(img, pt1, pt2, (0, 255, 0), 20)
     plt.imshow(img)
     plt.show()
 
-
-drawing = False
-ix,iy = -1,-1
-patch_size=100
-zoom_scale=4
-current_viewmode = 0 
-
-
 def mouse_callback(event, x, y, flags, param):
 
-    with open("Configuration/config.json", "r") as f:
-        config = json.load(f)
     lang = config["language"]
 
     global ix,iy,drawing, patch_size, zoom_scale
@@ -135,8 +134,6 @@ def create_view_all_masks(img, masks, colors):
 
 def magnifying_glass_final_result(src, crit_shorts_mask, non_crit_shorts_mask, crit_endpoints_mask, non_crit_endpoints_mask, pads_mask):
 
-    with open("Configuration/config.json", "r") as f:
-        config = json.load(f)
     lang = config["language"]
 
     colors = [[0,0,255],    #red for crit shorts
@@ -276,14 +273,9 @@ def magnifying_glass_final_result(src, crit_shorts_mask, non_crit_shorts_mask, c
 
     cv.destroyAllWindows()
 
-
 # ----------------------------------
 # Util to compute reference points for a given image
 # ---------------------------------
-drawing = False # true if mouse is pressed
-ix,iy = -1,-1
-patch_size=100
-zoom_scale=4
 
 def mouse_callback_ref(event, x, y, flags, param):
     global ix,iy,drawing, patch_size, zoom_scale
