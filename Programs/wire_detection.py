@@ -222,7 +222,7 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False, verbose_lv=
                 else : 
                     edge_dict[label] = ((edgex,edgey), [idx_wire])
                 
-                if verbose_lv>2 : console.log(f"Soudure du fil {idx_wire} trouvée à la position {edge_dict[label]}.")
+                if verbose_lv>2 : console.log(f"Soudure du fil {idx_wire} trouvée à la position {edge_dict[label][0]}.")
             
             else :
                 left_pixels_y = np.where(region[:, 6] > 0)[0]

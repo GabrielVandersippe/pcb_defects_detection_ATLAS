@@ -6,9 +6,6 @@ from Programs.check import run_check
 from Programs.utils import afficher
 from Programs.output import show_config
 
-with open("Configuration/config.json", "r") as f:
-            config = json.load(f)
-
 def positive_int(value):
     ivalue = int(value)
     if ivalue <= 0:
@@ -42,7 +39,10 @@ def main():
 
     args = parser.parse_args()
 
-    if args.command == "check":
+    if args.command == "check":        
+        with open("Configuration/config.json", "r") as f:
+                    config = json.load(f)
+                    
         path = args.input
         if not(config["pictures_folder"] in path) :
             path = config["pictures_folder"] + "/" + path
