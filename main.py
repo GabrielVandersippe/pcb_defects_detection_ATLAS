@@ -4,9 +4,16 @@ import json
 
 from Programs.check import run_check
 from Programs.utils import afficher
+from Programs.output import show_config
 
 with open("Configuration/config.json", "r") as f:
             config = json.load(f)
+
+def positive_int(value):
+    ivalue = int(value)
+    if ivalue <= 0:
+        raise argparse.ArgumentTypeError(f"{value} is an invalid positive int value")
+    return ivalue
 
 def main():
     parser = argparse.ArgumentParser(description="PCB wiring checking program")
@@ -21,6 +28,17 @@ def main():
 
     # Show command
     show_parser = subparsers.add_parser("show", help="Show the last output again")
+
+    # Edit Config command
+    config_parser = subparsers.add_parser("config", help="Edit the current configuration file.")
+    config_parser.add_argument("--folder", help="Change the folder inside which the module pictures are located.")
+    config_parser.add_argument("--format", help="Change the format of the pictures. Default : '.jpg'")
+    config_parser.add_argument("--language", choices=['fr', 'en'], help="Change the language : 'fr' or 'en'.")
+    config_parser.add_argument("--suffix-after", help="Change the suffix that comes before the reference of the module after bonding.")
+    config_parser.add_argument("--suffix-before", help="Change the suffix that comes before the reference of the module before bonding.")
+    config_parser.add_argument("--verbose", type=int, choices=[0,1,2,3], help="Change the level of detail of the output. Goes from 0 to 3. Default : 0.")
+    config_parser.add_argument("--zoom", type=positive_int, help="Change the zooming power of the magnifying glass function (integer). Default : 4")
+    config_parser.add_argument("--show", action="store_true", help="Show the current configuration.")
 
     args = parser.parse_args()
 
@@ -37,12 +55,42 @@ def main():
             trim_nb_int = []
             for x in trim_nb_str :
                 trim_nb_int.append(int(x))
-            run_check(path, iref = trim_nb_int)
+            run_check(path, iref = trim_nb_int, verbose=args.verbose, config=config)
         else :
             run_check(path)
     elif args.command == "show":
         img = cv.imread("result.jpg")
         afficher(img)
+    elif args.command == "config":
+        with open("Configuration/config.json", "r") as f:
+            config = json.load(f)
+
+        if args.folder:
+            assert()
+            config["pictures_folder"] = args.folder
+        if args.format:
+            config["pictures_format"] = args.format            
+        if args.language:
+            config["language"] = args.language            
+        if args.suffix_after:
+            config["suffix_after_bonding"] = args.suffix_after            
+        if args.suffix_before:
+            config["suffix_before_bonding"] = args.suffix_before            
+        if args.verbose is not None:
+            config["verbose"] = int(args.verbose)            
+        if args.zoom is not None:
+            config["zoom"] = int(args.zoom)
+
+        if args.show:
+            print("Configuration mise à jour.") if config["language"]=='fr' else print("Updated config.")
+            show_config(config)
+        else :
+            print("Configuration mise à jour. Exécuter config --show pour l'afficher.") if config["language"]=='fr' else print("Updated config. Run config --show to show.")
+
+        with open("Configuration/config.json", "w") as f:
+            json.dump(config, f, indent=4)
+
+
     else:
         parser.print_help()
 

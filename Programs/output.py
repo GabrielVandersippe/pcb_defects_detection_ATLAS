@@ -8,6 +8,14 @@ import json
 
 console = Console()
 
+def show_config(config):
+    console.rule(f"[bold red]{"CONFIG"}[/bold red]", characters="=")
+    table = Table(show_header=False, box=box.ASCII)
+    for key,value in config.items():
+        table.add_row(f"[bold blue]{key} [/bold blue]", f"[cyan]{value}[cyan]")
+    console.print(Align.center(table))
+    console.print("\n")
+
 def print_success(msg):
     console.print(f"[bold green]  ✔  [/bold green][green]{msg}")
 

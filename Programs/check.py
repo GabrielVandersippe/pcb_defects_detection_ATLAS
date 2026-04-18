@@ -7,7 +7,7 @@ import json
 
 bounding_map_without_trim()
 
-def run_check (path, iref = None, draw = False) :
+def run_check (path, iref = None, draw = False, verbose=0, config={}) :
     """
     Runs the checks for a given image.
 
@@ -19,7 +19,8 @@ def run_check (path, iref = None, draw = False) :
     with open("Configuration/config.json", "r") as f:
             config = json.load(f)
     lang = config["language"]
-    verbose = config['verbose']
+    if not verbose:
+        verbose = config['verbose']
 
     console.print("\n")
 
