@@ -12,17 +12,15 @@ DONE :
 - Faire un mapping entre les fils et les pistes
 - Donner la position de toutes les pistes
 - Faire le check de position des fils
-
+- Régler le problème des fils trop courts des deux côtés (pour deux fils / côté)
+- Faire une intégration CLI qui permette d'utiliser facilement les fonctions, de les régler pour obtenir plus/moins d'informations.
 
 
 TODO : 
 
-- Régler le problème des fils trop courts des deux côtés (pour deux fils / côté)
 - Hyperparamètres qui permettent de régler l'agressivité du filtrage pour avoir plus/moins de faux négatifs.
-- Faire une intégration CLI qui permette d'utiliser facilement les fonctions, de les régler pour obtenir plus/moins d'informations.
 - Réglage Daltonien ?
 - Documentation du code
-- Rassembler le code dans un fichier .zip que l'on peut envoyer ou qqc comme ça
 
 v1.1 (changements rapides pour envoyer en fin de la semaine) :
 - réglage de l'input : seulement le nom du module / plusieurs possibilité qui fonctionnent (avec et sans .jpg, etc.)

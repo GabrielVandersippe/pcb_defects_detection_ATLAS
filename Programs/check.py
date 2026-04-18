@@ -19,11 +19,12 @@ def run_check (path, iref = None, draw = False) :
     with open("Configuration/config.json", "r") as f:
             config = json.load(f)
     lang = config["language"]
+    verbose = config['verbose']
 
     console.print("\n")
 
     img = cv.imread(path)
-    ROI = find_ROI(img)
+    ROI = find_ROI(img, verbose_lv = verbose)
     lmask = img[ROI[1][1]:ROI[1][0], ROI[0][0]:ROI[0][1]]
     rmask = img[ROI[3][1]:ROI[3][0], ROI[2][0]:ROI[2][1]]
 
@@ -74,8 +75,8 @@ def run_check (path, iref = None, draw = False) :
         with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
 
 
-            short_list_left, endpoints_left, labels_left = find_shorts(lmask, 'left', y_left_ROI, x_left_ROI, draw)
-            short_list_right, endpoints_right, labels_right = find_shorts(rmask, 'right', y_right_ROI, x_right_ROI, draw)
+            short_list_left, endpoints_left, labels_left = find_shorts(lmask, 'left', y_left_ROI, x_left_ROI, draw, verbose_lv = verbose)
+            short_list_right, endpoints_right, labels_right = find_shorts(rmask, 'right', y_right_ROI, x_right_ROI, draw, verbose_lv = verbose)
 
             if lang == "en" :
                 print_info("Short circuit count completed.")
@@ -109,7 +110,7 @@ def run_check (path, iref = None, draw = False) :
             running_message = "Track detection..."
         
         with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
-            tracks = find_tracks(path)
+            tracks = find_tracks(path, verbose_lv = verbose)
         if lang == "en" :
             print_info("Tracks detected.")
         else : 
