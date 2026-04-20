@@ -1,9 +1,11 @@
 import argparse
 import cv2 as cv
 import json
+import numpy as np
 
 from Programs.check import run_check
 from Programs.utils import afficher
+from Programs.debug_tools import magnifying_glass_final_result
 from Programs.output import show_config
 
 def positive_int(value):
@@ -58,9 +60,12 @@ def main():
             run_check(path, iref = trim_nb_int, verbose=args.verbose, config=config)
         else :
             run_check(path)
+
     elif args.command == "show":
-        img = cv.imread("result.jpg")
-        afficher(img)
+        with open("Temp/path.txt", "r") as f:
+            path = f.readline()
+        magnifying_glass_final_result(path)
+
     elif args.command == "config":
         with open("Configuration/config.json", "r") as f:
             config = json.load(f)

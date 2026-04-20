@@ -2,7 +2,6 @@ from Programs.output import *
 from Programs.count import extract_serial_number, iref_trim
 from Programs.map import bounding_map_pads_pistes, bounding_map_without_trim, bounding_map_trim
 from Programs.wire_detection import *
-import time
 import json
 
 bounding_map_without_trim()
@@ -220,5 +219,14 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
             else : 
                 print_info("Vérification du câblage effectuée.")
 
+        with open("Temp/path.txt", "w") as f:
+            f.write(path)
+
+        np.save("Temp/crit_shorts_mask.npy", crit_shorts_mask)
+        np.save("Temp/non_crit_shorts_mask.npy", non_crit_shorts_mask)
+        np.save("Temp/crit_endpoints_mask.npy", crit_endpoints_mask)
+        np.save("Temp/non_crit_endpoints_mask.npy", non_crit_endpoints_mask)
+        np.save("Temp/pads_mask.npy", pads_mask)
+
         afficher_bilan(n_detected, nb_not_crit_shorts_left, nb_not_crit_shorts_right, nb_crit_shorts_left, nb_crit_shorts_right, nb_wires_off_track)
-        magnifying_glass_final_result(cimg,crit_shorts_mask, non_crit_shorts_mask, crit_endpoints_mask, non_crit_endpoints_mask, pads_mask)
+        magnifying_glass_final_result(cimg)
