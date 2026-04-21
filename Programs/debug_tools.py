@@ -1,6 +1,5 @@
 import cv2 as cv
 from Programs.output import console
-import matplotlib.pyplot as plt
 from Programs.utils import *
 from Programs.data import *
 from Programs.find_targets import *
@@ -15,11 +14,6 @@ ix,iy = -1,-1
 patch_size=int(400/config["zoom"]) # 100 by default
 zoom_scale=config["zoom"] # 4 by default
 current_viewmode = 0 
-
-def draw_area(img, pt1, pt2):
-    cv.rectangle(img, pt1, pt2, (0, 255, 0), 20)
-    plt.imshow(img)
-    plt.show()
 
 def mouse_callback(event, x, y, flags, param):
 
