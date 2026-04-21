@@ -15,8 +15,6 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
     draw - bool: whether the funciton should show additional information regarding the steps of the algorithm
     """
 
-    with open("Configuration/config.json", "r") as f:
-            config = json.load(f)
     lang = config["language"]
     if not verbose:
         verbose = config['verbose']

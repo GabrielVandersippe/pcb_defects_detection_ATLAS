@@ -23,8 +23,8 @@ def main():
     check_parser = subparsers.add_parser("check", help="Check the wiring of a given pcb")
     check_parser.add_argument("--input", required=True, help="File name of the picture")
     check_parser.add_argument("--iref", required=False, help="Custom iref numbers = 4 ints separated by ','")
-    check_parser.add_argument("--verbose", action="store_true")
-
+    check_parser.add_argument("--verbose", type=int, choices=[0,1,2,3], help="Change the level of detail of the output. Goes from 0 to 3. Default : 0.")
+    check_parser.add_argument("--aggressiveness", choices=["low", "medium", "high"], help="Change the aggressiveness of the algorithm. Stronger aggressiveness means more false positives.")
     # Show command
     show_parser = subparsers.add_parser("show", help="Show the last output again")
 
@@ -52,6 +52,8 @@ def main():
             path = path + "_" + config["suffix_after_bonding"]
         if not(config["pictures_format"] in path) :
             path = path + config["pictures_format"]
+        if args.aggressiveness:
+            config["aggressiveness_level"] = args.aggressiveness
         if args.iref != None :
             trim_nb_str = args.iref.split(",")
             trim_nb_int = []
@@ -59,7 +61,7 @@ def main():
                 trim_nb_int.append(int(x))
             run_check(path, iref = trim_nb_int, verbose=args.verbose, config=config)
         else :
-            run_check(path)
+            run_check(path, verbose=args.verbose, config=config)
 
     elif args.command == "show":
         with open("Temp/path.txt", "r") as f:

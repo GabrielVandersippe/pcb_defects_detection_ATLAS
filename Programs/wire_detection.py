@@ -187,7 +187,8 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False, **kwargs):
         if seen_labels[label]:  # On verifie qu'on ne voit qu'une fois chaque label, sinon c'est qu'il y a un court-circuit
 
             prev_idx = edge_dict[label][1]
-            if verbose_lv>1 : console.log(f"Fil {idx_wire} court-circuité. [Liste des autres fils en court-circuit : {prev_idx}]")
+            if verbose_lv>1 and lang=='fr' : console.log(f"Fil {idx_wire} court-circuité. [Liste des autres fils en court-circuit : {prev_idx}]")
+            if verbose_lv>1 and lang=='en' : console.log(f"Wire {idx_wire} short. [List of other wires in the short : {prev_idx}]")
             prev_idx.append(idx_wire)
             edge_dict[label] = (None, prev_idx)
 
@@ -202,7 +203,8 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False, **kwargs):
 
             nb_shorts,_,short_stats,short_centers = cv.connectedComponentsWithStats(shorts) #On trouve les emplacement des differents courts-circuits
 
-            if verbose_lv>1 : console.log(f"Fil {idx_wire} : {nb_shorts} points de contact détéctés.")
+            if verbose_lv>1 and lang=='fr' : console.log(f"Fil {idx_wire} : {nb_shorts} points de contact détéctés avec d'autres fils.")
+            if verbose_lv>1 and lang=='en' : console.log(f"Wire {idx_wire} : {nb_shorts} contact points detected with other wires.")
 
             for i in range(nb_shorts):
 
@@ -239,8 +241,6 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False, **kwargs):
                     edge_dict[label] = ((int(solderx),int(soldery)), [idx_wire])
                 else : 
                     edge_dict[label] = ((edgex,edgey), [idx_wire])
-                
-                if verbose_lv>2 : console.log(f"Soudure du fil {idx_wire} trouvée à la position {edge_dict[label][0]}.")
             
             else :
                 left_pixels_y = np.where(region[:, 6] > 0)[0]
@@ -258,10 +258,11 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False, **kwargs):
                     soldery = edgey + 15/np.tan(theta)
                     edge_dict[label] = ((int(solderx),int(soldery)), [idx_wire])
                 else : 
-                    edge_dict[label] = ((edgex,edgey), [idx_wire])
-                
-                if verbose_lv>2 : console.log(f"Soudure du fil {idx_wire} trouvée à la position {edge_dict[label]}.")
+                    edge_dict[label] = ((edgex,edgey), [idx_wire])  
 
+            if verbose_lv>2 and lang=='fr' : console.log(f"Soudure du fil {idx_wire} trouvée à la position {edge_dict[label][0]}.")
+            if verbose_lv>2 and lang=='en' : console.log(f"Found solder point of wire {idx_wire} at position {edge_dict[label][0]}.")
+            
             if draw : 
                 cv.circle(cimg, (int(edge_dict[label][0]), int(edge_dict[label][1])),4, (0, 255, 0), 2)
 
