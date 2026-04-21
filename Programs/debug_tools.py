@@ -138,6 +138,7 @@ def magnifying_glass_final_result(src):
 
     if type(src) == str:
         img = cv.imread(src)
+        assert img is not None, f"L'image d'origine n'a pas pu être lue, peut-être a-elle été déplacée. Le chemin devrait être {src}." if lang=='fr' else f"Image could not be read, maybe it has benn moved elsewhere. The path should be {src}."
     else:
         img = src
 

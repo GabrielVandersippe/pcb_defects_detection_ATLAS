@@ -46,7 +46,7 @@ def mires_template_matching(img_input:np.ndarray, draw = False, verbose_lv=0, **
 
     Returns : np.ndarray : array of centers
     """
-    assert img_input is not None, "Le fichien n'a pas pu être lu, vérifier avec os.path.exists()" #Vérifier si l'image existe
+    assert img_input is not None, "Le fichier n'a pas pu être lu, vérifier avec os.path.exists()" #Vérifier si l'image existe
 
     template = cv.imread("Reference/Template_Thresh_cropped.png", cv.IMREAD_GRAYSCALE)
 

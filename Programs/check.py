@@ -75,8 +75,8 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
         with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
 
 
-            short_list_left, endpoints_left, labels_left = find_shorts(lmask, 'left', y_left_ROI, x_left_ROI, draw, verbose_lv = verbose)
-            short_list_right, endpoints_right, labels_right = find_shorts(rmask, 'right', y_right_ROI, x_right_ROI, draw, verbose_lv = verbose)
+            short_list_left, endpoints_left, labels_left = find_shorts(lmask, 'left', y_left_ROI, x_left_ROI, draw, verbose_lv=verbose, config=config)
+            short_list_right, endpoints_right, labels_right = find_shorts(rmask, 'right', y_right_ROI, x_right_ROI, draw, verbose_lv=verbose, config=config)
 
             if lang == "en" :
                 print_info("Short circuit count completed.")

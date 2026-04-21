@@ -1,0 +1,16 @@
+{
+  "medium": {
+    "wire_threshold": {
+      "satmask_thr": { "lb": 0, "ub": 60 },
+      "valmask_thr": { "lb": 180, "ub": 255 },
+      "intensitymask": { "blocksize": 25, "cst": -15 },
+      "closing_kernel": [5, 1],
+      "kernel_wheel_shape": [35, 9]
+    },
+    "find_shorts": {
+      "connectivity": 8,
+      "vkernel": [1, 7],
+      "hkernel": [25, 3]
+    }
+  }
+}
