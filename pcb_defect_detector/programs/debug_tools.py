@@ -1,12 +1,12 @@
 import cv2 as cv
-from Programs.output import console
-from Programs.utils import *
-from Programs.data import *
-from Programs.find_targets import *
+from programs.output import console
+from programs.utils import *
+from programs.data import *
+from programs.find_targets import *
 
 import json
 
-with open("Configuration/config.json", "r") as f:
+with open("../config/config.json", "r") as f:
         config = json.load(f)
 
 drawing = False # true if mouse is pressed
@@ -142,11 +142,11 @@ def magnifying_glass_final_result(src):
     else:
         img = src
 
-    crit_shorts_mask=np.load("Temp/crit_shorts_mask.npy")
-    non_crit_shorts_mask=np.load("Temp/non_crit_shorts_mask.npy")
-    crit_endpoints_mask=np.load("Temp/crit_endpoints_mask.npy")
-    non_crit_endpoints_mask=np.load("Temp/non_crit_endpoints_mask.npy")
-    pads_mask=np.load("Temp/pads_mask.npy")
+    crit_shorts_mask=np.load("../temp/crit_shorts_mask.npy")
+    non_crit_shorts_mask=np.load("../temp/non_crit_shorts_mask.npy")
+    crit_endpoints_mask=np.load("../temp/crit_endpoints_mask.npy")
+    non_crit_endpoints_mask=np.load("../temp/non_crit_endpoints_mask.npy")
+    pads_mask=np.load("../temp/pads_mask.npy")
 
     masks = [crit_shorts_mask,non_crit_shorts_mask,crit_endpoints_mask,non_crit_endpoints_mask,pads_mask]
 

@@ -26,7 +26,7 @@ def print_info(msg):
     console.print(f"[blue]{msg}[blue]")
 
 def afficher_bilan(wire_nb, short_nb_left_not_crit, short_nb_right_not_crit, short_nb_left_crit, short_nb_right_crit, nb_wrong_track):
-    with open("Configuration/config.json", "r") as f:
+    with open("../config/config.json", "r") as f:
             config = json.load(f)
     lang = config["language"]
     

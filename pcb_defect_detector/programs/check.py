@@ -1,7 +1,7 @@
-from Programs.output import *
-from Programs.count import extract_serial_number, iref_trim
-from Programs.map import bounding_map_pads_pistes, bounding_map_without_trim, bounding_map_trim
-from Programs.wire_detection import *
+from programs.output import *
+from programs.count import extract_serial_number, iref_trim
+from programs.map import bounding_map_pads_pistes, bounding_map_without_trim, bounding_map_trim
+from programs.wire_detection import *
 import json
 
 bounding_map_without_trim()
@@ -40,7 +40,7 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
 
     # 1. Vérifier si tous les fils sont présents : 
     with console.status(f"[bold blue]{"Décompte des fils..."}[/bold blue]", spinner = 'dots'):
-        with open("Reference/iref_trim_per_module_v2.json", "r") as f:
+        with open("reference/iref_trim_per_module_v2.json", "r") as f:
             data = json.load(f)
             n_expected = expected_wire_number(extract_serial_number(path),data, iref_=iref)
             n_detected = len(y_left) + len(y_right)
@@ -217,14 +217,14 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
             else : 
                 print_info("Vérification du câblage effectuée.")
 
-        with open("Temp/path.txt", "w") as f:
+        with open("../temp/path.txt", "w") as f:
             f.write(path)
 
-        np.save("Temp/crit_shorts_mask.npy", crit_shorts_mask)
-        np.save("Temp/non_crit_shorts_mask.npy", non_crit_shorts_mask)
-        np.save("Temp/crit_endpoints_mask.npy", crit_endpoints_mask)
-        np.save("Temp/non_crit_endpoints_mask.npy", non_crit_endpoints_mask)
-        np.save("Temp/pads_mask.npy", pads_mask)
+        np.save("../temp/crit_shorts_mask.npy", crit_shorts_mask)
+        np.save("../temp/non_crit_shorts_mask.npy", non_crit_shorts_mask)
+        np.save("../temp/crit_endpoints_mask.npy", crit_endpoints_mask)
+        np.save("../temp/non_crit_endpoints_mask.npy", non_crit_endpoints_mask)
+        np.save("../temp/pads_mask.npy", pads_mask)
 
         afficher_bilan(n_detected, nb_not_crit_shorts_left, nb_not_crit_shorts_right, nb_crit_shorts_left, nb_crit_shorts_right, nb_wires_off_track)
         magnifying_glass_final_result(cimg)

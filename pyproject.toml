@@ -1,10 +1,11 @@
 [project]
-name = "pcb defect detector"
+package-mode = false
+name = "pcb-defect-detector"
 version = "1.1.0"
 description = "A defect detector built to help analysing AtlasITK circuit boards"
 authors = [
-    {name = "Gabriel Vandersippe",email = "gabriel.vandersippe@etu.minesparis.psl.eu",
-    name = "Lucas Duhautois",email = "lucas.duhautois@etu.minesparis.psl.eu"}
+    {name = "Gabriel Vandersippe",email = "gabriel.vandersippe@etu.minesparis.psl.eu"},
+    {name = "Lucas Duhautois",email = "lucas.duhautois@etu.minesparis.psl.eu"}
 ]
 readme = "README.md"
 requires-python = ">=3.12"

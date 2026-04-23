@@ -1,12 +1,12 @@
 import cv2 as cv
 import numpy as np
-from Programs.utils import *
-from Programs.data import *
-from Programs.find_targets import *
-from Programs.debug_tools import *
-from Programs.wire import *
-from Programs.count import *
-from Programs.tracks import *
+from programs.utils import *
+from programs.data import *
+from programs.find_targets import *
+from programs.debug_tools import *
+from programs.wire import *
+from programs.count import *
+from programs.tracks import *
 
 
 
@@ -149,7 +149,7 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False, **kwargs):
     config = kwargs["config"]
     lang = config["language"]
 
-    with open("Configuration/aggressiveness_config.json", 'r') as f:
+    with open("../config/aggressiveness_config.json", 'r') as f:
         agg_config = json.load(f)[config["aggressiveness_level"]]
 
     side = input_side.lower()

@@ -1,9 +1,9 @@
 import cv2 as cv
 import numpy as np
-from Programs.utils import *
-from Programs.data import *
-from Programs.find_targets import *
-from Programs.debug_tools import *
+from programs.utils import *
+from programs.data import *
+from programs.find_targets import *
+from programs.debug_tools import *
 import json
 
 def find_tracks(path, draw = False, verbose_lv = 0):
@@ -17,8 +17,8 @@ def find_tracks(path, draw = False, verbose_lv = 0):
     Returns:
     tracks - list of list of points: the positions of each track on the input image
     """
-    ref_unbonded = "Reference/Ref_img_unbonded.jpg"
-    ref_bonded = "Reference/Ref_img_bonded.jpg"
+    ref_unbonded = "reference/Ref_img_unbonded.jpg"
+    ref_bonded = "reference/Ref_img_bonded.jpg"
 
     if verbose_lv>1 : console.log(f"Recherche de la position des mires sur l'image...")
     targets_dst = find_targets_wired(path, verbose_lv=verbose_lv, img_name = "Image câblée")
@@ -34,7 +34,7 @@ def find_tracks(path, draw = False, verbose_lv = 0):
     if draw :
         img = cv.imread(path).copy()
 
-    with open("Programs/REF_TRACKS.json") as f:
+    with open("programs/REF_TRACKS.json") as f:
         data = json.load(f)
         for track_idx, track in data.items():
             

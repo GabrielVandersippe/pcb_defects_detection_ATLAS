@@ -1,8 +1,8 @@
 import cv2 as cv
 import numpy as np
-from Programs.utils import *
-from Programs.data import *
-from Programs.output import console
+from programs.utils import *
+from programs.data import *
+from programs.output import console
 
 import json
 
@@ -48,7 +48,7 @@ def mires_template_matching(img_input:np.ndarray, draw = False, verbose_lv=0, **
     """
     assert img_input is not None, "Le fichier n'a pas pu être lu, vérifier avec os.path.exists()" #Vérifier si l'image existe
 
-    template = cv.imread("Reference/Template_Thresh_cropped.png", cv.IMREAD_GRAYSCALE)
+    template = cv.imread("reference/Template_Thresh_cropped.png", cv.IMREAD_GRAYSCALE)
 
     img_name = kwargs.get('img_name')
     if verbose_lv>2 and img_name : console.log(f"Détection des mires sur l'image : {img_name}.")
@@ -238,7 +238,7 @@ def find_targets_wired(path:str, draw=False, verbose_lv = 0, **kwargs):
 
     Returns : np.ndarray : array of centers
     """
-    with open("Configuration/config.json", "r") as f:
+    with open("../config/config.json", "r") as f:
             config = json.load(f)
 
     cabled_img = cv.imread(path)

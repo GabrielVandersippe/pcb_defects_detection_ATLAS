@@ -3,10 +3,10 @@ import cv2 as cv
 import json
 import numpy as np
 
-from Programs.check import run_check
-from Programs.utils import afficher
-from Programs.debug_tools import magnifying_glass_final_result
-from Programs.output import show_config
+from programs.check import run_check
+from programs.utils import afficher
+from programs.debug_tools import magnifying_glass_final_result
+from programs.output import show_config
 
 def positive_int(value):
     ivalue = int(value)
@@ -42,7 +42,7 @@ def main():
     args = parser.parse_args()
 
     if args.command == "check":        
-        with open("Configuration/config.json", "r") as f:
+        with open("../config/config.json", "r") as f:
                     config = json.load(f)
                     
         path = args.input
@@ -64,12 +64,12 @@ def main():
             run_check(path, verbose=args.verbose, config=config)
 
     elif args.command == "show":
-        with open("Temp/path.txt", "r") as f:
+        with open("../temp/path.txt", "r") as f:
             path = f.readline()
         magnifying_glass_final_result(path)
 
     elif args.command == "config":
-        with open("Configuration/config.json", "r") as f:
+        with open("../config/config.json", "r") as f:
             config = json.load(f)
 
         if args.folder:
@@ -94,7 +94,7 @@ def main():
         else :
             print("Configuration mise à jour. Exécuter config --show pour l'afficher.") if config["language"]=='fr' else print("Updated config. Run config --show to show.")
 
-        with open("Configuration/config.json", "w") as f:
+        with open("../config/config.json", "w") as f:
             json.dump(config, f, indent=4)
 
 
