@@ -1,2 +1,3 @@
 Configuration/config.json
-Temp
+Temp/*
+*/__pycache__
