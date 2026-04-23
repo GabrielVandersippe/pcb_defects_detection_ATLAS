@@ -30,8 +30,22 @@ v1.1 (changements rapides pour envoyer en fin de la semaine) :
 - force du zoom de la loupe configurable (via le fichier config)
 - garder les proportions de l'image originelle quand on affiche le résultat pour la première fois 
 
+v1.2 :
+- réglage de l'aggressivité du programme : paramètres réglables ou plusieurs presets
+- différents niveaux de verbosité/logging
+- mettre la bounding map dans le dossier Reference
+- changer la logique des suffixes pour accepter un sub string ou une liste de sub strings possibles
+- ajouter une option --zoom dans show pour changer le zoom sans toucher à la config
+- ajouter une option --save dans check pour enregistrer les modifs (format image avec toutes les modifs) dans un dossier à part 
+- créer un environnement virtuel avec les bonnes versions des packages
+- créer un fichier config.toml avec les dependencies
+- mettre les instructions concernant l'environnement virtuel dans le README
+
 
 - investiguer le fait que ça ne fonctionne pas pour Julien quand la loupe n'est pas la fenêtre active ???
+- tester le code sur un plus grand jeu de données
+- finetuner les modes d'agressivité de l'algo
+- créer un README solide et complet avec des images (result.jpg ?)
 
 v2.0 (changements plus longs) :
 - mapper les pads (fonction python qui génère automatiquement pour ne pas avoir à faire 784 rectangles à la main)
@@ -40,5 +54,3 @@ v2.0 (changements plus longs) :
 - vérifier les IREF et afficher dans le terminal
 - donner plus de détail (numéro de pad des fils défectueux)
 - effectuer les vérifications même s'il manque des câbles (et indiquer le numéro de pad des fils manquants)
-- réglage de l'aggressivité du programme : paramètres réglables ou plusieurs presets
-- tester le code sur un plus grand jeu de données
