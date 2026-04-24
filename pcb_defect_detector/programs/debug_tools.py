@@ -3,6 +3,7 @@ from programs.output import console
 from programs.utils import *
 from programs.data import *
 from programs.find_targets import *
+from time import strftime, gmtime
 
 import json
 
@@ -172,7 +173,8 @@ def magnifying_glass_final_result(src):
         console.print("")
         console.print("[blue]Hover your mouse over the main view to display the zoomed-in version.")
         console.print("[blue][bold]Drag and drop[/bold] to zoom.")
-        console.print("[blue]Press [bold]'r'[/bold] to reset the view.")
+        console.print("[blue]Press [bold]'r'[/bold] to reset the view.") 
+        console.print("[blue]Press [bold]'s'[/bold] to save the view.")
         console.print("[blue]Press [bold]'q'[/bold] to quit.")
         console.print("[red]***")
         console.print("[blue]Press [bold]'1'[/bold] for the [bold white]unmodified[/bold white] view.")
@@ -192,6 +194,7 @@ def magnifying_glass_final_result(src):
         console.print("[blue]Passer la souris sur la vue principale pour afficher la version zoomée.")
         console.print("[blue][bold]Glisser-déposer[/bold] pour zoomer.")
         console.print("[blue]Appuyer sur [bold]'r'[/bold] pour réinitialiser la vue.")
+        console.print("[blue]Appuyer sur [bold]'s'[/bold] pour pour sauvegarder la vue.")
         console.print("[blue]Appuyer sur [bold]'q'[/bold] pour quitter.")
         console.print("[red]***")
         console.print("[blue]Appuyer sur [bold]'1'[/bold] pour la vue [bold white]non modifiée[/bold white].")
@@ -230,6 +233,14 @@ def magnifying_glass_final_result(src):
                 state['current_view'] = create_view_all_masks(img,masks,colors)
 
             state['offset_x'], state['offset_y'] = 0, 0
+
+        elif key == ord('s'):
+            t = strftime("%d-%m-%Y-%H-%M-%S", gmtime())
+            outpath = "../output/output" + str(t) + ".png"
+            cv.imwrite(outpath, state['current_view'])
+            if lang == 'en' : console.print(f"[green]Image successfully saved to {outpath}")
+            else : console.print(f"[green]Image sauvegardée avec succès à {outpath}")
+
         elif key == ord('&') or key == ord('1'): # Normal view
             state['current_mode'] = 0
             h,w = state['current_view'].shape[:2]
