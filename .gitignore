@@ -2,3 +2,4 @@ config/config.json
 temp/*
 __pycache__/
 output/*
+*.ipynb

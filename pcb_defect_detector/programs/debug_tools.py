@@ -184,7 +184,7 @@ def magnifying_glass_final_result(src):
         console.print("[blue]Press [bold]'5'[/bold] for the wiew showing the [bold green]ends of all the wires[/bold green].")
         console.print("[blue]Press [bold]'6'[/bold] for the view showing the [bold cyan]tracks[/bold cyan].")
     
-        console.print("\n[blue]Press [bold]'0'[/bold] for the view showing [bold magenta]all the changes[/bold magenta].")
+        console.print("\n[blue]Press [bold]'0'[/bold] for the view showing [bold magenta]all the changes[/bold magenta].\n")
     else :
         cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
         cv.setMouseCallback("Vue Principale", mouse_callback, param=state)
@@ -204,7 +204,7 @@ def magnifying_glass_final_result(src):
         console.print("[blue]Appuyer sur [bold]'5'[/bold] pour la vue avec les [bold green]terminaisons de tous les fils[/bold green].")
         console.print("[blue]Appuyer sur [bold]'6'[/bold] pour la vue avec les [bold cyan]pistes[/bold cyan].")
     
-        console.print("\n[blue]Appuyer sur [bold]'0'[/bold] pour la vue avec [bold magenta]toutes les modifications[/bold magenta].")
+        console.print("\n[blue]Appuyer sur [bold]'0'[/bold] pour la vue avec [bold magenta]toutes les modifications[/bold magenta].\n")
 
     while True:
         if lang == "en" :
