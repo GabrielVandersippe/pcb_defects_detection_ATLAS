@@ -4,7 +4,9 @@ Ceci est un logiciel en lignes de commandes pour vérifier le câblage des modul
 
 - Installer `poetry` (https://python-poetry.org/)
 - Entrer `poetry install` dans le dossier contenant le package. Ceci install les dépendances spécifiées par le fichier `poetry.lock`
-- Sous Bash, entrer `eval $(poetry env activate)` pour entrer dans l'environnement nouvellement défini. Dans d'autres types de terminaux, se référer à la documentation officielle de poetry (https://python-poetry.org/docs/managing-environments/). Il se peut qu'il faille entrer `source chemin/vers/python` à la place pour l'activer.
+- Sous Git Bash, entrer `eval $(poetry env activate)` pour entrer dans l'environnement nouvellement défini. 
+Dans d'autres types de terminaux, se référer à la documentation officielle de poetry (https://python-poetry.org/docs/managing-environments/). 
+Si le terminal renvoie : "You must source this script : $ source chemin/vers/python", il faut entrer `source chemin/vers/python` à la place pour l'activer. (si besoin, installer la commande source avec `pip install source`)
 - Pour s'assurer d'être dans le bon environnement, entrer `which python`. Si ce qui est retourné est le chemin spécifié, alors vous êtes bien dans l'environnement virtuel.
 - Vous êtes prêt à exécuter le programme !
 
