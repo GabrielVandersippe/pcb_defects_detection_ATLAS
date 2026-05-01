@@ -8,6 +8,14 @@ import json
 
 console = Console()
 
+def show_config(config):
+    console.rule(f"[bold red]{"CONFIG"}[/bold red]", characters="=")
+    table = Table(show_header=False, box=box.ASCII)
+    for key,value in config.items():
+        table.add_row(f"[bold blue]{key} [/bold blue]", f"[cyan]{value}[cyan]")
+    console.print(Align.center(table))
+    console.print("\n")
+
 def print_success(msg):
     console.print(f"[bold green]  ✔  [/bold green][green]{msg}")
 
@@ -18,7 +26,7 @@ def print_info(msg):
     console.print(f"[blue]{msg}[blue]")
 
 def afficher_bilan(wire_nb, short_nb_left_not_crit, short_nb_right_not_crit, short_nb_left_crit, short_nb_right_crit, nb_wrong_track):
-    with open("Configuration/config.json", "r") as f:
+    with open("../config/config.json", "r") as f:
             config = json.load(f)
     lang = config["language"]
     

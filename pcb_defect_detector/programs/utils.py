@@ -25,7 +25,7 @@ def trouver_la_paire(fichier:str, dossier:str) -> str :
     Returns : str : path to the matching file.
     """
 
-    with open("Configuration/config.json", "r") as f:
+    with open("../config/config.json", "r") as f:
             config = json.load(f)
 
     bname=os.path.basename(fichier)
@@ -34,9 +34,9 @@ def trouver_la_paire(fichier:str, dossier:str) -> str :
 
     if "Ref_img" in bname :
         if "unbonded" in bname:
-            return os.path.join("Reference", "Ref_img_bonded.jpg")
+            return os.path.join("reference", "Ref_img_bonded.jpg")
         else : 
-            return os.path.join("Reference", "Ref_img_unbonded.jpg")
+            return os.path.join("reference", "Ref_img_unbonded.jpg")
 
     elif after_bonding in bname:
         name=bname[:bname.find(after_bonding)]

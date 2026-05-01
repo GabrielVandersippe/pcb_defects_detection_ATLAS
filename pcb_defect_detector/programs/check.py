@@ -1,13 +1,12 @@
-from Programs.output import *
-from Programs.count import extract_serial_number, iref_trim
-from Programs.map import bounding_map_pads_pistes, bounding_map_without_trim, bounding_map_trim
-from Programs.wire_detection import *
-import time
+from programs.output import *
+from programs.count import extract_serial_number, iref_trim
+from programs.map import bounding_map_pads_pistes, bounding_map_without_trim, bounding_map_trim
+from programs.wire_detection import *
 import json
 
 bounding_map_without_trim()
 
-def run_check (path, iref = None, draw = False) :
+def run_check (path, iref = None, draw = False, verbose=0, config={}) :
     """
     Runs the checks for a given image.
 
@@ -16,14 +15,14 @@ def run_check (path, iref = None, draw = False) :
     draw - bool: whether the funciton should show additional information regarding the steps of the algorithm
     """
 
-    with open("Configuration/config.json", "r") as f:
-            config = json.load(f)
     lang = config["language"]
+    if not verbose:
+        verbose = config['verbose']
 
     console.print("\n")
 
     img = cv.imread(path)
-    ROI = find_ROI(img)
+    ROI = find_ROI(img, verbose_lv = verbose)
     lmask = img[ROI[1][1]:ROI[1][0], ROI[0][0]:ROI[0][1]]
     rmask = img[ROI[3][1]:ROI[3][0], ROI[2][0]:ROI[2][1]]
 
@@ -41,7 +40,7 @@ def run_check (path, iref = None, draw = False) :
 
     # 1. Vérifier si tous les fils sont présents : 
     with console.status(f"[bold blue]{"Décompte des fils..."}[/bold blue]", spinner = 'dots'):
-        with open("Reference/iref_trim_per_module_v2.json", "r") as f:
+        with open("reference/iref_trim_per_module_v2.json", "r") as f:
             data = json.load(f)
             n_expected = expected_wire_number(extract_serial_number(path),data, iref_=iref)
             n_detected = len(y_left) + len(y_right)
@@ -74,8 +73,8 @@ def run_check (path, iref = None, draw = False) :
         with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
 
 
-            short_list_left, endpoints_left, labels_left = find_shorts(lmask, 'left', y_left_ROI, x_left_ROI, draw)
-            short_list_right, endpoints_right, labels_right = find_shorts(rmask, 'right', y_right_ROI, x_right_ROI, draw)
+            short_list_left, endpoints_left, labels_left = find_shorts(lmask, 'left', y_left_ROI, x_left_ROI, draw, verbose_lv=verbose, config=config)
+            short_list_right, endpoints_right, labels_right = find_shorts(rmask, 'right', y_right_ROI, x_right_ROI, draw, verbose_lv=verbose, config=config)
 
             if lang == "en" :
                 print_info("Short circuit count completed.")
@@ -109,7 +108,7 @@ def run_check (path, iref = None, draw = False) :
             running_message = "Track detection..."
         
         with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
-            tracks = find_tracks(path)
+            tracks = find_tracks(path, verbose_lv = verbose)
         if lang == "en" :
             print_info("Tracks detected.")
         else : 
@@ -218,5 +217,14 @@ def run_check (path, iref = None, draw = False) :
             else : 
                 print_info("Vérification du câblage effectuée.")
 
+        with open("../temp/path.txt", "w") as f:
+            f.write(path)
+
+        np.save("../temp/crit_shorts_mask.npy", crit_shorts_mask)
+        np.save("../temp/non_crit_shorts_mask.npy", non_crit_shorts_mask)
+        np.save("../temp/crit_endpoints_mask.npy", crit_endpoints_mask)
+        np.save("../temp/non_crit_endpoints_mask.npy", non_crit_endpoints_mask)
+        np.save("../temp/pads_mask.npy", pads_mask)
+
         afficher_bilan(n_detected, nb_not_crit_shorts_left, nb_not_crit_shorts_right, nb_crit_shorts_left, nb_crit_shorts_right, nb_wires_off_track)
-        magnifying_glass_final_result(cimg,crit_shorts_mask, non_crit_shorts_mask, crit_endpoints_mask, non_crit_endpoints_mask, pads_mask)
+        magnifying_glass_final_result(cimg)

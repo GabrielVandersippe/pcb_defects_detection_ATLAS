@@ -1,12 +1,12 @@
 import cv2 as cv
 import numpy as np
-from Programs.utils import *
-from Programs.data import *
-from Programs.find_targets import *
-from Programs.debug_tools import *
+from programs.utils import *
+from programs.data import *
+from programs.find_targets import *
+from programs.debug_tools import *
 import json
 
-def find_tracks(path, draw = False):
+def find_tracks(path, draw = False, verbose_lv = 0):
     """
     Finds the location of the tracks for a given image, from their location on the reference image.
 
@@ -17,20 +17,24 @@ def find_tracks(path, draw = False):
     Returns:
     tracks - list of list of points: the positions of each track on the input image
     """
-    ref_unbonded = "Reference/Ref_img_unbonded.jpg"
-    ref_bonded = "Reference/Ref_img_bonded.jpg"
+    ref_unbonded = "reference/Ref_img_unbonded.jpg"
+    ref_bonded = "reference/Ref_img_bonded.jpg"
 
-    targets_dst = find_targets_wired(path)
-    targets_ref = find_targets_wired(ref_bonded)
+    if verbose_lv>1 : console.log(f"Recherche de la position des mires sur l'image...")
+    targets_dst = find_targets_wired(path, verbose_lv=verbose_lv, img_name = "Image câblée")
+    targets_ref = find_targets_wired(ref_bonded, verbose_lv=verbose_lv, img_name = "Image de référence câblée")
+    if verbose_lv>1 : console.log(f"Positions des pads trouvées.")
 
+    if verbose_lv>1 : console.log(f"Calcul des homographies...")
     H1 = cv.findHomography(targets_ref, targets_dst, cv.RANSAC)[0]
     H2 = compute_homography_center(cv.imread(ref_unbonded),cv.imread(ref_bonded)) # TODO : ne pas le recalculer à chaque fois
+    if verbose_lv>1 : console.log(f"Homographies calculées.")
 
     tracks = {}
     if draw :
         img = cv.imread(path).copy()
 
-    with open("Programs/REF_TRACKS.json") as f:
+    with open("programs/REF_TRACKS.json") as f:
         data = json.load(f)
         for track_idx, track in data.items():
             
@@ -46,6 +50,7 @@ def find_tracks(path, draw = False):
             if draw :
                 if len(track_dst)>0 :
                     cv.polylines(img,[np.array(track_dst).reshape((-1,1,2))], True, (0, 255, 0), 3)
+    if verbose_lv>1 : console.log(f"Transposition des pads effectuée.")
 
     if draw :
         imS = cv.resize(img, (2000, 2000)) 

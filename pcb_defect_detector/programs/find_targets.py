@@ -1,7 +1,8 @@
 import cv2 as cv
 import numpy as np
-from Programs.utils import *
-from Programs.data import *
+from programs.utils import *
+from programs.data import *
+from programs.output import console
 
 import json
 
@@ -34,7 +35,7 @@ def unique_centers(centers, idx, nbmires, min_dist = 30): #distance minimale ent
 
 
 
-def mires_template_matching(img_input:np.ndarray, draw = False):
+def mires_template_matching(img_input:np.ndarray, draw = False, verbose_lv=0, **kwargs):
     """Finds the positions of the 8 targets on the unwired PCB, or an error if it could not.
 
     Arguments :
@@ -45,9 +46,12 @@ def mires_template_matching(img_input:np.ndarray, draw = False):
 
     Returns : np.ndarray : array of centers
     """
-    assert img_input is not None, "Le fichien n'a pas pu être lu, vérifier avec os.path.exists()" #Vérifier si l'image existe
+    assert img_input is not None, "Le fichier n'a pas pu être lu, vérifier avec os.path.exists()" #Vérifier si l'image existe
 
-    template = cv.imread("Reference/Template_Thresh_cropped.png", cv.IMREAD_GRAYSCALE)
+    template = cv.imread("reference/Template_Thresh_cropped.png", cv.IMREAD_GRAYSCALE)
+
+    img_name = kwargs.get('img_name')
+    if verbose_lv>2 and img_name : console.log(f"Détection des mires sur l'image : {img_name}.")
 
     # Preprocess
     gray = cv.cvtColor(img_input, cv.COLOR_BGR2GRAY)
@@ -99,7 +103,7 @@ def mires_template_matching(img_input:np.ndarray, draw = False):
         sorted_idx = np.argsort([res[pt[1], pt[0]] for pt in zip(*loc[::-1])])[::-1]
         slice_centers = unique_centers(slice_centers, sorted_idx, nbmires)
         
-        
+        if verbose_lv>2 : console.log(f"Slice [{beg1}:{end1}, {beg2}:{end2}] : {len(slice_centers)} mires trouvées sur {nbmires} par template matching.")
         # S'il y a moins de slices que prevu, on prévient qu'il y a une erreur 
         if len(slice_centers) < nbmires:
 
@@ -114,6 +118,8 @@ def mires_template_matching(img_input:np.ndarray, draw = False):
                     if draw:
                         cv.circle(cimg, center, circle[2], (0,0,255), 3)
                         cv.circle(cimg, center,2,(0,0,255),3)
+
+            if verbose_lv>2 : console.log(f"{len(slice_centers)} mires trouvées sur {nbmires} par recherche de cercles.")
 
             # Si rien trouvé, on renvoie un warning
         if len(slice_centers) < nbmires:
@@ -222,7 +228,7 @@ def warp_points(points, H):
 
 
 
-def find_targets_wired(path:str, draw=False):
+def find_targets_wired(path:str, draw=False, verbose_lv = 0, **kwargs):
     """
     Find the positions of the 8 targets on the wired PCB, or an error if it could not.
 
@@ -232,7 +238,7 @@ def find_targets_wired(path:str, draw=False):
 
     Returns : np.ndarray : array of centers
     """
-    with open("Configuration/config.json", "r") as f:
+    with open("../config/config.json", "r") as f:
             config = json.load(f)
 
     cabled_img = cv.imread(path)
@@ -240,7 +246,7 @@ def find_targets_wired(path:str, draw=False):
 
     H = compute_homography_center(uncabled_img, cabled_img)
 
-    unwired_centers = mires_template_matching(uncabled_img, draw)
+    unwired_centers = mires_template_matching(uncabled_img, draw, verbose_lv=verbose_lv, kwargs = kwargs)
     wired_centers = warp_points(unwired_centers, H).astype(np.int32)
 
     return wired_centers
