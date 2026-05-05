@@ -4,7 +4,7 @@ import json
 import numpy as np
 
 from programs.check import run_check
-from programs.utils import afficher
+from programs.utils import afficher, find_suffix
 from programs.debug_tools import magnifying_glass_final_result
 from programs.output import show_config
 
@@ -46,12 +46,19 @@ def main():
                     config = json.load(f)
                     
         path = args.input
-        if not(config["pictures_folder"] in path) :
-            path = config["pictures_folder"] + "/" + path
-        if not(config["suffix_after_bonding"] in path) :
-            path = path + "_" + config["suffix_after_bonding"]
-        if not(config["pictures_format"] in path) :
-            path = path + config["pictures_format"]
+        pic_folder = config["pictures_folder"]
+        suffixes = config["suffix_after_bonding"]
+        pic_format = config["pictures_format"]
+        suffix_in_path = False
+        for s in suffixes :
+            if s in path :
+                suffix_in_path = True
+        if not(suffix_in_path) :
+            path = find_suffix(path, suffixes, pic_folder)
+        if not(pic_folder in path) :
+            path = pic_folder + "/" + path
+        if not(pic_format in path) :
+            path = path + pic_format
         if args.aggressiveness:
             config["aggressiveness_level"] = args.aggressiveness
         if args.iref != None :
