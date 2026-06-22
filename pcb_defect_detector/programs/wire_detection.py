@@ -63,7 +63,7 @@ def find_ROI(img, verbose_lv = 0):
 
     if verbose_lv > 2: console.log("Région d'intérêt extraite.")
 
-    return [(left, left + 500),(low_left, high_left), (right-500,right), (low_right,high_right)]
+    return [(left-10, left+500),(low_left, high_left), (right-500,right+10), (low_right,high_right)]
 
 
 
@@ -141,7 +141,8 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False, **kwargs):
 
     Returns : 
     short_list - array of points : the list of shorts
-    edge_dict - dict that maps a label to a (endpoint, index), where 'endpoint' is the ending point of a wire, and index is an array of one (or more, if shorted) indices that represent the wires.
+    edge_dict_pcb - dict that maps a label to a (endpoint, index), where 'endpoint' is the ending point of a wire on the pcb, and index is an array of one (or more, if shorted) indices that represent the wires.
+    edge_dict_chip - dict that maps a label to a (endpoint, index), where 'endpoint' is the ending point of a wire on the chip, and index is an array of one (or more, if shorted) indices that represent the wires.
     labels - mask containing every label, representing each the position of a wire.
     """
 
@@ -158,6 +159,7 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False, **kwargs):
 
     connectivity = 8 if 'connectivity' not in kwargs.keys() else kwargs['connectivity']
     processed = wire_threshold(mask, side, verbose_lv = verbose_lv, agg_config=agg_config["wire_threshold"], language=lang)
+
     retval, labels, stats, _ = cv.connectedComponentsWithStats(processed, connectivity = connectivity)
 
     if verbose_lv>0 and lang=='fr' : console.log(f"{retval} composantes connexes détectées sur la partie '{side}' de l'image. [Connectivité : {connectivity}]")
@@ -169,7 +171,8 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False, **kwargs):
         cimg = mask.copy()
 
     short_list = []
-    edge_dict = {}
+    edge_dict_pcb = {}
+    edge_dict_chip = {}
 
     for idx_wire, y_wire in enumerate(y_left_list):
 
@@ -186,20 +189,21 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False, **kwargs):
 
         if seen_labels[label]:  # On verifie qu'on ne voit qu'une fois chaque label, sinon c'est qu'il y a un court-circuit
 
-            prev_idx = edge_dict[label][1]
+            prev_idx = edge_dict_pcb[label][1]
             if verbose_lv>1 and lang=='fr' : console.log(f"Fil {idx_wire} court-circuité. [Liste des autres fils en court-circuit : {prev_idx}]")
             if verbose_lv>1 and lang=='en' : console.log(f"Wire {idx_wire} short. [List of other wires in the short : {prev_idx}]")
             prev_idx.append(idx_wire)
-            edge_dict[label] = (None, prev_idx)
+            edge_dict_pcb[label] = (None, prev_idx)
+            edge_dict_chip[label] = (None, prev_idx)
 
             vkernel = cv.getStructuringElement(cv.MORPH_RECT, (1,7)) # Rectangle 1x7
             hkernel = cv.getStructuringElement(cv.MORPH_RECT, (25,3))
             no_wires = cv.morphologyEx(region, cv.MORPH_ERODE, vkernel) # Il ne reste que les endroits des courts-circuits (fil plus epais, et notamment plus large)
             shorts = cv.morphologyEx(no_wires, cv.MORPH_DILATE, hkernel) # Si plusieurs contacts dans la zone, on essaye de les relier pour minimiser le nombre de cercles
 
-            if draw : 
-                magnifying_glass(region)
-                magnifying_glass(mask[y:y+h, x:x+w])
+            # if draw : 
+            #     magnifying_glass(region)
+            #     magnifying_glass(mask[y:y+h, x:x+w])
 
             nb_shorts,_,short_stats,short_centers = cv.connectedComponentsWithStats(shorts) #On trouve les emplacement des differents courts-circuits
 
@@ -226,47 +230,82 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False, **kwargs):
             # On trouve le point de soudure
             if side == 'left':
                 right_pixels_y = np.where(region[:, -6] > 0)[0] # Tous les pixels blancs dans la colonne la plus a droite
-                y_mean = int(np.mean(right_pixels_y))
-                edgex = x + w - 1 + 3 # On dit que la soudure est un tout petit peu à droite (+3px ici)
-                edgey = y-5 + y_mean
+                y_mean_right = int(np.mean(right_pixels_y))
+                edgex_right = x + w - 1 + 3 # On dit que la soudure est un tout petit peu à droite (+3px ici)
+                edgey_right = y-5 + y_mean_right
 
-                end_region = region[:, -26:-6]
-                wires = cv.HoughLines(end_region,1,np.pi/180, 0, 0)
-                if wires is not None:
-                    theta = wires[0][0][1]
+                end_region_right = region[:, -26:-6]
+                wires_right = cv.HoughLines(end_region_right,1,np.pi/180, 0, 0)
+                if wires_right is not None:
+                    theta = wires_right[0][0][1]
                     # XXX Peut être fait sans avoir a calculer edgex et edgey
                     
-                    solderx = edgex + 15
-                    soldery = edgey - 15/np.tan(theta)
-                    edge_dict[label] = ((int(solderx),int(soldery)), [idx_wire])
+                    solderx_right = edgex_right + 15
+                    soldery_right = edgey_right - 15/np.tan(theta)
+                    edge_dict_pcb[label] = ((int(solderx_right),int(soldery_right)), [idx_wire])
                 else : 
-                    edge_dict[label] = ((edgex,edgey), [idx_wire])
+                    edge_dict_pcb[label] = ((edgex_right,edgey_right), [idx_wire])
+
+                left_pixels_y = np.where(region[:, 6] > 0)[0]
+                y_mean_left = int(np.mean(left_pixels_y))
+                edgex_left = x + 1
+                edgey_left = y-5 + y_mean_left
+
+                end_region_left = region[:, 6:26]
+                wires_left = cv.HoughLines(end_region_left,1,np.pi/180, 0, 0)
+                if wires_left is not None:
+                    theta = wires_left[0][0][1]
+                    # XXX Peut être fait sans avoir a calculer edgex et edgey
+                    
+                    solderx_left = edgex_left + 5
+                    soldery_left = edgey_left - 5/np.tan(theta)
+                    edge_dict_chip[label] = ((int(solderx_left),int(soldery_left)), [idx_wire])
+                else : 
+                    edge_dict_chip[label] = ((edgex_left,edgey_left), [idx_wire])  
             
             else :
                 left_pixels_y = np.where(region[:, 6] > 0)[0]
-                y_mean = int(np.mean(left_pixels_y))
-                edgex = x + 1 -3 # On dit que la soudure est un tout petit peu à gauche (-3px ici)
-                edgey = y-5 + y_mean
+                y_mean_left = int(np.mean(left_pixels_y))
+                edgex_left = x + 1 -3 # On dit que la soudure est un tout petit peu à gauche (-3px ici)
+                edgey_left = y-5 + y_mean_left
 
-                end_region = region[:, 6:26]
-                wires = cv.HoughLines(end_region,1,np.pi/180, 0, 0)
-                if wires is not None:
-                    theta = wires[0][0][1]
+                end_region_left = region[:, 6:26]
+                wires_left = cv.HoughLines(end_region_left,1,np.pi/180, 0, 0)
+                if wires_left is not None:
+                    theta = wires_left[0][0][1]
                     # XXX Peut être fait sans avoir a calculer edgex et edgey
                     
-                    solderx = edgex - 15
-                    soldery = edgey + 15/np.tan(theta)
-                    edge_dict[label] = ((int(solderx),int(soldery)), [idx_wire])
+                    solderx_left = edgex_left - 15
+                    soldery_left = edgey_left + 15/np.tan(theta)
+                    edge_dict_pcb[label] = ((int(solderx_left),int(soldery_left)), [idx_wire])
                 else : 
-                    edge_dict[label] = ((edgex,edgey), [idx_wire])  
+                    edge_dict_pcb[label] = ((edgex_left,edgey_left), [idx_wire])
 
-            if verbose_lv>2 and lang=='fr' : console.log(f"Soudure du fil {idx_wire} trouvée à la position {edge_dict[label][0]}.")
-            if verbose_lv>2 and lang=='en' : console.log(f"Found solder point of wire {idx_wire} at position {edge_dict[label][0]}.")
+                right_pixels_y = np.where(region[:, -6] > 0)[0] # Tous les pixels blancs dans la colonne la plus a droite
+                y_mean_right = int(np.mean(right_pixels_y))
+                edgex_right = x + w - 1
+                edgey_right = y-5 + y_mean_right
+
+                end_region_right = region[:, -26:-6]
+                wires_right = cv.HoughLines(end_region_right,1,np.pi/180, 0, 0)
+                if wires_right is not None:
+                    theta = wires_right[0][0][1]
+                    # XXX Peut être fait sans avoir a calculer edgex et edgey
+                    
+                    solderx_right = edgex_right - 5
+                    soldery_right = edgey_right + 5/np.tan(theta)
+                    edge_dict_chip[label] = ((int(solderx_right),int(soldery_right)), [idx_wire])
+                else : 
+                    edge_dict_chip[label] = ((edgex_right,edgey_right), [idx_wire])  
+
+            if verbose_lv>2 and lang=='fr' : console.log(f"Soudure du fil {idx_wire} trouvée à la position {edge_dict_pcb[label][0]}.")
+            if verbose_lv>2 and lang=='en' : console.log(f"Found solder point of wire {idx_wire} at position {edge_dict_pcb[label][0]}.")
             
             if draw : 
-                cv.circle(cimg, (int(edge_dict[label][0]), int(edge_dict[label][1])),4, (0, 255, 0), 2)
+                cv.circle(cimg, (int(edge_dict_pcb[label][0][0]), int(edge_dict_pcb[label][0][1])),4, (0, 255, 0), 2)
+                cv.circle(cimg, (int(edge_dict_chip[label][0][0]), int(edge_dict_chip[label][0][1])),4, (0, 255, 0), 2)
 
     if draw:
         magnifying_glass(cimg)
 
-    return short_list, edge_dict, labels
+    return short_list, edge_dict_pcb, edge_dict_chip, labels
