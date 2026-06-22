@@ -2,6 +2,7 @@ from programs.output import *
 from programs.count import extract_serial_number, iref_trim
 from programs.map import bounding_map_pads_pistes, bounding_map_without_trim, bounding_map_trim
 from programs.wire_detection import *
+from programs.pads import find_pads
 import json
 
 bounding_map_without_trim()
@@ -12,7 +13,7 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
 
     Arguments:
     path - str: path of the image to analyse
-    draw - bool: whether the funciton should show additional information regarding the steps of the algorithm
+    draw - bool: whether the function should show additional information regarding the steps of the algorithm
     """
 
     lang = config["language"]
@@ -73,8 +74,8 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
         with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
 
 
-            short_list_left, endpoints_left, labels_left = find_shorts(lmask, 'left', y_left_ROI, x_left_ROI, draw, verbose_lv=verbose, config=config)
-            short_list_right, endpoints_right, labels_right = find_shorts(rmask, 'right', y_right_ROI, x_right_ROI, draw, verbose_lv=verbose, config=config)
+            short_list_left, endpoints_left_pcb, endpoints_left_chip, labels_left = find_shorts(lmask, 'left', y_left_ROI, x_left_ROI, draw=True, verbose_lv=verbose, config=config)
+            short_list_right, endpoints_right_pcb, endpoints_right_chip, labels_right = find_shorts(rmask, 'right', y_right_ROI, x_right_ROI, draw=True, verbose_lv=verbose, config=config)
 
             if lang == "en" :
                 print_info("Short circuit count completed.")
@@ -102,6 +103,17 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
                     print_success("No short circuit on the right.")
                 else : 
                     print_success("Aucun court-circuit à droite.")
+        
+        running_message = "Détection des pads..."
+        if lang == "en" :
+            running_message = "Pad detection..."
+        
+        with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
+            pads = find_pads(path, draw = True, verbose = verbose, config=config)
+        if lang == "en" :
+            print_info("Pads detected.")
+        else : 
+            print_info("Pads détectés.")
 
         running_message = "Détection des pistes..."
         if lang == "en" :
@@ -140,7 +152,7 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
             pads_mask = np.zeros(img.shape[:2], dtype=np.uint8)
 
             # 2. Vérifier si des fils qui ne se touchent pas sont bien câblés.
-            for label,endpoint in endpoints_left.items():
+            for label,endpoint in endpoints_left_pcb.items():
 
                 (endpoint_location, wire_idx) = endpoint
 
@@ -173,16 +185,17 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
                     
                 
 
-            for label, endpoint in endpoints_right.items():
+            for label, endpoint in endpoints_right_pcb.items():
                 (endpoint_location, wire_idx) = endpoint
                 wire_idx = [idx + len(y_left) for idx in wire_idx]
 
                 if endpoint_location != None:
                     # Vérifier si les fils vont bien au bon endroit
-                    _, track_idx = wires[wire_idx[0]]
+                    pad_idx, track_idx = wires[wire_idx[0]]
                     if (track_idx == 332) or (track_idx == 333) : 
                         endpoint_location = (endpoint_location[0] + 25, endpoint_location[1]) 
                     in_track = (cv.pointPolygonTest(tracks[track_idx], (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), measureDist = True) >=-4)
+                    in_pad = (cv.pointPolygonTest(tracks[track_idx], (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), measureDist = True) >=-2)
                     if in_track:
                         cv.circle(non_crit_endpoints_mask, (endpoint_location[0] + ROI[2][0], endpoint_location[1] + ROI[3][1]), 4, 1, 2)
                     else:
@@ -206,6 +219,10 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
             for track in tracks.values():
                 if len(track)>0 :
                     cv.polylines(pads_mask,[np.array(track).reshape((-1,1,2))], True, 1, 1)
+            
+            for pad in pads.values():
+                if len(pad)>0 :
+                    cv.polylines(pads_mask,[np.array(pad).reshape((-1,1,2))], True, 1, 1)
 
             # for short in short_list_left: 
             #     cv.circle(cimg, (short[0] + ROI[0][0], short[1] + ROI[1][1]), 4, (0, 255, 0), 2)

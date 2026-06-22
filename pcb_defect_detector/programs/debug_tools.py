@@ -76,6 +76,8 @@ def mouse_callback(event, x, y, flags, param):
 
 def magnifying_glass(src):
 
+    size = config["size_window"]
+
     if type(src) == str:
         img = cv.imread(src)
     else:
@@ -87,7 +89,12 @@ def magnifying_glass(src):
         'offset_y': 0
     }
 
-    cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
+    if size == "auto" :
+        cv.namedWindow("Vue Principale", cv.WINDOW_AUTOSIZE)
+    elif size == "normal" :
+        cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
+    else :
+        cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
     cv.setMouseCallback("Vue Principale", mouse_callback, param=state)
 
     console.rule("[bold blue]LOUPE")
@@ -130,6 +137,7 @@ def create_view_all_masks(img, masks, colors):
 def magnifying_glass_final_result(src):
 
     lang = config["language"]
+    size = config["size_window"]
 
     colors = [[0,0,255],    #red for crit shorts
               [0,128,255],  #orange for non crit, etc
@@ -166,7 +174,12 @@ def magnifying_glass_final_result(src):
     # 6 pour la vue avec tout
 
     if lang == "en" :
-        cv.namedWindow("Main View", cv.WINDOW_NORMAL)
+        if size == "auto" :
+            cv.namedWindow("Main View", cv.WINDOW_AUTOSIZE)
+        elif size == "normal" :
+            cv.namedWindow("Main View", cv.WINDOW_NORMAL)
+        else :
+            cv.namedWindow("Main View", cv.WINDOW_NORMAL)
         cv.setMouseCallback("Main View", mouse_callback, param=state)
 
         console.rule("[bold blue]MAGNIFYING GLASS")
@@ -186,7 +199,12 @@ def magnifying_glass_final_result(src):
     
         console.print("\n[blue]Press [bold]'0'[/bold] for the view showing [bold magenta]all the changes[/bold magenta].\n")
     else :
-        cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
+        if size == "auto" :
+            cv.namedWindow("Vue Principale", cv.WINDOW_AUTOSIZE)
+        elif size == "normal" :
+            cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
+        else :
+            cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
         cv.setMouseCallback("Vue Principale", mouse_callback, param=state)
 
         console.rule("[bold blue]LOUPE")
@@ -284,3 +302,117 @@ def magnifying_glass_final_result(src):
         
 
     cv.destroyAllWindows()
+
+
+def mouse_callback_ref(event, x, y, flags, param):
+    global ix,iy,drawing, patch_size, zoom_scale
+    
+    state = param
+    img = state['current_view']
+
+    # Define the ROI 
+    x1, y1 = max(0, x - patch_size // 2), max(0, y - patch_size // 2)
+    x2, y2 = min(img.shape[1], x + patch_size // 2), min(img.shape[0], y + patch_size // 2)
+    
+    roi = img[y1:y2, x1:x2]
+    
+    if roi.size > 0:
+        zoom_view = cv.resize(roi, None, fx=zoom_scale, fy=zoom_scale, interpolation=cv.INTER_NEAREST)
+        h_z, w_z = zoom_view.shape[:2]
+        
+        # -------------------------------------
+        ## Writing the coordinates on the zoomed view
+
+        coord_text = f"X:{x} Y:{y}"
+        font = cv.FONT_HERSHEY_SIMPLEX
+        font_scale = 0.6
+        thickness = 1
+
+        (text_w, text_h), _ = cv.getTextSize(coord_text, font, font_scale, thickness)
+        # Calculate position (Bottom Right with 10px padding)
+        text_x = w_z - text_w - 10
+        text_y = h_z - 10
+        cv.rectangle(zoom_view, (text_x - 5, text_y - text_h - 5), (w_z, h_z), (0, 0, 0), -1)
+        cv.putText(zoom_view, coord_text, (text_x, text_y), font, font_scale, (0, 255, 0), thickness, cv.LINE_AA)
+        #------------------------------------
+
+        # Draw a crosshair in the center of the zoom window
+        cv.line(zoom_view, (w_z//2, 0), (w_z//2, h_z), (0, 255, 0), 1)
+        cv.line(zoom_view, (0, h_z//2), (w_z, h_z//2), (0, 255, 0), 1)
+        
+        cv.imshow("Magnifying Glass", zoom_view)
+    
+
+    if event == cv.EVENT_LBUTTONDOWN:
+        drawing = True
+        ix,iy = x,y
+
+    elif event == cv.EVENT_LBUTTONUP:
+        drawing = False
+        x_start, x_end = sorted([ix, x])
+        y_start, y_end = sorted([iy, y])
+
+        # Check if selected area large enough
+        if (x_end - x_start) > 15 and (y_end - y_start) > 15:
+            state['offset_x'] += x_start
+            state['offset_y'] += y_start
+
+            state['current_view'] = img[y_start:y_end, x_start:x_end]
+
+    elif event == cv.EVENT_LBUTTONDBLCLK:
+        num_pad = len(state['points'])
+        key = "PAD" + str(num_pad)
+        state['points'][key].append((x + state['offset_x'], y + state['offset_y']))
+
+        cv.circle(state['current_view'], (x, y), 2, (0, 0, 255), -1)
+
+    
+
+
+def magnifying_glass_ref(src):
+    
+    size = config["size_window"]
+    
+    if type(src) == str:
+        img = cv.imread(src)
+    else:
+        img = src
+
+    state = {
+        'current_view': img.copy(),
+        'offset_x': 0,
+        'offset_y': 0,
+        'points': {"PAD1" : []}
+    }
+
+    if size == "auto" :
+        cv.namedWindow("Main PCB View", cv.WINDOW_AUTOSIZE)
+    elif size == "normal" :
+        cv.namedWindow("Main PCB View", cv.WINDOW_NORMAL)
+    else :
+        cv.namedWindow("Main PCB View", cv.WINDOW_NORMAL)
+    cv.setMouseCallback("Main PCB View", mouse_callback_ref , param=state)
+
+    print("--- Magnifying Glass ---")
+    print("Drag and drop to enhance | Press 'r' to reset view | Press 'q' to finish viewing | Double click to set a point | 'd' to change group | 'p' to remove point")
+
+    while True:
+        cv.imshow("Main PCB View", state['current_view'])
+        key = cv.waitKey(1) & 0xFF 
+        
+        if key == ord('q'):
+            break
+        elif key == ord('r'): # Reset functionality
+            state['current_view'] = img.copy()
+            state['offset_x'], state['offset_y'] = 0, 0
+        elif key == ord('d'): #Create a new row in points list
+            num_pad = len(state['points'])+1
+            key = "PAD" + str(num_pad)
+            state['points'][key] = []
+        elif key == ord('p'): # Pop last point
+            if state['points'] and state['points'][-1]:
+                removed_point = state['points'][-1].pop()
+                print(f"Removed last point: {removed_point}")
+
+    cv.destroyAllWindows()
+    return state['points']
