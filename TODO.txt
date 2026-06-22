@@ -22,7 +22,7 @@ TODO :
 - Réglage Daltonien ?
 - Documentation du code
 
-v1.1 (changements rapides pour envoyer en fin de la semaine) :
+v1.1 (changements rapides pour envoyer en fin de la semaine) : DONE
 - réglage de l'input : seulement le nom du module / plusieurs possibilité qui fonctionnent (avec et sans .jpg, etc.)
 - fichier config avec : répertoire de travail, suffixe des fichiers after et before bonding, langue anglais ou français
 - organisation des dossiers : code principal qui ne change pas / référence = IREF + images de référence / images à tester / config
@@ -30,7 +30,7 @@ v1.1 (changements rapides pour envoyer en fin de la semaine) :
 - force du zoom de la loupe configurable (via le fichier config)
 - garder les proportions de l'image originelle quand on affiche le résultat pour la première fois 
 
-v1.2 :
+v1.2 : DONE
 - réglage de l'aggressivité du programme : paramètres réglables ou plusieurs presets
 - différents niveaux de verbosité/logging
 - mettre la bounding map dans le dossier Reference
@@ -41,16 +41,20 @@ v1.2 :
 - créer un fichier config.toml avec les dependencies
 - mettre les instructions concernant l'environnement virtuel dans le README
 
-
-- investiguer le fait que ça ne fonctionne pas pour Julien quand la loupe n'est pas la fenêtre active ???
-- tester le code sur un plus grand jeu de données
-- finetuner les modes d'agressivité de l'algo
-- créer un README solide et complet avec des images (result.jpg ?)
-
 v2.0 (changements plus longs) :
 - mapper les pads (fonction python qui génère automatiquement pour ne pas avoir à faire 784 rectangles à la main)
 - vérifier les pads (important pour vérifier les IREF)
-- changer la logique pour passer de numéro de fil à numéro de pad ?
+- changer la logique pour passer de numéro de fil à numéro de pad ? (2 possibilités...)
 - vérifier les IREF et afficher dans le terminal
 - donner plus de détail (numéro de pad des fils défectueux)
 - effectuer les vérifications même s'il manque des câbles (et indiquer le numéro de pad des fils manquants)
+
+
+- bug : cf talkspirit 22/05
+- option pour désactiver les fils de pulltest
+- tester le code sur un plus grand jeu de données
+- finetuner les modes d'agressivité de l'algo
+- créer un README solide et complet avec des images (result.jpg ?)
+    - step by step (quoi taper, où cliquer...)
+    - toutes les commandes possibles (check/... --...)
+    - explication fichier config.json
