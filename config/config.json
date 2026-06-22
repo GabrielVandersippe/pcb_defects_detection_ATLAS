@@ -4,7 +4,8 @@
     "suffix_after_bonding" : ["AfterBonding", "Wirebonding"],
     "suffix_before_bonding" : ["NoLight"],
     "language" : "en",
-    "zoom" : 2,
+    "zoom" : 4,
     "verbose" : 3,
-    "aggressiveness_level" : "low"
+    "aggressiveness_level" : "low",
+    "size_window" : "normal"
 }
