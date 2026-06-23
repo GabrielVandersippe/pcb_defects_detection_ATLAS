@@ -416,3 +416,143 @@ def magnifying_glass_ref(src):
 
     cv.destroyAllWindows()
     return state['points']
+
+
+
+def mouse_callback_pad(event, x, y, flags, param):
+    global ix,iy,drawing, patch_size, zoom_scale
+    
+    state = param
+    img = state['current_view']
+    lang = config['language']
+
+    # Define the ROI 
+    x1, y1 = max(0, x - patch_size // 2), max(0, y - patch_size // 2)
+    x2, y2 = min(img.shape[1], x + patch_size // 2), min(img.shape[0], y + patch_size // 2)
+    
+    roi = img[y1:y2, x1:x2]
+    
+    if roi.size > 0:
+        zoom_view = cv.resize(roi, None, fx=zoom_scale, fy=zoom_scale, interpolation=cv.INTER_NEAREST)
+        h_z, w_z = zoom_view.shape[:2]
+        
+        # -------------------------------------
+        ## Add text to the zoomed view (instructions to double-click)
+
+        text = "Double-click on the target" if lang=='en' else "Double-cliquer sur la mire"
+        font = cv.FONT_HERSHEY_SIMPLEX
+        font_scale = 0.6
+        thickness = 1
+
+        (text_w, text_h), _ = cv.getTextSize(text, font, font_scale, thickness)
+
+        y_padding = max(w_z,text_w+20)-w_z
+
+        zoom_with_text = cv.copyMakeBorder(zoom_view,text_h+20,0, 0, y_padding, cv.BORDER_CONSTANT,value=(0,0,0))
+        cv.putText(zoom_with_text, text, (10,20), font, font_scale, (0,255,0), thickness, cv.LINE_AA)
+        
+        if lang == "en" :
+            cv.imshow("Magnifying glass", zoom_with_text)
+        else :
+            cv.imshow("Loupe", zoom_with_text)
+    
+
+    if event == cv.EVENT_LBUTTONDOWN:
+        drawing = True
+        ix,iy = x,y
+
+    elif event == cv.EVENT_LBUTTONUP:
+        drawing = False
+        x_start, x_end = sorted([ix, x])
+        y_start, y_end = sorted([iy, y])
+
+        # Check if selected area large enough
+        if (x_end - x_start) > 15 and (y_end - y_start) > 15:
+            state['offset_x'] += x_start
+            state['offset_y'] += y_start
+
+            state['current_view'] = img[y_start:y_end, x_start:x_end]
+
+    elif event == cv.EVENT_LBUTTONDBLCLK:
+        
+        state['pad']=(x + state['offset_x'], y + state['offset_y'])
+
+        cv.circle(state['current_view'], (x, y), 2, (0, 0, 255), -1)
+        cv.circle(state['current_view'], (x, y), 10, (0, 0, 255), 1)
+
+
+def magnifying_glass_pads(src, pad = None):
+
+    size = config["size_window"]
+    lang = config["language"]
+
+    if type(src) == str:
+            img = cv.imread(src)
+    else:
+        img = src
+
+    state = {
+        'current_view': img.copy(),
+        'offset_x': 0,
+        'offset_y': 0,
+        'pad': pad,
+    }
+
+
+    if lang == "en" :
+        if size == "auto" :
+            cv.namedWindow("Main PCB View", cv.WINDOW_AUTOSIZE)
+        elif size == "normal" :
+            cv.namedWindow("Main PCB View", cv.WINDOW_NORMAL)
+        else :
+            cv.namedWindow("Main PCB View", cv.WINDOW_NORMAL)
+        cv.setMouseCallback("Main PCB View", mouse_callback_pad , param=state)
+
+        console.rule("[bold blue]MAGNIFYING GLASS")
+        console.print("")
+        console.print("[blue]Hover your mouse over the main view to display the zoomed-in version.")
+        console.print("[blue][bold]Drag and drop[/bold] to zoom.")
+        console.print("[blue]Press [bold]'r'[/bold] to reset the view.")
+        console.print("[blue]Press [bold]'q'[/bold] to quit.")
+        console.print("[blue][bold]Double-click[/bold] to set the position of the target.")
+    else :    
+        if size == "auto" :
+            cv.namedWindow("Vue Principale", cv.WINDOW_AUTOSIZE)
+        elif size == "normal" :
+            cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
+        else :
+            cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
+        cv.setMouseCallback("Vue Principale", mouse_callback_pad , param=state)
+
+        console.rule("[bold blue]LOUPE")
+        console.print("")
+        console.print("[blue]Passer la souris sur la vue principale pour afficher la version zoomée.")
+        console.print("[blue][bold]Glisser-déposer[/bold] pour zoomer.")
+        console.print("[blue]Appuyer sur [bold]'r'[/bold] pour réinitialiser la vue.")
+        console.print("[blue]Appuyer sur [bold]'q'[/bold] pour quitter.")
+        console.print("[blue][bold]Double-cliquer[/bold] pour définir la position de la mire.")
+
+    
+    while True:
+
+        if state['pad']:
+
+            showed_img = state['current_view'].copy()
+            cv.circle(showed_img, (state['pad'][0]-state['offset_x'], state['pad'][1]-state['offset_y']), 2, (0, 0, 255), -1)
+            cv.circle(showed_img, (state['pad'][0]-state['offset_x'], state['pad'][1]-state['offset_y']), 10, (0, 0, 255), 1)
+
+            cv.imshow("Main PCB View", showed_img)
+            key = cv.waitKey(1) & 0xFF 
+        
+        else: 
+            cv.imshow("Main PCB View", state['current_view'])
+            key = cv.waitKey(1) & 0xFF 
+        
+        if key == ord('q'):
+            break
+        elif key == ord('r'): # Reset functionality
+            state['current_view'] = img.copy()
+            state['offset_x'], state['offset_y'] = 0, 0
+
+    cv.destroyAllWindows()
+    return state['pad']

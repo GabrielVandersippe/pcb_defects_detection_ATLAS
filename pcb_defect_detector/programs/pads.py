@@ -20,10 +20,10 @@ def find_pads (path, draw = False, verbose = 0, config = {}):
 
     shape = img.shape
     
-    corner_GA1 = magnifying_glass_ref(img[:1000,:1000])["PAD1"][0]
-    corner_GA2 = magnifying_glass_ref(img[-1000:,:1000])["PAD1"][0]
-    corner_GA3 = magnifying_glass_ref(img[-1000:,-1000:])["PAD1"][0]
-    corner_GA4 = magnifying_glass_ref(img[:1000,-1000:])["PAD1"][0]
+    corner_GA1 = magnifying_glass_pads(img[:1000,:1000])
+    corner_GA2 = magnifying_glass_pads(img[-1000:,:1000])
+    corner_GA3 = magnifying_glass_pads(img[-1000:,-1000:])
+    corner_GA4 = magnifying_glass_pads(img[:1000,-1000:])
     
     corners = np.array([corner_GA1, corner_GA2, corner_GA3, corner_GA4])
     corners[1,1] += shape[0] - 1000
