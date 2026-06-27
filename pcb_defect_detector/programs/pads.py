@@ -21,9 +21,17 @@ def find_pads (path, draw = False, verbose = 0, config = {}):
     shape = img.shape
     
     corner_GA1 = magnifying_glass_pads(img[:1000,:1000])
+    if not corner_GA1:
+        raise Exception('Program Aborted.')
     corner_GA2 = magnifying_glass_pads(img[-1000:,:1000])
+    if not corner_GA2:
+        raise Exception('Program Aborted.')
     corner_GA3 = magnifying_glass_pads(img[-1000:,-1000:])
+    if not corner_GA3:
+        raise Exception('Program Aborted.')
     corner_GA4 = magnifying_glass_pads(img[:1000,-1000:])
+    if not corner_GA4:
+        raise Exception('Program Aborted.')
     
     corners = np.array([corner_GA1, corner_GA2, corner_GA3, corner_GA4])
     corners[1,1] += shape[0] - 1000

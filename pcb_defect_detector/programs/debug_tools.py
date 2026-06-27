@@ -4,6 +4,8 @@ from programs.utils import *
 from programs.data import *
 from programs.find_targets import *
 from time import strftime, gmtime
+import tkinter as tk
+from tkinter import messagebox
 
 import json
 
@@ -231,9 +233,9 @@ def magnifying_glass_final_result(src):
             cv.imshow("Vue Principale", state['current_view'])
         key = cv.waitKey(1) & 0xFF 
         
-        if key == ord('q'): # Quitter
+        if key == ord('q') or key == ord('Q'): # Quitter
             break
-        elif key == ord('r'): # Reset 
+        elif key == ord('r') or key == ord('R'): # Reset 
 
             if state['current_mode'] == 0:
                 state['current_view'] = img.copy()
@@ -252,7 +254,7 @@ def magnifying_glass_final_result(src):
 
             state['offset_x'], state['offset_y'] = 0, 0
 
-        elif key == ord('s'):
+        elif key == ord('s') or key == ord('S'):
             t = strftime("%d-%m-%Y-%H-%M-%S", gmtime())
             outpath = "../output/output" + str(t) + ".png"
             cv.imwrite(outpath, state['current_view'])
@@ -419,7 +421,7 @@ def magnifying_glass_ref(src):
 
 
 
-def mouse_callback_pad(event, x, y, flags, param):
+def mouse_callback_pad(text_params, event, x, y, flags, param):
     global ix,iy,drawing, patch_size, zoom_scale
     
     state = param
@@ -439,22 +441,27 @@ def mouse_callback_pad(event, x, y, flags, param):
         # -------------------------------------
         ## Add text to the zoomed view (instructions to double-click)
 
-        text = "Double-click on the target" if lang=='en' else "Double-cliquer sur la mire"
-        font = cv.FONT_HERSHEY_SIMPLEX
-        font_scale = 0.6
-        thickness = 1
-
-        (text_w, text_h), _ = cv.getTextSize(text, font, font_scale, thickness)
-
-        y_padding = max(w_z,text_w+20)-w_z
-
-        zoom_with_text = cv.copyMakeBorder(zoom_view,text_h+20,0, 0, y_padding, cv.BORDER_CONSTANT,value=(0,0,0))
-        cv.putText(zoom_with_text, text, (10,20), font, font_scale, (0,255,0), thickness, cv.LINE_AA)
+        border_x = text_params['text_w']+20
+        x_padding = max(w_z, border_x)-w_z
+        y_padding = text_params['text_h']+20
         
-        if lang == "en" :
-            cv.imshow("Magnifying glass", zoom_with_text)
-        else :
-            cv.imshow("Loupe", zoom_with_text)
+        window_name = "Magnifying glass" if lang == 'en' else "Loupe"
+
+        cv.line(zoom_view, (w_z//2, 0), (w_z//2, h_z), (0, 255, 0), 1)
+        cv.line(zoom_view, (0, h_z//2), (w_z, h_z//2), (0, 255, 0), 1)
+
+        if state['pad'] :
+
+            x_pad = (state['pad'][0]-state['offset_x']-x1)*zoom_scale
+            y_pad = (state['pad'][1]-state['offset_y']-y1)*zoom_scale
+
+            cv.circle(zoom_view, (x_pad, y_pad), 4 , (0, 0, 255), -1)
+            cv.circle(zoom_view, (x_pad, y_pad), 20, (0, 0, 255), 3)
+
+        zoom_with_text = cv.copyMakeBorder(zoom_view,y_padding,0, 0, x_padding, cv.BORDER_CONSTANT,value=(0,0,0))
+        cv.putText(zoom_with_text, text_params['text'], (10,20), text_params['font'], text_params['font_scale'], (0,255,0), text_params['thickness'], cv.LINE_AA)
+
+        cv.imshow(window_name, zoom_with_text)
     
 
     if event == cv.EVENT_LBUTTONDOWN:
@@ -477,14 +484,19 @@ def mouse_callback_pad(event, x, y, flags, param):
         
         state['pad']=(x + state['offset_x'], y + state['offset_y'])
 
-        cv.circle(state['current_view'], (x, y), 2, (0, 0, 255), -1)
-        cv.circle(state['current_view'], (x, y), 10, (0, 0, 255), 1)
-
 
 def magnifying_glass_pads(src, pad = None):
 
     size = config["size_window"]
     lang = config["language"]
+
+    text_params={}
+
+    text_params['text'] = "Double-click on the target:" if lang=='en' else "Double-cliquer sur la mire :"
+    text_params['font'] = cv.FONT_HERSHEY_SIMPLEX
+    text_params['font_scale'] = 0.6
+    text_params['thickness'] = 1
+    (text_params['text_w'], text_params['text_h']), _ = cv.getTextSize(text_params['text'], text_params['font'], text_params['font_scale'], text_params['thickness'])
 
     if type(src) == str:
             img = cv.imread(src)
@@ -500,13 +512,13 @@ def magnifying_glass_pads(src, pad = None):
 
 
     if lang == "en" :
+        window_name = "Main PCB View"
         if size == "auto" :
-            cv.namedWindow("Main PCB View", cv.WINDOW_AUTOSIZE)
+            cv.namedWindow(window_name, cv.WINDOW_AUTOSIZE)
         elif size == "normal" :
-            cv.namedWindow("Main PCB View", cv.WINDOW_NORMAL)
+            cv.namedWindow(window_name, cv.WINDOW_NORMAL)
         else :
-            cv.namedWindow("Main PCB View", cv.WINDOW_NORMAL)
-        cv.setMouseCallback("Main PCB View", mouse_callback_pad , param=state)
+            cv.namedWindow(window_name, cv.WINDOW_NORMAL)
 
         console.rule("[bold blue]MAGNIFYING GLASS")
         console.print("")
@@ -516,13 +528,13 @@ def magnifying_glass_pads(src, pad = None):
         console.print("[blue]Press [bold]'q'[/bold] to quit.")
         console.print("[blue][bold]Double-click[/bold] to set the position of the target.")
     else :    
+        window_name = "Vue Principale"
         if size == "auto" :
-            cv.namedWindow("Vue Principale", cv.WINDOW_AUTOSIZE)
+            cv.namedWindow(window_name, cv.WINDOW_AUTOSIZE)
         elif size == "normal" :
-            cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
+            cv.namedWindow(window_name, cv.WINDOW_NORMAL)
         else :
-            cv.namedWindow("Vue Principale", cv.WINDOW_NORMAL)
-        cv.setMouseCallback("Vue Principale", mouse_callback_pad , param=state)
+            cv.namedWindow(window_name, cv.WINDOW_NORMAL)
 
         console.rule("[bold blue]LOUPE")
         console.print("")
@@ -532,7 +544,8 @@ def magnifying_glass_pads(src, pad = None):
         console.print("[blue]Appuyer sur [bold]'q'[/bold] pour quitter.")
         console.print("[blue][bold]Double-cliquer[/bold] pour définir la position de la mire.")
 
-    
+    cv.setMouseCallback(window_name, lambda a,b,c,d,e: mouse_callback_pad(text_params, a, b, c, d, e) , state)
+
     while True:
 
         if state['pad']:
@@ -541,16 +554,37 @@ def magnifying_glass_pads(src, pad = None):
             cv.circle(showed_img, (state['pad'][0]-state['offset_x'], state['pad'][1]-state['offset_y']), 2, (0, 0, 255), -1)
             cv.circle(showed_img, (state['pad'][0]-state['offset_x'], state['pad'][1]-state['offset_y']), 10, (0, 0, 255), 1)
 
-            cv.imshow("Main PCB View", showed_img)
+            cv.imshow(window_name, showed_img)
             key = cv.waitKey(1) & 0xFF 
         
         else: 
-            cv.imshow("Main PCB View", state['current_view'])
+            cv.imshow(window_name, state['current_view'])
             key = cv.waitKey(1) & 0xFF 
         
-        if key == ord('q'):
-            break
-        elif key == ord('r'): # Reset functionality
+        if key == ord('q') or key == ord('Q'):
+            if not state['pad']:
+                root = tk.Tk()
+                root.withdraw()
+                root.attributes('-topmost', True)
+
+                if lang == 'en':
+                    title = "No target selected"
+                    msg = "Abort without selecting a target? (This will end the program.)"
+                else:
+                    title = "AAucune mire sélectionnée"
+                    msg = "Quitter sans sélectionner de cible ? (Ceci mettra fin au programme.)"
+
+                should_abort = messagebox.askyesno(title, msg, parent=root)
+                root.destroy()
+
+                if should_abort:
+                    break
+                else:
+                    continue
+            else:
+                break
+
+        elif key == ord('r') or key == ord('R'): # Reset functionality
             state['current_view'] = img.copy()
             state['offset_x'], state['offset_y'] = 0, 0
 
