@@ -42,12 +42,12 @@ v1.2 : DONE
 - mettre les instructions concernant l'environnement virtuel dans le README
 
 v2.0 (changements plus longs) :
-- mapper les pads (fonction python qui génère automatiquement pour ne pas avoir à faire 784 rectangles à la main)
-- vérifier les pads (important pour vérifier les IREF)
-- changer la logique pour passer de numéro de fil à numéro de pad ? (2 possibilités...)
-- vérifier les IREF et afficher dans le terminal
-- donner plus de détail (numéro de pad des fils défectueux)
-- effectuer les vérifications même s'il manque des câbles (et indiquer le numéro de pad des fils manquants)
+- mapper les pads (fonction python qui génère automatiquement pour ne pas avoir à faire 784 rectangles à la main) : OK
+- vérifier les pads (important pour vérifier les IREF) : TEST
+- changer la logique pour passer de numéro de fil à numéro de pad ? (2 possibilités...) : TEST
+- vérifier les IREF et afficher dans le terminal : TEST
+- donner plus de détail (numéro de pad des fils défectueux) : TEST
+- effectuer les vérifications même s'il manque des câbles (et indiquer le numéro de pad des fils manquants) : TEST
 
 
 - bug : cf talkspirit 22/05
@@ -58,3 +58,9 @@ v2.0 (changements plus longs) :
     - step by step (quoi taper, où cliquer...)
     - toutes les commandes possibles (check/... --...)
     - explication fichier config.json
+
+
+QUESTIONS :
+- quelle version ? coins ou mires ?
+plus pratique pour l'utilisateur = coins ?
+plus précis = mires ? Est-ce qu'il peut y avoir des incertitudes importantes sur la distance entre les coins et les pads ?

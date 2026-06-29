@@ -220,12 +220,18 @@ def bounding_map_trim (trim_) :
     Arguments :
     trim_ - tuple of 4 ints : the wanted trims for each quarter
 
-    Returns : None
+    Returns :
+    map1 - bonding map for GA1
+    map2 - bonding map for GA2
+    map3 - bonding map for GA3
+    map4 - bonding map for GA4
     """
     trim(trim_[0],map1)
     trim(trim_[1],map2)
     trim(trim_[2],map3)
     trim(trim_[3],map4)
+    
+    return (map1, map2, map3, map4)
 
 # bounding_map_without_trim()
 # bounding_map_trim(trim_nb)

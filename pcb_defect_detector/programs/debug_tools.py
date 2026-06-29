@@ -439,7 +439,7 @@ def mouse_callback_pad(event, x, y, flags, param):
         # -------------------------------------
         ## Add text to the zoomed view (instructions to double-click)
 
-        text = "Double-click on the target" if lang=='en' else "Double-cliquer sur la mire"
+        text = "Double-click on the corner" if lang=='en' else "Double-cliquer sur le coin"
         font = cv.FONT_HERSHEY_SIMPLEX
         font_scale = 0.6
         thickness = 1
@@ -451,6 +451,9 @@ def mouse_callback_pad(event, x, y, flags, param):
         zoom_with_text = cv.copyMakeBorder(zoom_view,text_h+20,0, 0, y_padding, cv.BORDER_CONSTANT,value=(0,0,0))
         cv.putText(zoom_with_text, text, (10,20), font, font_scale, (0,255,0), thickness, cv.LINE_AA)
         
+        cv.line(zoom_with_text, (w_z//2, text_h+20), (w_z//2, h_z), (0, 255, 0), 1)
+        cv.line(zoom_with_text, (0, h_z//2+text_h+20), (w_z, h_z//2+text_h+20), (0, 255, 0), 1)
+
         if lang == "en" :
             cv.imshow("Magnifying glass", zoom_with_text)
         else :
