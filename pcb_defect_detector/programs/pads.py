@@ -12,8 +12,7 @@ def find_pads (path, draw = False, verbose = 0, config = {}):
 
     with open("programs/REF_CORNERS.json") as f:
         data = json.load(f)
-    
-    corners_ref = np.array(data)
+        corners_ref = np.array(data)
 
     img = cv.imread(path).copy()
     #img = cv.imread("reference/Ref_img_bonded.jpg").copy()
@@ -47,28 +46,37 @@ def find_pads (path, draw = False, verbose = 0, config = {}):
     H = cv.findHomography(corners_ref, corners, cv.RANSAC)[0]
     if verbose>1 : console.log(f"Homographies calculées.")
 
+    with open("programs/REF_PADS_GROUPED.json") as f:
+        pads_ref = json.load(f)
+
+    nb_pads = 198
+
     pads = {}
 
-    with open("programs/REF_PADS.json") as f:
-        data = json.load(f)
-        for pad_idx, pad in data.items():
-            print(pad_idx)
-            
-            if len(pad) == 2 :
-                x0, y0 = pad[0]
-                x1, y1 = pad[1]
-                pad = np.array([[x0,y0], [x1,y0], [x1,y1], [x0,y1]])
+    cimg = img.copy()
 
-            pad_bonded = warp_points(pad, H).astype(np.int32)
-            pads[int(pad_idx[3:])] = pad_bonded
-    
-            if draw :
-                if len(pad_bonded)>0 :
-                    print(pad_bonded)
-                    cv.polylines(img,[np.array(pad_bonded).reshape((-1,1,2))], True, (0, 255, 0), 3)
+    for GA, ref in pads_ref.items():
+        tl, tr, br, bl = warp_points(ref, H) #top left, top right, bottom right, bottom left
+        delta_height = (bl[0] - tl[0])/nb_pads
+        delta_width = (bl[1] - tl[1])/nb_pads
+
+        print(delta_height, delta_width)
+
+        pads[GA] = {}
+
+        for i in range(nb_pads):
+            key = GA.strip('GA')
+            nb_str = str(i)
+            key = key + (3-len(nb_str))*'0' + nb_str
+            pads[GA][key] = [(int(tl[0]+i*delta_height), int(tl[1]+i*delta_width)), 
+                                (int(tr[0]+i*delta_height), int(tr[1]+i*delta_width)),
+                                (int(tr[0]+(i+1)*delta_height), int(tr[1]+(i+1)*delta_width)),
+                                (int(tl[0]+(i+1)*delta_height), int(tl[1]+(i+1)*delta_width))]
+
+            cv.rectangle(cimg, pads[GA][key][0], pads[GA][key][2], [0,0,255],1)
+
+    magnifying_glass(cimg)
+
     if verbose>1 : console.log(f"Transposition des pads effectuée.")
-
-    if draw :
-        magnifying_glass(img)
     
     return pads
