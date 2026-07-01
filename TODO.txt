@@ -53,14 +53,10 @@ v2.0 (changements plus longs) :
 - bug : cf talkspirit 22/05
 - option pour désactiver les fils de pulltest
 - tester le code sur un plus grand jeu de données
+    P1005 : bcp trop de fils mal cablés (manque 1 fil...)
 - finetuner les modes d'agressivité de l'algo
 - créer un README solide et complet avec des images (result.jpg ?)
     - step by step (quoi taper, où cliquer...)
     - toutes les commandes possibles (check/... --...)
     - explication fichier config.json
-
-
-QUESTIONS :
-- quelle version ? coins ou mires ?
-plus pratique pour l'utilisateur = coins ?
-plus précis = mires ? Est-ce qu'il peut y avoir des incertitudes importantes sur la distance entre les coins et les pads ?
+- ajouter un distance à la cible configurable dans aggressiveness_config.json (4 pour l'instant sur les pistes / 1 sur les pads = OK)

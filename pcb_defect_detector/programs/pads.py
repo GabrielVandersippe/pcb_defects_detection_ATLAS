@@ -44,7 +44,6 @@ def find_pads (path, draw = False, verbose = 0, config = {}):
     with open("programs/REF_PADS.json") as f:
         data = json.load(f)
         for pad_idx, pad in data.items():
-            print(pad_idx)
             
             if len(pad) == 2 :
                 x0, y0 = pad[0]

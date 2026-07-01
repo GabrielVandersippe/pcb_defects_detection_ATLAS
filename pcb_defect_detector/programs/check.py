@@ -136,6 +136,7 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
         # Format piste : XYY, X n° du GA, YY n°de piste
 
         nb_wires_off_track = 0
+        nb_wires_off_pad = 0
         nb_crit_shorts_left = 0
         nb_not_crit_shorts_left = 0
         nb_crit_shorts_right = 0
@@ -153,11 +154,13 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
         list_non_crit_short_left = []
         list_crit_short_right = []
         list_non_crit_short_right = []
-        list_crit_endpoints = []
+        list_crit_track = []
+        list_crit_pad = []
 
         # 2. Vérifier si des fils qui ne se touchent pas sont bien câblés.
         iref_read = [([False] * 4) for i in range (4)] # iref_read[0] is GA1 / iref_read[1] is GA2 / iref_read[2] is GA3 / iref_read[3] is GA4
         last_pad = 1001
+        pad_idx = 1001
         for label,endpoint in endpoints_left_pcb.items():
 
             (endpoint_location_pcb, wire_idx_pcb) = endpoint
@@ -167,34 +170,55 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
 
             if endpoint_location_pcb != None:
                 # Vérifier si les fils vont bien au bon endroit
-                in_pad = (cv.pointPolygonTest(pads[last_pad], (endpoint_location_chip[0] + ROI[0][0], endpoint_location_chip[1] + ROI[1][1]), measureDist = True) >= -2)
+                in_pad = (cv.pointPolygonTest(pads[last_pad], (endpoint_location_chip[0] + ROI[0][0], endpoint_location_chip[1] + ROI[1][1]), measureDist = True) >= -1) #temp
                 while not(in_pad) and (last_pad < 2199) :
                     last_pad += 1
                     if last_pad == 1199 :
                         last_pad = 2001
-                    in_pad = (cv.pointPolygonTest(pads[last_pad], (endpoint_location_chip[0] + ROI[0][0], endpoint_location_chip[1] + ROI[1][1]), measureDist = True) >= -2)
-                pad_idx = last_pad
-                if pad_idx > expected_pad_idx :
-                    list_missing.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)])
-                    missing_in_a_row.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)])
-                else :
-                    missing_in_a_row = []
-                # cas pad_idx < expected_pad_idx ??
-                if pad_idx < 2000 :
-                    track_idx = map1[pad_idx - 1001] + 100
-                else :
-                    track_idx = map2[pad_idx - 2001] + 200
-                if (track_idx == 230) or (track_idx == 231) : 
-                    endpoint_location_pcb = (endpoint_location_pcb[0] - 25, endpoint_location_pcb[1]) 
-                in_track = (cv.pointPolygonTest(tracks[track_idx], (endpoint_location_pcb[0] + ROI[0][0], endpoint_location_pcb[1] + ROI[1][1]), measureDist = True) >= -4)
-                if in_track:
-                    cv.circle(non_crit_endpoints_mask, (endpoint_location_pcb[0] + ROI[0][0], endpoint_location_pcb[1] + ROI[1][1]), 4, 1, 2)
-                    cv.circle(non_crit_endpoints_mask, (endpoint_location_chip[0] + ROI[0][0], endpoint_location_chip[1] + ROI[1][1]), 4, 1, 2)
-                else:
-                    nb_wires_off_track += 1
-                    cv.circle(crit_endpoints_mask, (endpoint_location_pcb[0] + ROI[0][0], endpoint_location_pcb[1] + ROI[1][1]), 6, 1, 3)
+                    if last_pad != 2199 : 
+                        in_pad = (cv.pointPolygonTest(pads[last_pad], (endpoint_location_chip[0] + ROI[0][0], endpoint_location_chip[1] + ROI[1][1]), measureDist = True) >= -1) #temp
+                if last_pad == 2199 : # Si on atteint le bout de la liste de pads, le fil n'est pas bien cablé sur le chip
+                    last_pad = pad_idx
+                    nb_wires_off_pad += 1
+                    list_crit_pad.append(expected_pad_idx)
                     cv.circle(crit_endpoints_mask, (endpoint_location_chip[0] + ROI[0][0], endpoint_location_chip[1] + ROI[1][1]), 6, 1, 3)
-                    list_crit_endpoints.append(pad_idx)
+                else :
+                    pad_idx = last_pad
+                    if pad_idx > expected_pad_idx :
+                        list_missing.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)])
+                        missing_in_a_row.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)])
+                    else :
+                        missing_in_a_row = []
+                    # cas pad_idx < expected_pad_idx ??
+                    off_pad = False
+                    if pad_idx < 2000 :
+                        track_idx = map1[pad_idx - 1001] + 100
+                        if track_idx == 100 : # Si le fil est détecté sur un pad où il ne devrait pas y avoir de fil
+                            off_pad = True
+                            nb_wires_off_pad += 1
+                            list_crit_pad.append(pad_idx)
+                            cv.circle(crit_endpoints_mask, (endpoint_location_chip[0] + ROI[0][0], endpoint_location_chip[1] + ROI[1][1]), 6, 1, 3)
+                        else :
+                            cv.circle(non_crit_endpoints_mask, (endpoint_location_chip[0] + ROI[0][0], endpoint_location_chip[1] + ROI[1][1]), 4, 1, 2)
+                    else :
+                        track_idx = map2[pad_idx - 2001] + 200
+                        if track_idx == 200 : # Si le fil est détecté sur un pad où il ne devrait pas y avoir de fil
+                            off_pad = True
+                            nb_wires_off_pad += 1
+                            list_crit_pad.append(pad_idx)
+                            cv.circle(crit_endpoints_mask, (endpoint_location_chip[0] + ROI[0][0], endpoint_location_chip[1] + ROI[1][1]), 6, 1, 3)
+                        else :
+                            cv.circle(non_crit_endpoints_mask, (endpoint_location_chip[0] + ROI[0][0], endpoint_location_chip[1] + ROI[1][1]), 4, 1, 2)
+                    if (track_idx == 230) or (track_idx == 231) : 
+                        endpoint_location_pcb = (endpoint_location_pcb[0] - 25, endpoint_location_pcb[1]) 
+                    if not(off_pad) :
+                        in_track = (cv.pointPolygonTest(tracks[track_idx], (endpoint_location_pcb[0] + ROI[0][0], endpoint_location_pcb[1] + ROI[1][1]), measureDist = True) >= -4)
+                        if in_track:
+                            cv.circle(non_crit_endpoints_mask, (endpoint_location_pcb[0] + ROI[0][0], endpoint_location_pcb[1] + ROI[1][1]), 4, 1, 2)
+                        else:
+                            nb_wires_off_track += 1
+                            cv.circle(crit_endpoints_mask, (endpoint_location_pcb[0] + ROI[0][0], endpoint_location_pcb[1] + ROI[1][1]), 6, 1, 3)
+                            list_crit_track.append(pad_idx)
                 
                 # Check if the wire's endpoint on the chip is in a iref pad
                 if (pad_idx == 1047) :
@@ -237,6 +261,7 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
             
 
         last_pad = 3001
+        pad_idx = 3001
         for label, endpoint in endpoints_right_pcb.items():
 
             (endpoint_location_pcb, wire_idx_pcb) = endpoint
@@ -245,29 +270,51 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
 
             if endpoint_location_pcb != None:
                 # Vérifier si les fils vont bien au bon endroit
-                in_pad = (cv.pointPolygonTest(pads[last_pad], (endpoint_location_chip[0] + ROI[0][0], endpoint_location_chip[1] + ROI[1][1]), measureDist = True) >= -2)
+                in_pad = (cv.pointPolygonTest(pads[last_pad], (endpoint_location_chip[0] + ROI[2][0], endpoint_location_chip[1] + ROI[3][1]), measureDist = True) >= -1)
                 while not(in_pad) and (last_pad < 4199) :
                     last_pad += 1
                     if last_pad == 3199 :
                         last_pad = 4001
-                    in_pad = (cv.pointPolygonTest(pads[last_pad], (endpoint_location_chip[0] + ROI[0][0], endpoint_location_chip[1] + ROI[1][1]), measureDist = True) >= -2)
-                pad_idx = last_pad
-                if pad_idx < 4000 :
-                    track_idx = map3[pad_idx - 3001] + 300
-                else :
-                    track_idx = map4[pad_idx - 4001] + 400
-                if (track_idx == 332) or (track_idx == 333) : 
-                    endpoint_location_pcb = (endpoint_location_pcb[0] + 25, endpoint_location_pcb[1]) 
-                in_track = (cv.pointPolygonTest(tracks[track_idx], (endpoint_location_pcb[0] + ROI[2][0], endpoint_location_pcb[1] + ROI[3][1]), measureDist = True) >=-4)
-
-                if in_track:
-                    cv.circle(non_crit_endpoints_mask, (endpoint_location_pcb[0] + ROI[2][0], endpoint_location_pcb[1] + ROI[3][1]), 4, 1, 2)
-                    cv.circle(non_crit_endpoints_mask, (endpoint_location_chip[0] + ROI[2][0], endpoint_location_chip[1] + ROI[3][1]), 4, 1, 2)
-                else:
-                    nb_wires_off_track += 1
-                    list_crit_endpoints.append(pad_idx)
-                    cv.circle(crit_endpoints_mask, (endpoint_location_pcb[0] + ROI[2][0], endpoint_location_pcb[1] + ROI[3][1]), 6, (255, 0, 0), 3)
+                    # cas 4199 : (sur le premier fil !) reprendre pad_idx et dire qu'un fil n'a pas pu être lu...
+                    if last_pad != 4199 :
+                        in_pad = (cv.pointPolygonTest(pads[last_pad], (endpoint_location_chip[0] + ROI[2][0], endpoint_location_chip[1] + ROI[3][1]), measureDist = True) >= -1)
+                if last_pad == 4199 : # Si on atteint le bout de la liste de pads, le fil n'est pas bien cablé sur le chip
+                    last_pad = pad_idx
+                    nb_wires_off_pad += 1
+                    list_crit_pad.append(pad_idx)
                     cv.circle(crit_endpoints_mask, (endpoint_location_chip[0] + ROI[2][0], endpoint_location_chip[1] + ROI[3][1]), 6, (255, 0, 0), 3)
+                else :
+                    pad_idx = last_pad
+                    off_pad = False
+                    if pad_idx < 4000 :
+                        track_idx = map3[pad_idx - 3001] + 300
+                        if track_idx == 300 : # Si le fil est détecté sur un pad où il ne devrait pas y avoir de fil
+                            off_pad = True
+                            nb_wires_off_pad += 1
+                            list_crit_pad.append(pad_idx)
+                            cv.circle(crit_endpoints_mask, (endpoint_location_chip[0] + ROI[2][0], endpoint_location_chip[1] + ROI[3][1]), 6, (255, 0, 0), 3)
+                        else :
+                            cv.circle(non_crit_endpoints_mask, (endpoint_location_chip[0] + ROI[2][0], endpoint_location_chip[1] + ROI[3][1]), 4, 1, 2)
+                    else :
+                        track_idx = map4[pad_idx - 4001] + 400
+                        if track_idx == 400 : # Si le fil est détecté sur un pad où il ne devrait pas y avoir de fil
+                            off_pad = True
+                            nb_wires_off_pad += 1
+                            list_crit_pad.append(pad_idx)
+                            cv.circle(crit_endpoints_mask, (endpoint_location_chip[0] + ROI[2][0], endpoint_location_chip[1] + ROI[3][1]), 6, (255, 0, 0), 3)
+                        else :
+                            cv.circle(non_crit_endpoints_mask, (endpoint_location_chip[0] + ROI[2][0], endpoint_location_chip[1] + ROI[3][1]), 4, 1, 2)
+                    if (track_idx == 332) or (track_idx == 333) : 
+                        endpoint_location_pcb = (endpoint_location_pcb[0] + 25, endpoint_location_pcb[1]) 
+                    if not(off_pad) :
+                        in_track = (cv.pointPolygonTest(tracks[track_idx], (endpoint_location_pcb[0] + ROI[2][0], endpoint_location_pcb[1] + ROI[3][1]), measureDist = True) >=-4)
+
+                        if in_track:
+                            cv.circle(non_crit_endpoints_mask, (endpoint_location_pcb[0] + ROI[2][0], endpoint_location_pcb[1] + ROI[3][1]), 4, 1, 2)
+                        else:
+                            nb_wires_off_track += 1
+                            list_crit_track.append(pad_idx)
+                            cv.circle(crit_endpoints_mask, (endpoint_location_pcb[0] + ROI[2][0], endpoint_location_pcb[1] + ROI[3][1]), 6, (255, 0, 0), 3)
                     
 
                 # Check if the wire's endpoint on the chip is in a iref pad
@@ -363,7 +410,7 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
     np.save("../temp/non_crit_endpoints_mask.npy", non_crit_endpoints_mask)
     np.save("../temp/pads_mask.npy", pads_mask)
 
-    afficher_bilan(n_detected, n_expected, nb_not_crit_shorts_left, nb_not_crit_shorts_right, nb_crit_shorts_left, nb_crit_shorts_right, nb_wires_off_track, iref, iref_read, list_missing, list_crit_short_left, list_non_crit_short_left, list_crit_short_right, list_non_crit_short_right, list_crit_endpoints)
+    afficher_bilan(n_detected, n_expected, nb_not_crit_shorts_left, nb_not_crit_shorts_right, nb_crit_shorts_left, nb_crit_shorts_right, nb_wires_off_track, nb_wires_off_pad, iref, iref_nb_read, list_missing, list_crit_short_left, list_non_crit_short_left, list_crit_short_right, list_non_crit_short_right, list_crit_track, list_crit_pad)
     magnifying_glass_final_result(cimg)
 
 ''' ANCIENNE VERSION
