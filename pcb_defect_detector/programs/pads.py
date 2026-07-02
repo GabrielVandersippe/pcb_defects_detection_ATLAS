@@ -46,10 +46,10 @@ def find_pads (path, draw = False, verbose = 0, config = {}):
     H = cv.findHomography(corners_ref, corners, cv.RANSAC)[0]
     if verbose>1 : console.log(f"Homographies calculées.")
 
-    with open("programs/REF_PADS_GROUPED.json") as f:
-        pads_ref = json.load(f)
+    # with open("programs/REF_PADS_GROUPED.json") as f:
+    #     pads_ref = json.load(f)
 
-    nb_pads = 198
+    # nb_pads = 198
 
     pads = {}
 
@@ -70,5 +70,8 @@ def find_pads (path, draw = False, verbose = 0, config = {}):
                     print(pad_bonded)
                     cv.polylines(img,[np.array(pad_bonded).reshape((-1,1,2))], True, (0, 255, 0), 3)
     if verbose>1 : console.log(f"Transposition des pads effectuée.")
+
+    if draw :
+        magnifying_glass(img)
     
     return pads

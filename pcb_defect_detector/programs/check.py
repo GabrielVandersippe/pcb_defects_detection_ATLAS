@@ -105,7 +105,7 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
         running_message = "Pad detection..."
     
     with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
-        pads = find_pads(path, draw = False, verbose = verbose, config=config)
+        pads = find_pads(path, draw = True, verbose = verbose, config=config)
     if lang == "en" :
         print_info("Pads detected.")
     else : 
