@@ -50,13 +50,17 @@ v2.0 (changements plus longs) :
 - effectuer les vérifications même s'il manque des câbles (et indiquer le numéro de pad des fils manquants) : TEST
 
 
+- créer un README solide et complet avec des images (result.jpg ?)
+    - step by step (quoi taper, où cliquer...)
+    - toutes les commandes possibles (check/... --...)
+    - explication fichier config.json
+
 - bug : cf talkspirit 22/05
 - option pour désactiver les fils de pulltest
 - tester le code sur un plus grand jeu de données
     P1005 : bcp trop de fils mal cablés (manque 1 fil...)
 - finetuner les modes d'agressivité de l'algo
-- créer un README solide et complet avec des images (result.jpg ?)
-    - step by step (quoi taper, où cliquer...)
-    - toutes les commandes possibles (check/... --...)
-    - explication fichier config.json
 - ajouter un distance à la cible configurable dans aggressiveness_config.json (4 pour l'instant sur les pistes / 1 sur les pads = OK)
+- ajouter sauvegarde des images dans un dossier output : commande check --save
+- ajouter une commande "show" pour montrer la dernière image (depuis /temp)
+- update le README avec les nouvelles commandes/options...
