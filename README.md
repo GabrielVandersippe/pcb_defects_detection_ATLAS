@@ -31,11 +31,13 @@ Application Python développée pour le CEA dans le cadre de l'upgrade du détec
 L'application est hébergée sur GitHub. Ouvrez un terminal et clonez le dépôt :
 
 **Via SSH :**
+
 ```bash
 git clone git@github.com:GabrielVandersippe/pcb_defects_detection_ATLAS.git
 ```
 
 **Via HTTPS :**
+
 ```bash
 git clone https://github.com/GabrielVandersippe/pcb_defects_detection_ATLAS.git
 ```
@@ -62,16 +64,21 @@ git clone https://github.com/GabrielVandersippe/pcb_defects_detection_ATLAS.git
    eval $(poetry env activate)
    ```
 2. Si la commande renvoie un message du type :
+
    ```
    You must source this script: $ source chemin/vers/python
    ```
+
    il faut copier-coller la commande proposée, par exemple :
+
    ```bash
    source chemin/vers/python
    ```
+
    ⚠️ Attention : il arrive que le chemin proposé utilise des `\` au lieu de `/`. Dans ce cas, remplacez-les manuellement avant d'exécuter la commande.
 
    Si la commande `source` n'est pas reconnue, elle peut être installée avec :
+
    ```bash
    pip install source
    ```
@@ -111,12 +118,12 @@ python main.py check --input nom_du_fichier_cablé
 
 L'argument `--input` accepte plusieurs formats :
 
-| Format accepté | Exemple |
-|---|---|
-| Chemin complet du fichier | `/chemin/vers/mon_fichier.png` |
+| Format accepté                                  | Exemple                            |
+| ----------------------------------------------- | ---------------------------------- |
+| Chemin complet du fichier                       | `/chemin/vers/mon_fichier.png`     |
 | Nom complet du fichier (avec ou sans extension) | `mon_fichier.png` ou `mon_fichier` |
-| Numéro de série du module | `20UPGM...` |
-| Identifiant alternatif du module | `P...` |
+| Numéro de série du module                       | `20UPGM...`                        |
+| Identifiant alternatif du module                | `P...`                             |
 
 ---
 
@@ -156,14 +163,14 @@ Le programme lance alors les calculs. Il ne reste plus qu'à attendre la fin de 
 
 À la fin des calculs, une image du module s'affiche également. Il est possible de naviguer entre plusieurs vues à l'aide des touches suivantes :
 
-| Touche | Vue affichée |
-|---|---|
-| `1` | Vue non modifiée |
-| `2` | Courts-circuits critiques |
-| `3` | Courts-circuits non critiques |
-| `4` | Extrémités des fils mal câblés |
-| `5` | Extrémités de tous les fils |
-| `6` | Zones de pistes de cuivre et de pads du chip |
+| Touche | Vue affichée                                 |
+| ------ | -------------------------------------------- |
+| `1`    | Vue non modifiée                             |
+| `2`    | Courts-circuits critiques                    |
+| `3`    | Courts-circuits non critiques                |
+| `4`    | Extrémités des fils mal câblés               |
+| `5`    | Extrémités de tous les fils                  |
+| `6`    | Zones de pistes de cuivre et de pads du chip |
 
 ---
 
@@ -172,30 +179,39 @@ Le programme lance alors les calculs. Il ne reste plus qu'à attendre la fin de 
 Le fichier `config.json` permet de personnaliser le comportement de l'application. Chaque option peut également être modifiée directement en ligne de commande via la [commande `config`](#modifier-la-configuration-en-ligne-de-commande).
 
 #### `pictures_folder`
+
 Chemin du répertoire contenant les images des modules.
 
 #### `pictures_format`
+
 Format des images utilisées.
 
 #### `language`
+
 Langue de l'application : `"fr"` (français) ou `"en"` (anglais).
 
 #### `suffix_after_bonding`
+
 Suffixe (ou liste de suffixes, partiels ou complets) des images du module **câblé**.
 
 #### `suffix_before_bonding`
+
 Suffixe (ou liste de suffixes, partiels ou complets) des images du module **non câblé**.
 
 #### `verbose`
+
 Niveau de détail des informations affichées dans le terminal (de `0` à `3`).
 
 #### `zoom`
+
 Puissance du zoom de la loupe (`4` par défaut, `1` = pas de zoom).
 
 #### `aggressiveness_level`
+
 Niveau d'agressivité de l'algorithme de détection : `"low"`, `"medium"` ou `"high"`. Un niveau plus agressif augmente le nombre de faux positifs mais réduit le risque de faux négatifs. Des niveaux personnalisés peuvent être créés dans `aggressiveness_config.json`.
 
 #### `size_window`
+
 Mode de définition de la taille initiale de la fenêtre : `"normal"` ou `"auto"` (à adapter en fonction de l'écran).
 
 ---
@@ -208,23 +224,25 @@ En plus d'une édition manuelle du fichier `config.json`, une commande `config` 
 python main.py config --folder ModulePictures
 ```
 
-| Argument | Option modifiée dans `config.json` |
-|---|---|
-| `--folder` | [`pictures_folder`](#pictures_folder) |
-| `--format` | [`pictures_format`](#pictures_format) |
-| `--language` | [`language`](#language) |
-| `--suffix-after` | [`suffix_after_bonding`](#suffix_after_bonding) |
-| `--suffix-before` | [`suffix_before_bonding`](#suffix_before_bonding) |
-| `--verbose` | [`verbose`](#verbose) |
-| `--zoom` | [`zoom`](#zoom) |
-| `--show` | Affiche la configuration actuelle (ne modifie rien) |
+| Argument          | Option modifiée dans `config.json`                  |
+| ----------------- | --------------------------------------------------- |
+| `--folder`        | [`pictures_folder`](#pictures_folder)               |
+| `--format`        | [`pictures_format`](#pictures_format)               |
+| `--language`      | [`language`](#language)                             |
+| `--suffix-after`  | [`suffix_after_bonding`](#suffix_after_bonding)     |
+| `--suffix-before` | [`suffix_before_bonding`](#suffix_before_bonding)   |
+| `--verbose`       | [`verbose`](#verbose)                               |
+| `--zoom`          | [`zoom`](#zoom)                                     |
+| `--show`          | Affiche la configuration actuelle (ne modifie rien) |
 
 **Exemple :**
+
 ```bash
 python main.py config --language en --zoom 2 --verbose 0
 ```
 
 Pour simplement consulter la configuration actuelle sans la modifier :
+
 ```bash
 python main.py config --show
 ```
@@ -235,13 +253,15 @@ python main.py config --show
 
 En complément (ou à la place) des options de `config.json`, les arguments suivants peuvent être passés directement à la commande `check` :
 
-| Argument | Description |
-|---|---|
-| `--iref` | Indique les 4 valeurs d'iref (4 entiers séparés par des virgules) |
-| `--verbose` | Indique un niveau de verbosité (remplace la valeur de `config.json`) |
-| `--aggressiveness` | Indique un niveau d'agressivité (remplace la valeur de `config.json`) |
+| Argument             | Description                                                                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--iref`             | Indique les 4 valeurs d'iref (4 entiers séparés par des virgules)                                                                                |
+| `--verbose`          | Indique un niveau de verbosité (remplace la valeur de `config.json`)                                                                             |
+| `--aggressiveness`   | Indique un niveau d'agressivité (remplace la valeur de `config.json`)                                                                            |
+| `--override-targets` | Permet de faire la sélection des mires du circuit imprimé à la main. Peut résoudre des problèmes lorsque la détection automatique est imprécise. |
 
 **Exemple :**
+
 ```bash
 python main.py check --input 20UPGM00012345 --iref 10,10,9,5 --aggressiveness high
 ```
