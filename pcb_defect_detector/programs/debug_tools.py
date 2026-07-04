@@ -492,7 +492,7 @@ def magnifying_glass_pads(src, pad = None):
 
     text_params={}
 
-    text_params['text'] = "Double-click on the target:" if lang=='en' else "Double-cliquer sur la mire :"
+    text_params['text'] = "Double-click to select:" if lang=='en' else "Double-cliquer pour sélectionner :"
     text_params['font'] = cv.FONT_HERSHEY_SIMPLEX
     text_params['font_scale'] = 0.6
     text_params['thickness'] = 1
@@ -526,7 +526,7 @@ def magnifying_glass_pads(src, pad = None):
         console.print("[blue][bold]Drag and drop[/bold] to zoom.")
         console.print("[blue]Press [bold]'r'[/bold] to reset the view.")
         console.print("[blue]Press [bold]'q'[/bold] to quit.")
-        console.print("[blue][bold]Double-click[/bold] to set the position of the target.")
+        console.print("[blue][bold]Double-click[/bold] to select the position of the point.")
     else :    
         window_name = "Vue Principale"
         if size == "auto" :
@@ -542,7 +542,7 @@ def magnifying_glass_pads(src, pad = None):
         console.print("[blue][bold]Glisser-déposer[/bold] pour zoomer.")
         console.print("[blue]Appuyer sur [bold]'r'[/bold] pour réinitialiser la vue.")
         console.print("[blue]Appuyer sur [bold]'q'[/bold] pour quitter.")
-        console.print("[blue][bold]Double-cliquer[/bold] pour définir la position de la mire.")
+        console.print("[blue][bold]Double-cliquer[/bold] pour sélectionner un point.")
 
     cv.setMouseCallback(window_name, lambda a,b,c,d,e: mouse_callback_pad(text_params, a, b, c, d, e) , state)
 
@@ -568,11 +568,11 @@ def magnifying_glass_pads(src, pad = None):
                 root.attributes('-topmost', True)
 
                 if lang == 'en':
-                    title = "No target selected"
-                    msg = "Abort without selecting a target? (This will end the program.)"
+                    title = "No selection"
+                    msg = "Abort without selecting anything? (This will end the program.)"
                 else:
-                    title = "AAucune mire sélectionnée"
-                    msg = "Quitter sans sélectionner de cible ? (Ceci mettra fin au programme.)"
+                    title = "Aucune sélection"
+                    msg = "Quitter sans rien sélectionner ? (Ceci mettra fin au programme.)"
 
                 should_abort = messagebox.askyesno(title, msg, parent=root)
                 root.destroy()

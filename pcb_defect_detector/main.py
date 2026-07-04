@@ -25,6 +25,7 @@ def main():
     check_parser.add_argument("--iref", required=False, help="Custom iref numbers = 4 ints separated by ','")
     check_parser.add_argument("--verbose", type=int, choices=[0,1,2,3], help="Change the level of detail of the output. Goes from 0 to 3. Default : 0.")
     check_parser.add_argument("--aggressiveness", choices=["low", "medium", "high"], help="Change the aggressiveness of the algorithm. Stronger aggressiveness means more false positives.")
+    check_parser.add_argument("--override-targets", action="store_true", help="Override automatic check of the targets for manual definition.")
     # Show command
     show_parser = subparsers.add_parser("show", help="Show the last output again")
 
@@ -66,9 +67,9 @@ def main():
             trim_nb_int = []
             for x in trim_nb_str :
                 trim_nb_int.append(int(x))
-            run_check(path, iref = trim_nb_int, verbose=args.verbose, config=config)
+            run_check(path, iref = trim_nb_int, verbose=args.verbose, config=config, override_targets=args.override_targets)
         else :
-            run_check(path, verbose=args.verbose, config=config)
+            run_check(path, verbose=args.verbose, config=config, override_targets=args.override_targets)
 
     elif args.command == "show":
         with open("../temp/path.txt", "r") as f:

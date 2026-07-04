@@ -6,7 +6,7 @@ from programs.find_targets import *
 from programs.debug_tools import *
 import json
 
-def find_tracks(path, draw = False, verbose_lv = 0):
+def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False):
     """
     Finds the location of the tracks for a given image, from their location on the reference image.
 
@@ -20,10 +20,43 @@ def find_tracks(path, draw = False, verbose_lv = 0):
     ref_unbonded = "reference/Ref_img_unbonded.jpg"
     ref_bonded = "reference/Ref_img_bonded.jpg"
 
-    if verbose_lv>1 : console.log(f"Recherche de la position des mires sur l'image...")
-    targets_dst = find_targets_wired(path, verbose_lv=verbose_lv, img_name = "Image câblée")
-    targets_ref = find_targets_wired(ref_bonded, verbose_lv=verbose_lv, img_name = "Image de référence câblée")
-    if verbose_lv>1 : console.log(f"Positions des pistes trouvées.")
+    if not override_targets:
+        if verbose_lv>1 : console.log(f"Recherche de la position des mires sur l'image...")
+        targets_dst = find_targets_wired(path, verbose_lv=verbose_lv, img_name = "Image câblée")
+        targets_ref = find_targets_wired(ref_bonded, verbose_lv=verbose_lv, img_name = "Image de référence câblée") # TODO : ne pas recalculer à chaque fois!!
+        if verbose_lv>1 : console.log(f"Positions des mires trouvées.")
+    else:
+        #Logique pour sélectionner chacune des mires à la main
+        cabled_img = cv.imread(path)
+        H, W = cabled_img.shape[:2]
+        targets_ref = find_targets_wired(ref_bonded, verbose_lv=verbose_lv, img_name = "Image de référence câblée") # TODO : ne pas recalculer à chaque fois!!
+        
+        with open("programs/REF_TARGETS.json") as f:
+            data = json.load(f)
+            targets_ref = np.array(data)
+        img = cv.imread(ref_bonded)
+        for x,y in targets_ref:
+            cv.circle(img,(x,y), 5, (0,0,255), -1)
+        magnifying_glass(img)
+        
+        targets_dst = []
+
+        sliceparams = [(50, 550, 750, 1350),  
+                (H-550, H-50, 750, 1350),
+                (2100, 3100, 900, 1700), 
+                (2100, 3100, 900, 1700), 
+                (50, 550, W-1350, W-750),
+                (H-550, H-50, W-1350, W-750), 
+                (2100, 3100, W-1700, W-900), 
+                (2100, 3100, W-1700, W-900)]
+        
+        for beg1, end1, beg2, end2 in sliceparams:
+            target = magnifying_glass_pads(cabled_img[beg1:end1,beg2:end2])
+            if not target:
+                raise Exception('Program Aborted.')
+            targets_dst.append((target[0]+beg2, target[1]+beg1))
+        
+        targets_dst = np.array(targets_dst)
 
     if verbose_lv>1 : console.log(f"Calcul des homographies...")
     H1 = cv.findHomography(targets_ref, targets_dst, cv.RANSAC)[0]

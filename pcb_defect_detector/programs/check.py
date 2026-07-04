@@ -7,7 +7,7 @@ import json
 
 bounding_map_without_trim()
 
-def run_check (path, iref = None, draw = False, verbose=0, config={}) :
+def run_check (path, iref = None, draw = False, verbose=0, config={}, override_targets=False) :
     """
     Runs the checks for a given image.
 
@@ -116,7 +116,7 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
         running_message = "Track detection..."
     
     with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
-        tracks = find_tracks(path, verbose_lv = verbose)
+        tracks = find_tracks(path, verbose_lv = verbose, override_targets=override_targets)
     if lang == "en" :
         print_info("Tracks detected.")
     else : 
