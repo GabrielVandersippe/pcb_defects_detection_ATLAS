@@ -172,6 +172,12 @@ Le programme lance alors les calculs. Il ne reste plus qu'à attendre la fin de 
 | `5`    | Extrémités de tous les fils                  |
 | `6`    | Zones de pistes de cuivre et de pads du chip |
 
+Le dernier résultat affiché peut, une fois fermé, être rouvert via la commande `show`, c'est à dire en exécutant:
+
+```bash
+python main.py show
+```
+
 ---
 
 ## Configuration (config.json)
