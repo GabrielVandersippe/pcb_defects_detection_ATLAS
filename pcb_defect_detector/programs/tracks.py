@@ -20,24 +20,18 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False):
     ref_unbonded = "reference/Ref_img_unbonded.jpg"
     ref_bonded = "reference/Ref_img_bonded.jpg"
 
+    with open("programs/REF_TARGETS.json") as f:
+        data = json.load(f)
+        targets_ref = np.array(data)
+
     if not override_targets:
         if verbose_lv>1 : console.log(f"Recherche de la position des mires sur l'image...")
-        targets_dst = find_targets_wired(path, verbose_lv=verbose_lv, img_name = "Image câblée")
-        targets_ref = find_targets_wired(ref_bonded, verbose_lv=verbose_lv, img_name = "Image de référence câblée") # TODO : ne pas recalculer à chaque fois!!
+        targets_dst = find_targets_wired(path, verbose_lv=verbose_lv, img_name = "Image câblée")        
         if verbose_lv>1 : console.log(f"Positions des mires trouvées.")
     else:
         #Logique pour sélectionner chacune des mires à la main
         cabled_img = cv.imread(path)
         H, W = cabled_img.shape[:2]
-        targets_ref = find_targets_wired(ref_bonded, verbose_lv=verbose_lv, img_name = "Image de référence câblée") # TODO : ne pas recalculer à chaque fois!!
-        
-        with open("programs/REF_TARGETS.json") as f:
-            data = json.load(f)
-            targets_ref = np.array(data)
-        img = cv.imread(ref_bonded)
-        for x,y in targets_ref:
-            cv.circle(img,(x,y), 5, (0,0,255), -1)
-        magnifying_glass(img)
         
         targets_dst = []
 
