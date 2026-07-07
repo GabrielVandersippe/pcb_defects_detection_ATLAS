@@ -34,7 +34,7 @@ def find_tracks(path, draw = False, verbose_lv = 0):
     if draw :
         img = cv.imread(path).copy()
 
-    with open("programs/REF_TRACKS.json") as f:
+    with open("programs/reference/REF_TRACKS.json") as f:
         data = json.load(f)
         for track_idx, track in data.items():
             

@@ -10,12 +10,11 @@ def find_pads (path, draw = False, verbose = 0, config = {}):
     if not verbose:
         verbose = config['verbose']
 
-    with open("programs/REF_CORNERS.json") as f:
+    with open("programs/reference/REF_CORNERS.json") as f:
         data = json.load(f)
         corners_ref = np.array(data)
 
     img = cv.imread(path).copy()
-    #img = cv.imread("reference/Ref_img_bonded.jpg").copy()
 
     shape = img.shape
     
@@ -37,23 +36,14 @@ def find_pads (path, draw = False, verbose = 0, config = {}):
     corners[2,0] += shape[1] - 1000
     corners[2,1] += shape[0] - 1000
     corners[3,0] += shape[1] - 1000
-    # print(corners)
-
-    # Corners for P1004 (for test purposes)
-    # corners = np.array([[818, 126], [825, shape[0] - 1000 + 814], [shape[1] - 1000 + 381, shape[0] - 1000 + 809], [shape[1] - 1000 + 379, 121]])
 
     if verbose>1 : console.log(f"Calcul des homographies...")
     H = cv.findHomography(corners_ref, corners, cv.RANSAC)[0]
     if verbose>1 : console.log(f"Homographies calculées.")
 
-    with open("programs/REF_PADS_GROUPED.json") as f:
-        pads_ref = json.load(f)
-
-    nb_pads = 198
-
     pads = {}
 
-    with open("programs/REF_PADS.json") as f:
+    with open("programs/reference/REF_PADS.json") as f:
         data = json.load(f)
         for pad_idx, pad in data.items():
             

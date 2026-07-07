@@ -1,7 +1,5 @@
 import numpy as np
 
-# trim_nb = (0, 0, 0, 0)  # trim number between 0 and 15 (used only once in bounding_map_trim line 175)
-
 map1 = np.zeros(198, dtype=int) # map[i-1] is the right position for pad i of GA1
 map2 = np.zeros(198, dtype=int) # map[i-1] is the right position for pad i of GA2
 map3 = np.zeros(198, dtype=int) # map[i-1] is the right position for pad i of GA3
@@ -233,9 +231,6 @@ def bounding_map_trim (trim_) :
     
     return (map1, map2, map3, map4)
 
-# bounding_map_without_trim()
-# bounding_map_trim(trim_nb)
-
 def list_pads_pistes (map_, offset_) : # offset_ = 1 pour GA1 ; 2 pour GA2 ; 3 pour GA3 et 4 pour GA4
     """Creates a list of (pad, track) for each wire from a given map
 
@@ -266,6 +261,3 @@ def bounding_map_pads_pistes () :
     result = result + list_pads_pistes(map3, 3)
     result = result + list_pads_pistes(map4, 4)
     return (result)
-
-
-# pads_pistes = bounding_map_pads_pistes() # liste des connections attendues pour les fils

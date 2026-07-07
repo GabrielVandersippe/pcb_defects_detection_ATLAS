@@ -102,11 +102,16 @@ def afficher_bilan(wire_nb, expected_wire_nb, short_nb_left_not_crit, short_nb_r
                 f"[bold]{short_nb_right_crit}",
                 f"{list(set(crit_short_wires_right))}",
                 "[bold green]OK" if short_nb_right_crit == 0 else "[bold red]NOK")
-    
-        table.add_row(("[bold green] ✔ " if nb_wrong_track == 0 else "[bold red] ✘ ")+"Fils mal câblés (hors court-circuits) ", 
+        
+        table.add_row(("[bold green] ✔ " if nb_wrong_track == 0 else "[bold red] ✘ ")+"Fils mal câblés sur mles pistes (hors court-circuits) ", 
                   f"[bold]{nb_wrong_track}",
-                  f"{list(set(crit_endpoints_wires))}", 
+                  f"{list(set(crit_endpoints_track))}", 
                   "[bold green]OK" if nb_wrong_track == 0 else "[bold red]NOK")
+        
+        table.add_row(("[bold green] ✔ " if nb_wrong_pad == 0 else "[bold red] ✘ ")+"Fils mal câblés sur les pads (hors court-circuits) ", 
+                  f"[bold]{nb_wrong_pad}",
+                  f"{list(set(crit_endpoints_pad))}", 
+                  "[bold green]OK" if nb_wrong_pad == 0 else "[bold red]NOK")
         
         table.add_row(("[bold green] ✔ " if tuple(iref_th) == tuple(iref_read) else "[bold red] ✘ ")+"IREF (GA1,GA2,GA3,GA4) ", 
                   f"attendu : [bold]({iref_th[0]}, {iref_th[1]}, {iref_th[2]}, {iref_th[3]})",
