@@ -10,7 +10,7 @@ def find_pads (path, draw = False, verbose = 0, config = {}):
     if not verbose:
         verbose = config['verbose']
 
-    with open("programs/reference/REF_CORNERS.json") as f:
+    with open("reference/REF_CORNERS.json") as f:
         data = json.load(f)
         corners_ref = np.array(data)
 
@@ -43,7 +43,7 @@ def find_pads (path, draw = False, verbose = 0, config = {}):
 
     pads = {}
 
-    with open("programs/reference/REF_PADS.json") as f:
+    with open("reference/REF_PADS.json") as f:
         data = json.load(f)
         for pad_idx, pad in data.items():
             
