@@ -23,7 +23,7 @@ def find_tracks(path, draw = False, verbose_lv = 0):
     if verbose_lv>1 : console.log(f"Recherche de la position des mires sur l'image...")
     targets_dst = find_targets_wired(path, verbose_lv=verbose_lv, img_name = "Image câblée")
     targets_ref = find_targets_wired(ref_bonded, verbose_lv=verbose_lv, img_name = "Image de référence câblée")
-    if verbose_lv>1 : console.log(f"Positions des pads trouvées.")
+    if verbose_lv>1 : console.log(f"Positions des pistes trouvées.")
 
     if verbose_lv>1 : console.log(f"Calcul des homographies...")
     H1 = cv.findHomography(targets_ref, targets_dst, cv.RANSAC)[0]
@@ -50,7 +50,7 @@ def find_tracks(path, draw = False, verbose_lv = 0):
             if draw :
                 if len(track_dst)>0 :
                     cv.polylines(img,[np.array(track_dst).reshape((-1,1,2))], True, (0, 255, 0), 3)
-    if verbose_lv>1 : console.log(f"Transposition des pads effectuée.")
+    if verbose_lv>1 : console.log(f"Transposition des pistes effectuée.")
 
     if draw :
         imS = cv.resize(img, (2000, 2000)) 

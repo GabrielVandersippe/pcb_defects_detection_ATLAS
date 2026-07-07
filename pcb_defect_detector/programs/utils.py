@@ -12,6 +12,14 @@ def normalize(v):
        return v
     return v / norm
 
+## Fonction pour trouver le nom exact d'une image, à partir d'une liste de sub-string possibles
+def find_suffix (module, sub_strings, folder) :
+    for f in os.listdir(folder):
+        for sub in sub_strings :
+            name = os.path.basename(f)
+            if (module in name) and (sub in name) :
+                return (name)
+
 ## Fonction pour trouver l'image non câblée à l'image câblée (ou l'inverse)
 def trouver_la_paire(fichier:str, dossier:str) -> str :
     """Finds the image corresponding to a given input
@@ -30,7 +38,22 @@ def trouver_la_paire(fichier:str, dossier:str) -> str :
 
     bname=os.path.basename(fichier)
     after_bonding = config["suffix_after_bonding"]
-    before_bounding = config["suffix_before_bonding"]
+    before_bonding = config["suffix_before_bonding"]
+
+    first_ = bname.find("_")
+    second_ = bname[first_:].find("_")
+    name = bname[:second_]
+
+    after_in_name = False
+    before_in_name = False
+
+    for a in after_bonding :
+        if a in bname :
+            after_in_name = True
+
+    for b in before_bonding :
+        if b in bname :
+            before_in_name = True
 
     if "Ref_img" in bname :
         if "unbonded" in bname:
@@ -38,17 +61,15 @@ def trouver_la_paire(fichier:str, dossier:str) -> str :
         else : 
             return os.path.join("reference", "Ref_img_unbonded.jpg")
 
-    elif after_bonding in bname:
-        name=bname[:bname.find(after_bonding)]
+    elif after_in_name:
         for f in os.listdir(dossier):
-            if before_bounding in os.path.basename(f):
-                if os.path.basename(f)[:os.path.basename(f).find(before_bounding)]==name:
+            for b in before_bonding :
+                if (b in os.path.basename(f)) and (name in os.path.basename(f)):
                     return os.path.join(dossier, f)
-    elif before_bounding in bname:
-        name=bname[:bname.find(before_bounding)]
+    elif before_in_name:
         for f in os.listdir(dossier):
-            if after_bonding in os.path.basename(f):
-                if os.path.basename(f)[:os.path.basename(f).find(after_bonding)]==name:
+            for a in after_bonding :
+                if (a in os.path.basename(f)) and (name in os.path.basename(f)):
                     return os.path.join(dossier, f)
     return "Pas de paire"
 
