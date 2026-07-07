@@ -406,4 +406,8 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}) :
     np.save("../temp/pads_mask.npy", pads_mask)
 
     afficher_bilan(n_detected, n_expected, nb_not_crit_shorts_left, nb_not_crit_shorts_right, nb_crit_shorts_left, nb_crit_shorts_right, nb_wires_off_track, nb_wires_off_pad, iref, iref_nb_read, list_missing, list_crit_short_left, list_non_crit_short_left, list_crit_short_right, list_non_crit_short_right, list_crit_track, list_crit_pad)
-    magnifying_glass_final_result(cimg)
+    if path[-1] == "/" :
+        file_name = (path.split("/")[-2]).split(".")[0]
+    else :
+        file_name = (path.split("/")[-1]).split(".")[0]
+    magnifying_glass_final_result(cimg, file_name)

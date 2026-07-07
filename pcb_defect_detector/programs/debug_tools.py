@@ -136,7 +136,7 @@ def create_view_all_masks(img, masks, colors):
     return result
 
 
-def magnifying_glass_final_result(src):
+def magnifying_glass_final_result(src, name):
 
     lang = config["language"]
     size = config["size_window"]
@@ -256,7 +256,7 @@ def magnifying_glass_final_result(src):
 
         elif key == ord('s') or key == ord('S'):
             t = strftime("%d-%m-%Y-%H-%M-%S", gmtime())
-            outpath = "../output/output" + str(t) + ".png"
+            outpath = "../output/" + name + "_" + str(t) + ".png"
             cv.imwrite(outpath, state['current_view'])
             if lang == 'en' : console.print(f"[green]Image successfully saved to {outpath}")
             else : console.print(f"[green]Image sauvegardée avec succès à {outpath}")
