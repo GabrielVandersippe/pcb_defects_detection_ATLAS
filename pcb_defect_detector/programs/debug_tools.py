@@ -14,8 +14,10 @@ with open("../config/config.json", "r") as f:
 
 drawing = False # true if mouse is pressed
 ix,iy = -1,-1
-patch_size=int(400/config["zoom"]) # 100 by default
-zoom_scale=config["zoom"] # 4 by default
+patch_size_select=int(400/config["zoom_select"]) # 100 by default
+patch_size=int(400/config["zoom_visualize"]) # 100 by default
+zoom_scale_select=config["zoom_select"] # 4 by default
+zoom_scale=config["zoom_visualize"] # 2 by default
 current_viewmode = 0 
 
 def mouse_callback(event, x, y, flags, param):
@@ -265,7 +267,7 @@ def magnifying_glass_final_result(src, name):
             state['current_mode'] = 0
             h,w = state['current_view'].shape[:2]
             state['current_view'] = img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w]
-        elif key == ord('é') or key== ord('2'): # courts-circuits critiques
+        elif key == ord('é') or key== ord('2') or key== ord("É"): # courts-circuits critiques
             h,w = state['current_view'].shape[:2]
             state['current_view'] = create_masked_view(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
                                                        crit_shorts_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
@@ -295,7 +297,7 @@ def magnifying_glass_final_result(src, name):
                                                        pads_mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
                                                        colors[4])
             state['current_mode'] = 5
-        elif key == ord('à') or key== ord('0'): # tout
+        elif key == ord('à') or key== ord('0') or key== ord('À'):
             h,w = state['current_view'].shape[:2]
             state['current_view'] = create_view_all_masks(img[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w], 
                                                        [mask[state['offset_y']:state['offset_y']+h, state['offset_x']:state['offset_x']+w] for mask in masks], 
@@ -306,20 +308,20 @@ def magnifying_glass_final_result(src, name):
     cv.destroyAllWindows()
 
 def mouse_callback_pad(text_params, event, x, y, flags, param):
-    global ix,iy,drawing, patch_size, zoom_scale
+    global ix,iy,drawing, patch_size_select, zoom_scale_select
     
     state = param
     img = state['current_view']
     lang = config['language']
 
     # Define the ROI 
-    x1, y1 = max(0, x - patch_size // 2), max(0, y - patch_size // 2)
-    x2, y2 = min(img.shape[1], x + patch_size // 2), min(img.shape[0], y + patch_size // 2)
+    x1, y1 = max(0, x - patch_size_select // 2), max(0, y - patch_size_select // 2)
+    x2, y2 = min(img.shape[1], x + patch_size_select // 2), min(img.shape[0], y + patch_size_select // 2)
     
     roi = img[y1:y2, x1:x2]
     
     if roi.size > 0:
-        zoom_view = cv.resize(roi, None, fx=zoom_scale, fy=zoom_scale, interpolation=cv.INTER_NEAREST)
+        zoom_view = cv.resize(roi, None, fx=zoom_scale_select, fy=zoom_scale_select, interpolation=cv.INTER_NEAREST)
         h_z, w_z = zoom_view.shape[:2]
         
         # -------------------------------------
@@ -336,13 +338,13 @@ def mouse_callback_pad(text_params, event, x, y, flags, param):
 
         if state['pad'] :
 
-            x_pad = (state['pad'][0]-state['offset_x']-x1)*zoom_scale
-            y_pad = (state['pad'][1]-state['offset_y']-y1)*zoom_scale
+            x_pad = (state['pad'][0]-state['offset_x']-x1)*zoom_scale_select
+            y_pad = (state['pad'][1]-state['offset_y']-y1)*zoom_scale_select
 
             cv.circle(zoom_view, (x_pad, y_pad), 4 , (0, 0, 255), -1)
             cv.circle(zoom_view, (x_pad, y_pad), 20, (0, 0, 255), 3)
 
-        zoom_with_text = cv.copyMakeBorder(zoom_view,y_padding,0, 0, x_padding, cv.BORDER_CONSTANT,value=(0,0,0))
+        zoom_with_text = cv.copyMakeBorder(zoom_view,y_padding,0, x_padding//2, x_padding//2, cv.BORDER_CONSTANT,value=(0,0,0))
         cv.putText(zoom_with_text, text_params['text'], (10,20), text_params['font'], text_params['font_scale'], (0,255,0), text_params['thickness'], cv.LINE_AA)
 
         cv.imshow(window_name, zoom_with_text)
@@ -376,7 +378,7 @@ def magnifying_glass_pads(src, pad = None):
 
     text_params={}
 
-    text_params['text'] = "Double-click to select:" if lang=='en' else "Double-cliquer pour sélectionner :"
+    text_params['text'] = "Double-click to select / Press q to validate" if lang=='en' else "Double-cliquer pour selectionner / Appuyer sur q pour valider"
     text_params['font'] = cv.FONT_HERSHEY_SIMPLEX
     text_params['font_scale'] = 0.6
     text_params['thickness'] = 1
@@ -409,7 +411,7 @@ def magnifying_glass_pads(src, pad = None):
         console.print("[blue]Hover your mouse over the main view to display the zoomed-in version.")
         console.print("[blue][bold]Drag and drop[/bold] to zoom.")
         console.print("[blue]Press [bold]'r'[/bold] to reset the view.")
-        console.print("[blue]Press [bold]'q'[/bold] to quit.")
+        console.print("[blue]Press [bold]'q'[/bold] to validate the selection.")
         console.print("[blue][bold]Double-click[/bold] to select the position of the point.")
     else :    
         window_name = "Vue Principale"
@@ -425,10 +427,182 @@ def magnifying_glass_pads(src, pad = None):
         console.print("[blue]Passer la souris sur la vue principale pour afficher la version zoomée.")
         console.print("[blue][bold]Glisser-déposer[/bold] pour zoomer.")
         console.print("[blue]Appuyer sur [bold]'r'[/bold] pour réinitialiser la vue.")
-        console.print("[blue]Appuyer sur [bold]'q'[/bold] pour quitter.")
+        console.print("[blue]Appuyer sur [bold]'q'[/bold] pour valider la sélection.")
         console.print("[blue][bold]Double-cliquer[/bold] pour sélectionner un point.")
 
     cv.setMouseCallback(window_name, lambda a,b,c,d,e: mouse_callback_pad(text_params, a, b, c, d, e) , state)
+
+    while True:
+
+        if state['pad']:
+
+            showed_img = state['current_view'].copy()
+            cv.circle(showed_img, (state['pad'][0]-state['offset_x'], state['pad'][1]-state['offset_y']), 2, (0, 0, 255), -1)
+            cv.circle(showed_img, (state['pad'][0]-state['offset_x'], state['pad'][1]-state['offset_y']), 10, (0, 0, 255), 1)
+
+            cv.imshow(window_name, showed_img)
+            key = cv.waitKey(1) & 0xFF 
+        
+        else: 
+            cv.imshow(window_name, state['current_view'])
+            key = cv.waitKey(1) & 0xFF 
+        
+        if key == ord('q') or key == ord('Q'):
+            if not state['pad']:
+                root = tk.Tk()
+                root.withdraw()
+                root.attributes('-topmost', True)
+
+                if lang == 'en':
+                    title = "No selection"
+                    msg = "Abort without selecting anything? (This will end the program.)"
+                else:
+                    title = "Aucune sélection"
+                    msg = "Quitter sans rien sélectionner ? (Ceci mettra fin au programme.)"
+
+                should_abort = messagebox.askyesno(title, msg, parent=root)
+                root.destroy()
+
+                if should_abort:
+                    break
+                else:
+                    continue
+            else:
+                break
+
+        elif key == ord('r') or key == ord('R'): # Reset functionality
+            state['current_view'] = img.copy()
+            state['offset_x'], state['offset_y'] = 0, 0
+
+    cv.destroyAllWindows()
+    return state['pad']
+
+def mouse_callback_target(text_params, event, x, y, flags, param):
+    global ix,iy,drawing, patch_size_select, zoom_scale_select
+    
+    state = param
+    img = state['current_view']
+    lang = config['language']
+
+    # Define the ROI 
+    x1, y1 = max(0, x - patch_size_select // 2), max(0, y - patch_size_select // 2)
+    x2, y2 = min(img.shape[1], x + patch_size_select // 2), min(img.shape[0], y + patch_size_select // 2)
+    
+    roi = img[y1:y2, x1:x2]
+    
+    if roi.size > 0:
+        zoom_view = cv.resize(roi, None, fx=zoom_scale_select, fy=zoom_scale_select, interpolation=cv.INTER_NEAREST)
+        h_z, w_z = zoom_view.shape[:2]
+        
+        # -------------------------------------
+        ## Add text to the zoomed view (instructions to double-click)
+
+        border_x = text_params['text_w']+20
+        x_padding = max(w_z, border_x)-w_z
+        y_padding = text_params['text_h']+20
+        
+        window_name = "Magnifying glass" if lang == 'en' else "Loupe"
+
+        cv.line(zoom_view, (w_z//2, 0), (w_z//2, h_z), (0, 255, 0), 1)
+        cv.line(zoom_view, (0, h_z//2), (w_z, h_z//2), (0, 255, 0), 1)
+
+        cv.circle(zoom_view, (w_z//2, h_z//2), 90 , (0, 255, 0), 3)
+
+        if state['pad'] :
+
+            x_pad = (state['pad'][0]-state['offset_x']-x1)*zoom_scale_select
+            y_pad = (state['pad'][1]-state['offset_y']-y1)*zoom_scale_select
+
+            cv.circle(zoom_view, (x_pad, y_pad), 4 , (0, 0, 255), -1)
+            cv.circle(zoom_view, (x_pad, y_pad), 20, (0, 0, 255), 3)
+
+        zoom_with_text = cv.copyMakeBorder(zoom_view,y_padding,0, 0, x_padding, cv.BORDER_CONSTANT,value=(0,0,0))
+        cv.putText(zoom_with_text, text_params['text'], (10,20), text_params['font'], text_params['font_scale'], (0,255,0), text_params['thickness'], cv.LINE_AA)
+
+        cv.imshow(window_name, zoom_with_text)
+    
+
+    if event == cv.EVENT_LBUTTONDOWN:
+        drawing = True
+        ix,iy = x,y
+
+    elif event == cv.EVENT_LBUTTONUP:
+        drawing = False
+        x_start, x_end = sorted([ix, x])
+        y_start, y_end = sorted([iy, y])
+
+        # Check if selected area large enough
+        if (x_end - x_start) > 15 and (y_end - y_start) > 15:
+            state['offset_x'] += x_start
+            state['offset_y'] += y_start
+
+            state['current_view'] = img[y_start:y_end, x_start:x_end]
+
+    elif event == cv.EVENT_LBUTTONDBLCLK:
+        
+        state['pad']=(x + state['offset_x'], y + state['offset_y'])
+
+
+def magnifying_glass_targets(src, pad = None):
+
+    size = config["size_window"]
+    lang = config["language"]
+
+    text_params={}
+
+    text_params['text'] = "Double-click to select / Press q to validate" if lang=='en' else "Double-cliquer pour selectionner / Appuyer sur q pour valider"
+    text_params['font'] = cv.FONT_HERSHEY_SIMPLEX
+    text_params['font_scale'] = 0.6
+    text_params['thickness'] = 1
+    (text_params['text_w'], text_params['text_h']), _ = cv.getTextSize(text_params['text'], text_params['font'], text_params['font_scale'], text_params['thickness'])
+
+    if type(src) == str:
+            img = cv.imread(src)
+    else:
+        img = src
+
+    state = {
+        'current_view': img.copy(),
+        'offset_x': 0,
+        'offset_y': 0,
+        'pad': pad,
+    }
+
+
+    if lang == "en" :
+        window_name = "Main PCB View"
+        if size == "auto" :
+            cv.namedWindow(window_name, cv.WINDOW_AUTOSIZE)
+        elif size == "normal" :
+            cv.namedWindow(window_name, cv.WINDOW_NORMAL)
+        else :
+            cv.namedWindow(window_name, cv.WINDOW_NORMAL)
+
+        console.rule("[bold blue]MAGNIFYING GLASS")
+        console.print("")
+        console.print("[blue]Hover your mouse over the main view to display the zoomed-in version.")
+        console.print("[blue][bold]Drag and drop[/bold] to zoom.")
+        console.print("[blue]Press [bold]'r'[/bold] to reset the view.")
+        console.print("[blue]Press [bold]'q'[/bold] to validate the selection.")
+        console.print("[blue][bold]Double-click[/bold] to select the position of the point.")
+    else :    
+        window_name = "Vue Principale"
+        if size == "auto" :
+            cv.namedWindow(window_name, cv.WINDOW_AUTOSIZE)
+        elif size == "normal" :
+            cv.namedWindow(window_name, cv.WINDOW_NORMAL)
+        else :
+            cv.namedWindow(window_name, cv.WINDOW_NORMAL)
+
+        console.rule("[bold blue]LOUPE")
+        console.print("")
+        console.print("[blue]Passer la souris sur la vue principale pour afficher la version zoomée.")
+        console.print("[blue][bold]Glisser-déposer[/bold] pour zoomer.")
+        console.print("[blue]Appuyer sur [bold]'r'[/bold] pour réinitialiser la vue.")
+        console.print("[blue]Appuyer sur [bold]'q'[/bold] pour valider la sélection.")
+        console.print("[blue][bold]Double-cliquer[/bold] pour sélectionner un point.")
+
+    cv.setMouseCallback(window_name, lambda a,b,c,d,e: mouse_callback_target(text_params, a, b, c, d, e) , state)
 
     while True:
 

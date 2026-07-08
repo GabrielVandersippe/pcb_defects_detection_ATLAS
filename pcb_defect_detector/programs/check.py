@@ -7,7 +7,7 @@ import json
 
 bounding_map_without_trim()
 
-def run_check (path, iref = None, draw = False, verbose=0, config={}, override_targets=False) :
+def run_check (path, iref = None, draw = False, verbose=0, config={}, override_targets=False, skip_pulltest=False) :
     """
     Runs the checks for a given image.
 
@@ -44,6 +44,8 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}, override_t
         with open("reference/iref_trim_per_module_v2.json", "r") as f:
             data = json.load(f)
             n_expected = expected_wire_number(extract_serial_number(path),data, iref_=iref)
+            if skip_pulltest :
+                n_expected -= 25
             n_detected = len(y_left) + len(y_right)
 
     if lang == "en" :
@@ -131,6 +133,10 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}, override_t
         if iref == None :
             iref = iref_trim(serial_number, data)
         map1, map2, map3, map4 = bounding_map_trim(iref)
+        if skip_pulltest :
+            map1[152:162] = 0
+            map2[155:160] = 0
+            map3[150:160] = 0
         wires = bounding_map_pads_pistes() # wires[i] donne le (pad, piste) associés au fil i. 
         # Format pad : XYYY, X n° du GA, YYY n°du pad
         # Format piste : XYY, X n° du GA, YY n°de piste
@@ -185,8 +191,8 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}, override_t
                 else :
                     pad_idx = last_pad
                     if pad_idx > expected_pad_idx :
-                        list_missing.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)])
-                        missing_in_a_row.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)])
+                        list_missing.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)][0])
+                        missing_in_a_row.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)][0])
                     else :
                         missing_in_a_row = []
                     # cas pad_idx < expected_pad_idx ??
@@ -268,6 +274,8 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}, override_t
             (endpoint_location_chip, wire_idx_chip) = endpoints_right_chip[label]
             wire_idx_pcb = [idx + len(y_left) for idx in wire_idx_pcb]
 
+            expected_pad_idx, _ = wires[wire_idx_pcb[0] + len(list_missing)]
+
             if endpoint_location_pcb != None:
                 # Vérifier si les fils vont bien au bon endroit
                 in_pad = (cv.pointPolygonTest(pads[last_pad], (endpoint_location_chip[0] + ROI[2][0], endpoint_location_chip[1] + ROI[3][1]), measureDist = True) >= -1)
@@ -285,6 +293,11 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}, override_t
                     cv.circle(crit_endpoints_mask, (endpoint_location_chip[0] + ROI[2][0], endpoint_location_chip[1] + ROI[3][1]), 6, (255, 0, 0), 3)
                 else :
                     pad_idx = last_pad
+                    if pad_idx > expected_pad_idx :
+                        list_missing.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)][0])
+                        missing_in_a_row.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)][0])
+                    else :
+                        missing_in_a_row = []
                     off_pad = False
                     if pad_idx < 4000 :
                         track_idx = map3[pad_idx - 3001] + 300
@@ -337,7 +350,7 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}, override_t
 
 
             else :
-                # Coloriage des fils court-circuités. A ADAPTER !!!! + list_short
+                # Coloriage des fils court-circuités.
                 pad_idx0, track_idx0 = wires[wire_idx_pcb[0] + len(list_missing)]
                 pad_idx_list = [pad_idx0]
                 crit = False

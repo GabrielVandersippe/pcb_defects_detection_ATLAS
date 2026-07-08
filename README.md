@@ -59,9 +59,14 @@ git clone https://github.com/GabrielVandersippe/pcb_defects_detection_ATLAS.git
 
 > À faire **une fois par session de travail**.
 
-1. Ouvrir un terminal (sous Git Bash par exemple) et entrer :
+1. Ouvrir un terminal et entrer :
+   - avec Git Bash
    ```bash
    eval $(poetry env activate)
+   ```
+   - avec Powershell
+   ```powershell
+   Invoke-Expression (poetry env activate)
    ```
 2. Si la commande renvoie un message du type :
 

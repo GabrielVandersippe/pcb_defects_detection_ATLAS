@@ -45,12 +45,17 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False):
                 (2100, 3100, W-1700, W-900)]
         
         for beg1, end1, beg2, end2 in sliceparams:
-            target = magnifying_glass_pads(cabled_img[beg1:end1,beg2:end2])
+            target = magnifying_glass_targets(cabled_img[beg1:end1,beg2:end2])
             if not target:
                 raise Exception('Program Aborted.')
             targets_dst.append((target[0]+beg2, target[1]+beg1))
         
         targets_dst = np.array(targets_dst)
+
+        if targets_dst[2,1] > targets_dst[3,1] :
+            targets_dst[2,1], targets_dst[3,1] = targets_dst[3,1], targets_dst[2,1]
+        if targets_dst[6,1] > targets_dst[7,1] :
+            targets_dst[6,1], targets_dst[7,1] = targets_dst[7,1], targets_dst[6,1]
 
     if verbose_lv>1 : console.log(f"Calcul des homographies...")
     H1 = cv.findHomography(targets_ref, targets_dst, cv.RANSAC)[0]

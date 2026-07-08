@@ -3,10 +3,20 @@ from rich.table import Table
 from rich.align import Align
 from rich import box
 import time
+import atexit
+import sys
 
 import json
 
-console = Console()
+console = Console(record=True)
+
+def write_log():
+    command = " ".join([sys.executable, *sys.argv])
+    with open("pcb_defect_detector.log", "w", encoding="utf-8") as f:
+        f.write(f"{command}\n")
+        f.write(console.export_text())
+
+atexit.register(write_log)
 
 def show_config(config):
     console.rule(f"[bold red]{"CONFIG"}[/bold red]", characters="=")
@@ -102,11 +112,16 @@ def afficher_bilan(wire_nb, expected_wire_nb, short_nb_left_not_crit, short_nb_r
                 f"[bold]{short_nb_right_crit}",
                 f"{list(set(crit_short_wires_right))}",
                 "[bold green]OK" if short_nb_right_crit == 0 else "[bold red]NOK")
-    
-        table.add_row(("[bold green] ✔ " if nb_wrong_track == 0 else "[bold red] ✘ ")+"Fils mal câblés (hors court-circuits) ", 
+        
+        table.add_row(("[bold green] ✔ " if nb_wrong_track == 0 else "[bold red] ✘ ")+"Fils mal câblés sur les pistes (hors court-circuits) ", 
                   f"[bold]{nb_wrong_track}",
-                  f"{list(set(crit_endpoints_wires))}", 
+                  f"{list(set(crit_endpoints_track))}", 
                   "[bold green]OK" if nb_wrong_track == 0 else "[bold red]NOK")
+        
+        table.add_row(("[bold green] ✔ " if nb_wrong_pad == 0 else "[bold red] ✘ ")+"Fils mal câblés sur les pads (hors court-circuits) ", 
+                  f"[bold]{nb_wrong_pad}",
+                  f"{list(set(crit_endpoints_pad))}", 
+                  "[bold green]OK" if nb_wrong_pad == 0 else "[bold red]NOK")
         
         table.add_row(("[bold green] ✔ " if tuple(iref_th) == tuple(iref_read) else "[bold red] ✘ ")+"IREF (GA1,GA2,GA3,GA4) ", 
                   f"attendu : [bold]({iref_th[0]}, {iref_th[1]}, {iref_th[2]}, {iref_th[3]})",

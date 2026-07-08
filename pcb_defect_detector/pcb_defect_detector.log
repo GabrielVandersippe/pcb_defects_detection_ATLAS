@@ -1,0 +1,18 @@
+/local/home/ld287754/.cache/pypoetry/virtualenvs/pcb-defect-detector-4_pmLTPA-py3.13/bin/python main.py show
+─────────────────────────────── MAGNIFYING GLASS ───────────────────────────────
+
+Hover your mouse over the main view to display the zoomed-in version.
+Drag and drop to zoom.
+Press 'r' to reset the view.
+Press 's' to save the view.
+Press 'q' to quit.
+***
+Press '1' for the unmodified view.
+Press '2' for the view showing the critical short circuits.
+Press '3' for the view showing the non-critical short circuits.
+Press '4' for the view showing the incorrectly wired wire ends.
+Press '5' for the wiew showing the ends of all the wires.
+Press '6' for the view showing the tracks.
+
+Press '0' for the view showing all the changes.
+
