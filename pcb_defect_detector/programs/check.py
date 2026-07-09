@@ -7,7 +7,7 @@ import json
 
 bounding_map_without_trim()
 
-def run_check (path, iref = None, draw = False, verbose=0, config={}, override_targets=False, skip_pulltest=False) :
+def run_check (path, iref = None, draw = False, verbose=0, config={}, override_targets=False, skip_pulltest=False, read_corners=False, read_targets=False) :
     """
     Runs the checks for a given image.
 
@@ -107,7 +107,7 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}, override_t
         running_message = "Pad detection..."
     
     with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
-        pads = find_pads(path, draw = False, verbose = verbose, config=config)
+        pads = find_pads(path, draw = False, verbose = verbose, config=config, read_corners=read_corners)
     if lang == "en" :
         print_info("Pads detected.")
     else : 
@@ -118,7 +118,7 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}, override_t
         running_message = "Track detection..."
     
     with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
-        tracks = find_tracks(path, verbose_lv = verbose, override_targets=override_targets)
+        tracks = find_tracks(path, verbose_lv = verbose, override_targets=override_targets, read_targets=read_targets)
     if lang == "en" :
         print_info("Tracks detected.")
     else : 

@@ -213,9 +213,13 @@ Suffixe (ou liste de suffixes, partiels ou complets) des images du module **non 
 
 Niveau de détail des informations affichées dans le terminal (de `0` à `3`).
 
-#### `zoom`
+#### `zoom_select`
 
-Puissance du zoom de la loupe (`4` par défaut, `1` = pas de zoom).
+Puissance du zoom de la loupe pour la sélection des coins et des mires (`4` par défaut, `1` = pas de zoom).
+
+#### `zoom_visualize`
+
+Puissance du zoom de la loupe pour la visualisation des résultats (`2` par défaut, `1` = pas de zoom).
 
 #### `aggressiveness_level`
 
@@ -243,7 +247,8 @@ python main.py config --folder ModulePictures
 | `--suffix-after`  | [`suffix_after_bonding`](#suffix_after_bonding)     |
 | `--suffix-before` | [`suffix_before_bonding`](#suffix_before_bonding)   |
 | `--verbose`       | [`verbose`](#verbose)                               |
-| `--zoom`          | [`zoom`](#zoom)                                     |
+| `--zoom-select`   | [`zoom_select`](#zoom_select)                       |
+| `--zoom-visualize`| [`zoom_visualize`](#zoom_visualize)                 |
 | `--show`          | Affiche la configuration actuelle (ne modifie rien) |
 
 **Exemple :**
@@ -270,11 +275,24 @@ En complément (ou à la place) des options de `config.json`, les arguments suiv
 | `--verbose`          | Indique un niveau de verbosité (remplace la valeur de `config.json`)                                                                             |
 | `--aggressiveness`   | Indique un niveau d'agressivité (remplace la valeur de `config.json`)                                                                            |
 | `--override-targets` | Permet de faire la sélection des mires du circuit imprimé à la main. Peut résoudre des problèmes lorsque la détection automatique est imprécise. |
+| `--skip-pulltest` | Réalise la vérification en considérant que le module n'a plus ses fils de pulltest. |
+| `--read-corners` | Lit la position des coins du chip dans le fichier ModuleData/corners_pos.json. |
+| `--read-targets` | Lit la position des mires dans le fichier ModuleData/targets_pos.json. |
 
 **Exemple :**
 
 ```bash
 python main.py check --input 20UPGM00012345 --iref 10,10,9,5 --aggressiveness high
+```
+
+---
+
+## Afficher les derniers résultats
+
+La commande show permet d'afficher la vue avec loupe du dernier module analysé :
+
+```bash
+python main.py show
 ```
 
 ---

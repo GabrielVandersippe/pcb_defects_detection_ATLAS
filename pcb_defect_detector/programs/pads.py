@@ -4,7 +4,7 @@ import json
 from programs.find_targets import *
 from programs.debug_tools import *
 
-def find_pads (path, draw = False, verbose = 0, config = {}):
+def find_pads (path, draw = False, verbose = 0, config = {}, read_corners=False):
 
     lang = config["language"]
     if not verbose:
@@ -19,28 +19,34 @@ def find_pads (path, draw = False, verbose = 0, config = {}):
 
     shape = img.shape
     
-    corner_GA1 = magnifying_glass_pads(img[:1000,:1000])
-    if not corner_GA1:
-        raise Exception('Program Aborted.')
-    corner_GA2 = magnifying_glass_pads(img[-1000:,:1000])
-    if not corner_GA2:
-        raise Exception('Program Aborted.')
-    corner_GA3 = magnifying_glass_pads(img[-1000:,-1000:])
-    if not corner_GA3:
-        raise Exception('Program Aborted.')
-    corner_GA4 = magnifying_glass_pads(img[:1000,-1000:])
-    if not corner_GA4:
-        raise Exception('Program Aborted.')
-    
-    corners = np.array([corner_GA1, corner_GA2, corner_GA3, corner_GA4])
-    corners[1,1] += shape[0] - 1000
-    corners[2,0] += shape[1] - 1000
-    corners[2,1] += shape[0] - 1000
-    corners[3,0] += shape[1] - 1000
-    # print(corners)
+    if read_corners :
+        with open("../ModuleData/corners_pos.json") as f:
+            data = json.load(f)
+            corners = np.array(data)
 
-    # Corners for P1004 (for test purposes)
-    # corners = np.array([[818, 126], [825, shape[0] - 1000 + 814], [shape[1] - 1000 + 381, shape[0] - 1000 + 809], [shape[1] - 1000 + 379, 121]])
+    else :
+        corner_GA1 = magnifying_glass_pads(img[:1000,:1000])
+        if not corner_GA1:
+            raise Exception('Program Aborted.')
+        corner_GA2 = magnifying_glass_pads(img[-1000:,:1000])
+        if not corner_GA2:
+            raise Exception('Program Aborted.')
+        corner_GA3 = magnifying_glass_pads(img[-1000:,-1000:])
+        if not corner_GA3:
+            raise Exception('Program Aborted.')
+        corner_GA4 = magnifying_glass_pads(img[:1000,-1000:])
+        if not corner_GA4:
+            raise Exception('Program Aborted.')
+        
+        corners = np.array([corner_GA1, corner_GA2, corner_GA3, corner_GA4])
+        corners[1,1] += shape[0] - 1000
+        corners[2,0] += shape[1] - 1000
+        corners[2,1] += shape[0] - 1000
+        corners[3,0] += shape[1] - 1000
+        # print(corners)
+
+        # Corners for P1004 (for test purposes)
+        # corners = np.array([[818, 126], [825, shape[0] - 1000 + 814], [shape[1] - 1000 + 381, shape[0] - 1000 + 809], [shape[1] - 1000 + 379, 121]])
 
     if verbose>1 : console.log(f"Calcul des homographies...")
     H = cv.findHomography(corners_ref, corners, cv.RANSAC)[0]

@@ -8,6 +8,9 @@ from programs.utils import afficher, find_suffix
 from programs.debug_tools import magnifying_glass_final_result
 from programs.output import show_config
 
+cv.setNumThreads(1)
+cv.ocl.setUseOpenCL(False)
+
 def positive_int(value):
     ivalue = int(value)
     if ivalue <= 0:
@@ -27,6 +30,8 @@ def main():
     check_parser.add_argument("--aggressiveness", choices=["low", "medium", "high"], help="Change the aggressiveness of the algorithm. Stronger aggressiveness means more false positives.")
     check_parser.add_argument("--override-targets", action="store_true", help="Override automatic check of the targets for manual definition.")
     check_parser.add_argument("--skip-pulltest", action="store_true", help="Skip the pulltest wires in the checking.")
+    check_parser.add_argument("--read-corners", action="store_true", help="Read the corners position from a json file.")
+    check_parser.add_argument("--read-targets", action="store_true", help="Read the targets position from a json file.")
     # Show command
     show_parser = subparsers.add_parser("show", help="Show the last output again")
 
@@ -69,9 +74,9 @@ def main():
             trim_nb_int = []
             for x in trim_nb_str :
                 trim_nb_int.append(int(x))
-            run_check(path, iref = trim_nb_int, verbose=args.verbose, config=config, override_targets=args.override_targets, skip_pulltest=args.skip_pulltest)
+            run_check(path, iref = trim_nb_int, verbose=args.verbose, config=config, override_targets=args.override_targets, skip_pulltest=args.skip_pulltest, read_corners=args.read_corners, read_targets=args.read_targets)
         else :
-            run_check(path, verbose=args.verbose, config=config, override_targets=args.override_targets, skip_pulltest=args.skip_pulltest)
+            run_check(path, verbose=args.verbose, config=config, override_targets=args.override_targets, skip_pulltest=args.skip_pulltest, read_corners=args.read_corners, read_targets=args.read_targets)
 
     elif args.command == "show":
         with open("../temp/path.txt", "r") as f:
