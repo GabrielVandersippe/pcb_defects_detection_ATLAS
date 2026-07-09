@@ -4,7 +4,7 @@ import json
 from programs.find_targets import *
 from programs.debug_tools import *
 
-def find_pads (path, draw = False, verbose = 0, config = {}):
+def find_pads (path, draw = False, verbose = 0, config = {}, read_corners=False):
 
     lang = config["language"]
     if not verbose:
@@ -18,25 +18,31 @@ def find_pads (path, draw = False, verbose = 0, config = {}):
 
     shape = img.shape
     
-    corner_GA1 = magnifying_glass_pads(img[:1000,:1000])
-    if not corner_GA1:
-        raise Exception('Program Aborted.')
-    corner_GA2 = magnifying_glass_pads(img[-1000:,:1000])
-    if not corner_GA2:
-        raise Exception('Program Aborted.')
-    corner_GA3 = magnifying_glass_pads(img[-1000:,-1000:])
-    if not corner_GA3:
-        raise Exception('Program Aborted.')
-    corner_GA4 = magnifying_glass_pads(img[:1000,-1000:])
-    if not corner_GA4:
-        raise Exception('Program Aborted.')
-    
-    corners = np.array([corner_GA1, corner_GA2, corner_GA3, corner_GA4])
-    corners[1,1] += shape[0] - 1000
-    corners[2,0] += shape[1] - 1000
-    corners[2,1] += shape[0] - 1000
-    corners[3,0] += shape[1] - 1000
+    if read_corners :
+        with open("../ModuleData/corners_pos.json") as f:
+            data = json.load(f)
+            corners = np.array(data)
 
+    else :
+        corner_GA1 = magnifying_glass_pads(img[:1000,:1000])
+        if not corner_GA1:
+            raise Exception('Program Aborted.')
+        corner_GA2 = magnifying_glass_pads(img[-1000:,:1000])
+        if not corner_GA2:
+            raise Exception('Program Aborted.')
+        corner_GA3 = magnifying_glass_pads(img[-1000:,-1000:])
+        if not corner_GA3:
+            raise Exception('Program Aborted.')
+        corner_GA4 = magnifying_glass_pads(img[:1000,-1000:])
+        if not corner_GA4:
+            raise Exception('Program Aborted.')
+        
+        corners = np.array([corner_GA1, corner_GA2, corner_GA3, corner_GA4])
+        corners[1,1] += shape[0] - 1000
+        corners[2,0] += shape[1] - 1000
+        corners[2,1] += shape[0] - 1000
+        corners[3,0] += shape[1] - 1000
+        
     if verbose>1 : console.log(f"Calcul des homographies...")
     H = cv.findHomography(corners_ref, corners, cv.RANSAC)[0]
     if verbose>1 : console.log(f"Homographies calculées.")
@@ -60,5 +66,8 @@ def find_pads (path, draw = False, verbose = 0, config = {}):
                     print(pad_bonded)
                     cv.polylines(img,[np.array(pad_bonded).reshape((-1,1,2))], True, (0, 255, 0), 3)
     if verbose>1 : console.log(f"Transposition des pads effectuée.")
+
+    if draw :
+        magnifying_glass(img)
     
     return pads

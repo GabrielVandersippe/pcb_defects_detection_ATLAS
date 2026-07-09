@@ -8,6 +8,9 @@ from programs.utils import afficher, find_suffix
 from programs.debug_tools import magnifying_glass_final_result
 from programs.output import show_config
 
+cv.setNumThreads(1)
+cv.ocl.setUseOpenCL(False)
+
 def positive_int(value):
     ivalue = int(value)
     if ivalue <= 0:
@@ -25,6 +28,10 @@ def main():
     check_parser.add_argument("--iref", required=False, help="Custom iref numbers = 4 ints separated by ','")
     check_parser.add_argument("--verbose", type=int, choices=[0,1,2,3], help="Change the level of detail of the output. Goes from 0 to 3. Default : 0.")
     check_parser.add_argument("--aggressiveness", choices=["low", "medium", "high"], help="Change the aggressiveness of the algorithm. Stronger aggressiveness means more false positives.")
+    check_parser.add_argument("--override-targets", action="store_true", help="Override automatic check of the targets for manual definition.")
+    check_parser.add_argument("--skip-pulltest", action="store_true", help="Skip the pulltest wires in the checking.")
+    check_parser.add_argument("--read-corners", action="store_true", help="Read the corners position from a json file.")
+    check_parser.add_argument("--read-targets", action="store_true", help="Read the targets position from a json file.")
     # Show command
     show_parser = subparsers.add_parser("show", help="Show the last output again")
 
@@ -36,7 +43,8 @@ def main():
     config_parser.add_argument("--suffix-after", help="Change the suffix that comes before the reference of the module after bonding.")
     config_parser.add_argument("--suffix-before", help="Change the suffix that comes before the reference of the module before bonding.")
     config_parser.add_argument("--verbose", type=int, choices=[0,1,2,3], help="Change the level of detail of the output. Goes from 0 to 3. Default : 0.")
-    config_parser.add_argument("--zoom", type=positive_int, help="Change the zooming power of the magnifying glass function (integer). Default : 4")
+    config_parser.add_argument("--zoom-select", type=positive_int, help="Change the zooming power of the magnifying glass function for the selection (integer). Default : 4")
+    config_parser.add_argument("--zoom-visualize", type=positive_int, help="Change the zooming power of the magnifying glass function for the visualization (integer). Default : 2")
     config_parser.add_argument("--show", action="store_true", help="Show the current configuration.")
 
     args = parser.parse_args()
@@ -66,14 +74,18 @@ def main():
             trim_nb_int = []
             for x in trim_nb_str :
                 trim_nb_int.append(int(x))
-            run_check(path, iref = trim_nb_int, verbose=args.verbose, config=config)
+            run_check(path, iref = trim_nb_int, verbose=args.verbose, config=config, override_targets=args.override_targets, skip_pulltest=args.skip_pulltest, read_corners=args.read_corners, read_targets=args.read_targets)
         else :
-            run_check(path, verbose=args.verbose, config=config)
+            run_check(path, verbose=args.verbose, config=config, override_targets=args.override_targets, skip_pulltest=args.skip_pulltest, read_corners=args.read_corners, read_targets=args.read_targets)
 
     elif args.command == "show":
         with open("../temp/path.txt", "r") as f:
             path = f.readline()
-        magnifying_glass_final_result(path)
+        if path[-1] == "/" :
+            file_name = (path.split("/")[-2]).split(".")[0]
+        else :
+            file_name = (path.split("/")[-1]).split(".")[0]
+        magnifying_glass_final_result(path, file_name)
 
     elif args.command == "config":
         with open("../config/config.json", "r") as f:
@@ -92,8 +104,10 @@ def main():
             config["suffix_before_bonding"] = args.suffix_before            
         if args.verbose is not None:
             config["verbose"] = int(args.verbose)            
-        if args.zoom is not None:
-            config["zoom"] = int(args.zoom)
+        if args.zoom_select is not None:
+            config["zoom_select"] = int(args.zoom_select)
+        if args.zoom_visualize is not None:
+            config["zoom_visualize"] = int(args.zoom_visualize)
 
         if args.show:
             print("Configuration mise à jour.") if config["language"]=='fr' else print("Updated config.")
