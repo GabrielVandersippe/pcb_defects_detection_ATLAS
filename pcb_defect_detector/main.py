@@ -10,6 +10,8 @@ from programs.output import show_config
 
 cv.setNumThreads(1)
 cv.ocl.setUseOpenCL(False)
+cv.setRNGSeed(0)
+np.random.seed(0)
 
 def positive_int(value):
     ivalue = int(value)
