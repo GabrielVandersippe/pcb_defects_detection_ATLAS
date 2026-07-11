@@ -176,7 +176,12 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False, **kwargs):
     for idx_wire, y_wire in enumerate(y_left_list):
 
         label = labels[y_wire, x_left]
-           
+        
+        if label == 0:
+            if lang=='en' : console.log(f"[bold red] WARNING: [/bold red] [red]A zero label was requested. This may mean that the position of the wire wasn't found properely. Computations for this wire have been skipped.")
+            if lang=='fr' : console.log(f"[bold red] AVERTISSEMENT: [/bold red] [red]Une étiquette nulle a été rencontrée. Cela peut vouloir dire que la position du fil a mal été trouvée. Les calculs pour ce fil sont par conséquent outrepassés.")
+            continue
+
         x = stats[label, cv.CC_STAT_LEFT]
         y = stats[label, cv.CC_STAT_TOP]
         w = stats[label, cv.CC_STAT_WIDTH]
