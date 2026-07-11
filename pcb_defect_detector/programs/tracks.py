@@ -63,6 +63,15 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, read
                 targets_dst[6,1], targets_dst[7,1] = targets_dst[7,1], targets_dst[6,1]
 
     if verbose_lv>1 : console.log(f"Calcul des homographies...")
+
+    valid_indices = [i for i, val in enumerate(targets_dst) if val != (-1, -1)]
+    
+    if len(valid_indices) < len(targets_dst):
+        console.log(f"[bold red]WARNING: EXPERIMENTAL FEATURE🧪[/bold red][red]Not enough targets to perfectly match reference. Trying to calculate the homography with less")
+    
+        targets_dst = [targets_dst[i] for i in valid_indices]
+        targets_ref = [targets_ref[i] for i in valid_indices]
+
     H1 = cv.findHomography(targets_ref, targets_dst, cv.RANSAC)[0]
     H2 = compute_homography_center(cv.imread(ref_unbonded),cv.imread(ref_bonded)) # TODO : ne pas le recalculer à chaque fois
     if verbose_lv>1 : console.log(f"Homographies calculées.")
