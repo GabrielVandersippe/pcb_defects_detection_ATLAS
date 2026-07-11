@@ -70,7 +70,7 @@ def mires_template_matching(img_input:np.ndarray, draw = False, verbose_lv=0, **
                    (-400, -100, -600, -300, 1), 
                    (3800, 4200, -800, -500, 2)]
 
-    cimg = cv.cvtColor(img,cv.COLOR_GRAY2BGR) #Avec 3 canaux pour pouvoir l'afficher bien
+    # cimg = cv.cvtColor(img,cv.COLOR_GRAY2BGR) #Avec 3 canaux pour pouvoir l'afficher bien
 
     centers = []
 
@@ -94,9 +94,9 @@ def mires_template_matching(img_input:np.ndarray, draw = False, verbose_lv=0, **
         for pt in zip(*loc[::-1]):
             center = (pt[0]+beg2%length + 28, pt[1]+beg1%height + 28) ##NB : Coordonnees du centre dans le template : (28,28)
             slice_centers.append(center)
-            if draw:
-                cv.circle(cimg, center, 40, (0,0,255), 3)
-                cv.circle(cimg,center,2,(0,0,255),3)
+            # if draw:
+            #     cv.circle(cimg, center, 40, (0,0,255), 3)
+            #     cv.circle(cimg,center,2,(0,0,255),3)
         
         #S'il y a plus ou autant de mires que desire, on les regarde quand meme pour choisir les meilleurs matchs et ne pas prendre de doublons
         # On prend les meilleurs matchs
@@ -115,9 +115,9 @@ def mires_template_matching(img_input:np.ndarray, draw = False, verbose_lv=0, **
                 for circle in circles[0,:nbmires]:
                     center = (circle[0]+beg2%length,circle[1]+beg1%height)
                     slice_centers.append(center)
-                    if draw:
-                        cv.circle(cimg, center, circle[2], (0,0,255), 3)
-                        cv.circle(cimg, center,2,(0,0,255),3)
+                    # if draw:
+                    #     cv.circle(cimg, center, circle[2], (0,0,255), 3)
+                    #     cv.circle(cimg, center,2,(0,0,255),3)
 
             if verbose_lv>2 : console.log(f"{len(slice_centers)} mires trouvées sur {nbmires} par recherche de cercles.")
 
@@ -135,16 +135,20 @@ def mires_template_matching(img_input:np.ndarray, draw = False, verbose_lv=0, **
                     slice_centers += [(-1,-1)] #On met -1 à la fin de la liste pour la mire du bas
                 else : 
                     slice_centers = [(-1,-1)] + slice_centers #On met -1 au début de la liste pour la mire du haut
-            
+        
+        #Si on est ici, c'est qu'on en a peut être deux, on s'assure qu'elles sont bien ordonnées.
+        if len(slice_centers)==2:
+            slice_centers.sort(key=lambda x: x[1], reverse=True)
+
         centers.extend(slice_centers)
 
-    if draw :
+    # if draw :
 
-        for i,(beg1, end1, beg2, end2, _) in enumerate(sliceparams):
+    #     for i,(beg1, end1, beg2, end2, _) in enumerate(sliceparams):
 
-            cv.imshow("Mire " + str(i), cimg[beg1:end1, beg2:end2])
-            cv.waitKey(0)
-            cv.destroyAllWindows()
+    #         cv.imshow("Mire " + str(i), cimg[beg1:end1, beg2:end2])
+    #         cv.waitKey(0)
+    #         cv.destroyAllWindows()
 
     return np.array(centers)
 

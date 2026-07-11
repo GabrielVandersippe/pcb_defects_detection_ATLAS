@@ -64,6 +64,7 @@ git clone https://github.com/GabrielVandersippe/pcb_defects_detection_ATLAS.git
    ```bash
    eval $(poetry env activate)
    ```
+
    - avec Powershell
    ```powershell
    Invoke-Expression (poetry env activate)
@@ -239,17 +240,17 @@ En plus d'une édition manuelle du fichier `config.json`, une commande `config` 
 python main.py config --folder ModulePictures
 ```
 
-| Argument          | Option modifiée dans `config.json`                  |
-| ----------------- | --------------------------------------------------- |
-| `--folder`        | [`pictures_folder`](#pictures_folder)               |
-| `--format`        | [`pictures_format`](#pictures_format)               |
-| `--language`      | [`language`](#language)                             |
-| `--suffix-after`  | [`suffix_after_bonding`](#suffix_after_bonding)     |
-| `--suffix-before` | [`suffix_before_bonding`](#suffix_before_bonding)   |
-| `--verbose`       | [`verbose`](#verbose)                               |
-| `--zoom-select`   | [`zoom_select`](#zoom_select)                       |
-| `--zoom-visualize`| [`zoom_visualize`](#zoom_visualize)                 |
-| `--show`          | Affiche la configuration actuelle (ne modifie rien) |
+| Argument           | Option modifiée dans `config.json`                  |
+| ------------------ | --------------------------------------------------- |
+| `--folder`         | [`pictures_folder`](#pictures_folder)               |
+| `--format`         | [`pictures_format`](#pictures_format)               |
+| `--language`       | [`language`](#language)                             |
+| `--suffix-after`   | [`suffix_after_bonding`](#suffix_after_bonding)     |
+| `--suffix-before`  | [`suffix_before_bonding`](#suffix_before_bonding)   |
+| `--verbose`        | [`verbose`](#verbose)                               |
+| `--zoom-select`    | [`zoom_select`](#zoom_select)                       |
+| `--zoom-visualize` | [`zoom_visualize`](#zoom_visualize)                 |
+| `--show`           | Affiche la configuration actuelle (ne modifie rien) |
 
 **Exemple :**
 
@@ -269,15 +270,15 @@ python main.py config --show
 
 En complément (ou à la place) des options de `config.json`, les arguments suivants peuvent être passés directement à la commande `check` :
 
-| Argument             | Description                                                                                                                                      |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `--iref`             | Indique les 4 valeurs d'iref (4 entiers séparés par des virgules)                                                                                |
-| `--verbose`          | Indique un niveau de verbosité (remplace la valeur de `config.json`)                                                                             |
-| `--aggressiveness`   | Indique un niveau d'agressivité (remplace la valeur de `config.json`)                                                                            |
-| `--override-targets` | Permet de faire la sélection des mires du circuit imprimé à la main. Peut résoudre des problèmes lorsque la détection automatique est imprécise. |
-| `--skip-pulltest` | Réalise la vérification en considérant que le module n'a plus ses fils de pulltest. |
-| `--read-corners` | Lit la position des coins du chip dans le fichier ModuleData/corners_pos.json. |
-| `--read-targets` | Lit la position des mires dans le fichier ModuleData/targets_pos.json. |
+| Argument             | Description                                                                                                                                                                                                                         |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--iref`             | Indique les 4 valeurs d'iref (4 entiers séparés par des virgules)                                                                                                                                                                   |
+| `--verbose`          | Indique un niveau de verbosité (remplace la valeur de `config.json`)                                                                                                                                                                |
+| `--aggressiveness`   | Indique un niveau d'agressivité (remplace la valeur de `config.json`)                                                                                                                                                               |
+| `--override-targets` | Permet de faire la sélection des mires du circuit imprimé à la main. Peut résoudre des problèmes lorsque la détection automatique est imprécise. NOTE: Dans ce cas, il est nécessaire de sélectionner les mires de **HAUT EN BAS**. |
+| `--skip-pulltest`    | Réalise la vérification en considérant que le module n'a plus ses fils de pulltest.                                                                                                                                                 |
+| `--read-corners`     | Lit la position des coins du chip dans le fichier ModuleData/corners_pos.json.                                                                                                                                                      |
+| `--read-targets`     | Lit la position des mires dans le fichier ModuleData/targets_pos.json.                                                                                                                                                              |
 
 **Exemple :**
 
