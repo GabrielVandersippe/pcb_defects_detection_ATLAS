@@ -41,7 +41,7 @@ def trouver_la_paire(fichier:str, dossier:str) -> str :
     before_bonding = config["suffix_before_bonding"]
 
     first_ = bname.find("_")
-    second_ = bname[first_:].find("_")
+    second_ = bname.find("_", first_ + 1) 
     name = bname[:second_]
 
     after_in_name = False
@@ -71,7 +71,8 @@ def trouver_la_paire(fichier:str, dossier:str) -> str :
             for a in after_bonding :
                 if (a in os.path.basename(f)) and (name in os.path.basename(f)):
                     return os.path.join(dossier, f)
-    return "Pas de paire"
+                
+    raise Exception("No unwired match found for the requested image!")
 
 #fonction utile pour afficher une image
 def afficher(img) :
