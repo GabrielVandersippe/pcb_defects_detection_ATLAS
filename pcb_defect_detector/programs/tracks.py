@@ -63,8 +63,8 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, read
                 targets_dst[6,1], targets_dst[7,1] = targets_dst[7,1], targets_dst[6,1]
 
     if verbose_lv>1 : console.log(f"Calcul des homographies...")
-
-    valid_indices = [i for i, val in enumerate(targets_dst) if val != (-1, -1)]
+    
+    valid_indices = [i for i, val in enumerate(targets_dst) if val[0] != -1]
 
     if len(valid_indices) < len(targets_dst):
         console.log(f"[bold red]WARNING: EXPERIMENTAL FEATURE🧪[/bold red][red]Not enough targets to perfectly match reference. Trying to calculate the homography with less targets.")

@@ -58,8 +58,8 @@ def find_ROI(img, verbose_lv = 0):
     high_left, low_left = crop_ligns(img[:,:n//2])
     high_right, low_right = crop_ligns(img[:,n//2:])
     grey = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    left = crop_columns_left(grey[high_left:low_left]) + 10 # On ne veut pas prendre en compte les pads.
-    right = crop_columns_right(grey[high_right:low_right]) - 10
+    left = crop_columns_left(grey[high_left:low_left]) + 6 # On ne veut pas prendre en compte les pads, donc on retire quelques pixels de chaque côté
+    right = crop_columns_right(grey[high_right:low_right]) - 6
 
     if verbose_lv > 2: console.log("Région d'intérêt extraite.")
 
@@ -178,8 +178,8 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False, **kwargs):
         label = labels[y_wire, x_left]
         
         if label == 0:
-            if lang=='en' : console.log(f"[bold red] WARNING: [/bold red] [red]A zero label was requested. This may mean that the position of the wire wasn't found properely. Computations for this wire have been skipped.")
-            if lang=='fr' : console.log(f"[bold red] AVERTISSEMENT: [/bold red] [red]Une étiquette nulle a été rencontrée. Cela peut vouloir dire que la position du fil a mal été trouvée. Les calculs pour ce fil sont par conséquent outrepassés.")
+            if lang=='en' : console.print(f"[bold red]WARNING: [/bold red] [red]A zero label was requested. This may mean that the position of the wire wasn't found properely. Computations for this wire have been skipped.")
+            if lang=='fr' : console.print(f"[bold red]AVERTISSEMENT: [/bold red] [red]Une étiquette nulle a été rencontrée. Cela peut vouloir dire que la position du fil a mal été trouvée. Les calculs pour ce fil sont par conséquent outrepassés.")
             continue
 
         x = stats[label, cv.CC_STAT_LEFT]

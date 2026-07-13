@@ -197,8 +197,8 @@ def magnifying_glass_final_result(src, name):
         console.print("[blue]Press [bold]'1'[/bold] for the [bold white]unmodified[/bold white] view.")
         console.print("[blue]Press [bold]'2'[/bold] for the view showing the [bold red]critical short circuits[/bold red].")
         console.print("[blue]Press [bold]'3'[/bold] for the view showing the [bold dark_orange]non-critical short circuits[/bold dark_orange].")
-        console.print("[blue]Press [bold]'4'[/bold] for the view showing the [bold dark_blue]incorrectly wired wire ends[/bold dark_blue].")
-        console.print("[blue]Press [bold]'5'[/bold] for the wiew showing the [bold green]ends of all the wires[/bold green].")
+        console.print("[blue]Press [bold]'4'[/bold] for the view showing the [bold green]incorrectly wired wire ends[/bold green].")
+        console.print("[blue]Press [bold]'5'[/bold] for the wiew showing the [bold dark_blue]ends of all the wires[/bold dark_blue].")
         console.print("[blue]Press [bold]'6'[/bold] for the view showing the [bold cyan]tracks[/bold cyan].")
     
         console.print("\n[blue]Press [bold]'0'[/bold] for the view showing [bold magenta]all the changes[/bold magenta].\n")
@@ -222,8 +222,8 @@ def magnifying_glass_final_result(src, name):
         console.print("[blue]Appuyer sur [bold]'1'[/bold] pour la vue [bold white]non modifiée[/bold white].")
         console.print("[blue]Appuyer sur [bold]'2'[/bold] pour la vue avec les [bold red]courts-circuits critiques[/bold red].")
         console.print("[blue]Appuyer sur [bold]'3'[/bold] pour la vue avec les [bold dark_orange]courts-circuits non critiques[/bold dark_orange].")
-        console.print("[blue]Appuyer sur [bold]'4'[/bold] pour la vue avec les [bold dark_blue]terminaisons des fils mal câblés[/bold dark_blue].")
-        console.print("[blue]Appuyer sur [bold]'5'[/bold] pour la vue avec les [bold green]terminaisons de tous les fils[/bold green].")
+        console.print("[blue]Appuyer sur [bold]'4'[/bold] pour la vue avec les [bold green]terminaisons des fils mal câblés[/bold green].")
+        console.print("[blue]Appuyer sur [bold]'5'[/bold] pour la vue avec les [bold dark_blue]terminaisons de tous les fils[/bold dark_blue].")
         console.print("[blue]Appuyer sur [bold]'6'[/bold] pour la vue avec les [bold cyan]pistes[/bold cyan].")
     
         console.print("\n[blue]Appuyer sur [bold]'0'[/bold] pour la vue avec [bold magenta]toutes les modifications[/bold magenta].\n")
