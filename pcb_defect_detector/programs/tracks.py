@@ -6,7 +6,7 @@ from programs.find_targets import *
 from programs.debug_tools import *
 import json
 
-def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, read_targets=False):
+def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, full_image_mode = False, read_targets=False):
     """
     Finds the location of the tracks for a given image, from their location on the reference image.
 
@@ -29,11 +29,11 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, read
             data = json.load(f)
             targets_dst = np.array(data)
     else :
-        if not override_targets:
+        if not override_targets and not full_image_mode:
             if verbose_lv>1 : console.log(f"Recherche de la position des mires sur l'image...")
             targets_dst = find_targets_wired(path, verbose_lv=verbose_lv, img_name = "Image câblée")        
             if verbose_lv>1 : console.log(f"Positions des mires trouvées.")
-        else:
+        elif override_targets:
             #Logique pour sélectionner chacune des mires à la main
             cabled_img = cv.imread(path)
             H, W = cabled_img.shape[:2]
@@ -49,6 +49,7 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, read
                     (2100, 3100, W-1700, W-900), 
                     (2100, 3100, W-1700, W-900)]
             
+            message_mg_targets()
             for beg1, end1, beg2, end2 in sliceparams:
                 target = magnifying_glass_targets(cabled_img[beg1:end1,beg2:end2])
                 if not target:
@@ -61,6 +62,22 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, read
                 targets_dst[2,1], targets_dst[3,1] = targets_dst[3,1], targets_dst[2,1]
             if targets_dst[6,1] > targets_dst[7,1] :
                 targets_dst[6,1], targets_dst[7,1] = targets_dst[7,1], targets_dst[6,1]
+
+        else: #Cas où on est en full_image_mode
+            cabled_img = cv.imread(path)
+            targets_dst = []
+
+            message_mg_targets()
+            console.print("[bold red]*** Select targets in the order below ***[/]")
+            console.print("[red] # - - - - - - #\n | 1 · · · · 5 |\n | · · · · · · |\n | · 3 · · 7 · |\n | · 4 · · 8 · |\n | · · · · · · |\n | 2 · · · · 6 |\n # - - - - - - #[/]")
+
+            for _ in range(8):
+                target = magnifying_glass_targets(cabled_img)
+                if not target:
+                    raise Exception('Program Aborted.')
+                targets_dst.append(target)
+            
+            targets_dst = np.array(targets_dst)
 
     if verbose_lv>1 : console.log(f"Calcul des homographies...")
     

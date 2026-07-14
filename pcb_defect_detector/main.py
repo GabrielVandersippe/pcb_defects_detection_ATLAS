@@ -31,6 +31,7 @@ def main():
     check_parser.add_argument("--verbose", type=int, choices=[0,1,2,3], help="Change the level of detail of the output. Goes from 0 to 3. Default : 0.")
     check_parser.add_argument("--aggressiveness", choices=["low", "medium", "high"], help="Change the aggressiveness of the algorithm. Stronger aggressiveness means more false positives.")
     check_parser.add_argument("--override-targets", action="store_true", help="Override automatic check of the targets for manual definition.")
+    check_parser.add_argument("--full-image-selection", action="store_true", help="Make all selection tasks use the whole image instead of slices. Requires full manual definition of corners and targets.")
     check_parser.add_argument("--skip-pulltest", action="store_true", help="Skip the pulltest wires in the checking.")
     check_parser.add_argument("--read-corners", action="store_true", help="Read the corners position from a json file.")
     check_parser.add_argument("--read-targets", action="store_true", help="Read the targets position from a json file.")
@@ -76,9 +77,9 @@ def main():
             trim_nb_int = []
             for x in trim_nb_str :
                 trim_nb_int.append(int(x))
-            run_check(path, iref = trim_nb_int, verbose=args.verbose, config=config, override_targets=args.override_targets, skip_pulltest=args.skip_pulltest, read_corners=args.read_corners, read_targets=args.read_targets)
+            run_check(path, iref = trim_nb_int, verbose=args.verbose, config=config, override_targets=args.override_targets, full_image_mode = args.full_image_selection, skip_pulltest=args.skip_pulltest, read_corners=args.read_corners, read_targets=args.read_targets)
         else :
-            run_check(path, verbose=args.verbose, config=config, override_targets=args.override_targets, skip_pulltest=args.skip_pulltest, read_corners=args.read_corners, read_targets=args.read_targets)
+            run_check(path, verbose=args.verbose, config=config, override_targets=args.override_targets, full_image_mode = args.full_image_selection, skip_pulltest=args.skip_pulltest, read_corners=args.read_corners, read_targets=args.read_targets)
 
     elif args.command == "show":
         with open("../temp/path.txt", "r") as f:

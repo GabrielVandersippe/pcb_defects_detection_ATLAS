@@ -370,6 +370,26 @@ def mouse_callback_pad(text_params, event, x, y, flags, param):
         
         state['pad']=(x + state['offset_x'], y + state['offset_y'])
 
+def message_mg_pads():
+    lang = config["language"]
+
+    if lang == 'en':
+        console.rule("[bold blue]CORNER SELECTION")
+        console.print("")
+        console.print("[blue]Hover your mouse over the main view to display the zoomed-in version.")
+        console.print("[blue][bold]Drag and drop[/bold] to zoom.")
+        console.print("[blue]Press [bold]'r'[/bold] to reset the view.")
+        console.print("[blue]Press [bold]'q'[/bold] to validate the selection of the corner.")
+        console.print("[blue][bold]Double-click[/bold] to select the position of the point.")
+    
+    else:
+        console.rule("[bold blue]SÉLECTION DES COINS")
+        console.print("")
+        console.print("[blue]Passer la souris sur la vue principale pour afficher la version zoomée.")
+        console.print("[blue][bold]Glisser-déposer[/bold] pour zoomer.")
+        console.print("[blue]Appuyer sur [bold]'r'[/bold] pour réinitialiser la vue.")
+        console.print("[blue]Appuyer sur [bold]'q'[/bold] pour valider la sélection du coin.")
+        console.print("[blue][bold]Double-cliquer[/bold] pour sélectionner un point.")
 
 def magnifying_glass_pads(src, pad = None):
 
@@ -406,13 +426,6 @@ def magnifying_glass_pads(src, pad = None):
         else :
             cv.namedWindow(window_name, cv.WINDOW_NORMAL)
 
-        console.rule("[bold blue]MAGNIFYING GLASS")
-        console.print("")
-        console.print("[blue]Hover your mouse over the main view to display the zoomed-in version.")
-        console.print("[blue][bold]Drag and drop[/bold] to zoom.")
-        console.print("[blue]Press [bold]'r'[/bold] to reset the view.")
-        console.print("[blue]Press [bold]'q'[/bold] to validate the selection.")
-        console.print("[blue][bold]Double-click[/bold] to select the position of the point.")
     else :    
         window_name = "Vue Principale"
         if size == "auto" :
@@ -421,14 +434,6 @@ def magnifying_glass_pads(src, pad = None):
             cv.namedWindow(window_name, cv.WINDOW_NORMAL)
         else :
             cv.namedWindow(window_name, cv.WINDOW_NORMAL)
-
-        console.rule("[bold blue]LOUPE")
-        console.print("")
-        console.print("[blue]Passer la souris sur la vue principale pour afficher la version zoomée.")
-        console.print("[blue][bold]Glisser-déposer[/bold] pour zoomer.")
-        console.print("[blue]Appuyer sur [bold]'r'[/bold] pour réinitialiser la vue.")
-        console.print("[blue]Appuyer sur [bold]'q'[/bold] pour valider la sélection.")
-        console.print("[blue][bold]Double-cliquer[/bold] pour sélectionner un point.")
 
     cv.setMouseCallback(window_name, lambda a,b,c,d,e: mouse_callback_pad(text_params, a, b, c, d, e) , state)
 
@@ -542,6 +547,26 @@ def mouse_callback_target(text_params, event, x, y, flags, param):
         
         state['pad']=(x + state['offset_x'], y + state['offset_y'])
 
+def message_mg_targets():
+    lang = config["language"]
+
+    if lang == 'en':
+        console.rule("[bold blue]TARGET SELECTION")
+        console.print("")
+        console.print("[blue]Hover your mouse over the main view to display the zoomed-in version.")
+        console.print("[blue][bold]Drag and drop[/bold] to zoom.")
+        console.print("[blue]Press [bold]'r'[/bold] to reset the view.")
+        console.print("[blue]Press [bold]'q'[/bold] to validate the selection of the target.")
+        console.print("[blue][bold]Double-click[/bold] to select the position of the point.")
+    
+    else:
+        console.rule("[bold blue]SÉLECTION DES MIRES")
+        console.print("")
+        console.print("[blue]Passer la souris sur la vue principale pour afficher la version zoomée.")
+        console.print("[blue][bold]Glisser-déposer[/bold] pour zoomer.")
+        console.print("[blue]Appuyer sur [bold]'r'[/bold] pour réinitialiser la vue.")
+        console.print("[blue]Appuyer sur [bold]'q'[/bold] pour valider la sélection de la mire.")
+        console.print("[blue][bold]Double-cliquer[/bold] pour sélectionner un point.")
 
 def magnifying_glass_targets(src, pad = None):
 
@@ -578,13 +603,6 @@ def magnifying_glass_targets(src, pad = None):
         else :
             cv.namedWindow(window_name, cv.WINDOW_NORMAL)
 
-        console.rule("[bold blue]MAGNIFYING GLASS")
-        console.print("")
-        console.print("[blue]Hover your mouse over the main view to display the zoomed-in version.")
-        console.print("[blue][bold]Drag and drop[/bold] to zoom.")
-        console.print("[blue]Press [bold]'r'[/bold] to reset the view.")
-        console.print("[blue]Press [bold]'q'[/bold] to validate the selection.")
-        console.print("[blue][bold]Double-click[/bold] to select the position of the point.")
     else :    
         window_name = "Vue Principale"
         if size == "auto" :
@@ -593,14 +611,6 @@ def magnifying_glass_targets(src, pad = None):
             cv.namedWindow(window_name, cv.WINDOW_NORMAL)
         else :
             cv.namedWindow(window_name, cv.WINDOW_NORMAL)
-
-        console.rule("[bold blue]LOUPE")
-        console.print("")
-        console.print("[blue]Passer la souris sur la vue principale pour afficher la version zoomée.")
-        console.print("[blue][bold]Glisser-déposer[/bold] pour zoomer.")
-        console.print("[blue]Appuyer sur [bold]'r'[/bold] pour réinitialiser la vue.")
-        console.print("[blue]Appuyer sur [bold]'q'[/bold] pour valider la sélection.")
-        console.print("[blue][bold]Double-cliquer[/bold] pour sélectionner un point.")
 
     cv.setMouseCallback(window_name, lambda a,b,c,d,e: mouse_callback_target(text_params, a, b, c, d, e) , state)
 

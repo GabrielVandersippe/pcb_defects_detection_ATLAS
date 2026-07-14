@@ -4,7 +4,7 @@ import json
 from programs.find_targets import *
 from programs.debug_tools import *
 
-def find_pads (path, draw = False, verbose = 0, config = {}, read_corners=False):
+def find_pads (path, draw = False, verbose = 0, config = {}, read_corners=False, full_image_mode=False):
 
     lang = config["language"]
     if not verbose:
@@ -23,7 +23,8 @@ def find_pads (path, draw = False, verbose = 0, config = {}, read_corners=False)
             data = json.load(f)
             corners = np.array(data)
 
-    else :
+    elif not full_image_mode:
+        message_mg_pads()
         corner_GA1 = magnifying_glass_pads(img[:1000,:1000])
         if not corner_GA1:
             raise Exception('Program Aborted.')
@@ -43,6 +44,23 @@ def find_pads (path, draw = False, verbose = 0, config = {}, read_corners=False)
         corners[2,1] += shape[0] - 1000
         corners[3,0] += shape[1] - 1000
         
+    else: #full_image_mode active
+        message_mg_pads()
+        corner_GA1 = magnifying_glass_pads(img)
+        if not corner_GA1:
+            raise Exception('Program Aborted.')
+        corner_GA2 = magnifying_glass_pads(img)
+        if not corner_GA2:
+            raise Exception('Program Aborted.')
+        corner_GA3 = magnifying_glass_pads(img)
+        if not corner_GA3:
+            raise Exception('Program Aborted.')
+        corner_GA4 = magnifying_glass_pads(img)
+        if not corner_GA4:
+            raise Exception('Program Aborted.')
+        
+        corners = np.array([corner_GA1, corner_GA2, corner_GA3, corner_GA4])
+
     if verbose>1 : console.log(f"Calcul des homographies...")
     H = cv.findHomography(corners_ref, corners, cv.RANSAC)[0]
     if verbose>1 : console.log(f"Homographies calculées.")

@@ -138,7 +138,7 @@ def mires_template_matching(img_input:np.ndarray, draw = False, verbose_lv=0, **
         
         #Si on est ici, c'est qu'on en a peut être deux, on s'assure qu'elles sont bien ordonnées.
         if len(slice_centers)==2:
-            slice_centers.sort(key=lambda x: x[1], reverse=True)
+            slice_centers.sort(key=lambda x: x[1], reverse=False)
 
         centers.extend(slice_centers)
 
