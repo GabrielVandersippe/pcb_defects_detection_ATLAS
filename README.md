@@ -61,14 +61,17 @@ git clone https://github.com/GabrielVandersippe/pcb_defects_detection_ATLAS.git
 
 1. Ouvrir un terminal et entrer :
    - avec Git Bash
+
    ```bash
    eval $(poetry env activate)
    ```
 
    - avec Powershell
+
    ```powershell
    Invoke-Expression (poetry env activate)
    ```
+
 2. Si la commande renvoie un message du type :
 
    ```
@@ -270,15 +273,16 @@ python main.py config --show
 
 En complément (ou à la place) des options de `config.json`, les arguments suivants peuvent être passés directement à la commande `check` :
 
-| Argument             | Description                                                                                                                                                                                                                         |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--iref`             | Indique les 4 valeurs d'iref (4 entiers séparés par des virgules)                                                                                                                                                                   |
-| `--verbose`          | Indique un niveau de verbosité (remplace la valeur de `config.json`)                                                                                                                                                                |
-| `--aggressiveness`   | Indique un niveau d'agressivité (remplace la valeur de `config.json`)                                                                                                                                                               |
-| `--override-targets` | Permet de faire la sélection des mires du circuit imprimé à la main. Peut résoudre des problèmes lorsque la détection automatique est imprécise. NOTE: Dans ce cas, il est nécessaire de sélectionner les mires de **HAUT EN BAS**. |
-| `--skip-pulltest`    | Réalise la vérification en considérant que le module n'a plus ses fils de pulltest.                                                                                                                                                 |
-| `--read-corners`     | Lit la position des coins du chip dans le fichier ModuleData/corners_pos.json.                                                                                                                                                      |
-| `--read-targets`     | Lit la position des mires dans le fichier ModuleData/targets_pos.json.                                                                                                                                                              |
+| Argument                 | Description                                                                                                                                                                                                                         |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--iref`                 | Indique les 4 valeurs d'iref (4 entiers séparés par des virgules)                                                                                                                                                                   |
+| `--verbose`              | Indique un niveau de verbosité (remplace la valeur de `config.json`)                                                                                                                                                                |
+| `--aggressiveness`       | Indique un niveau d'agressivité (remplace la valeur de `config.json`)                                                                                                                                                               |
+| `--override-targets`     | Permet de faire la sélection des mires du circuit imprimé à la main. Peut résoudre des problèmes lorsque la détection automatique est imprécise. NOTE: Dans ce cas, il est nécessaire de sélectionner les mires de **HAUT EN BAS**. |
+| `--full-image-selection` | Permet de faire la sélection des coins et des mires sur l'intégralité de l'image. Peut être utile dans le cas de figure où l'image est mal centrée.                                                                                 |
+| `--skip-pulltest`        | Réalise la vérification en considérant que le module n'a plus ses fils de pulltest.                                                                                                                                                 |
+| `--read-corners`         | Lit la position des coins du chip dans le fichier ModuleData/corners_pos.json.                                                                                                                                                      |
+| `--read-targets`         | Lit la position des mires dans le fichier ModuleData/targets_pos.json.                                                                                                                                                              |
 
 **Exemple :**
 
