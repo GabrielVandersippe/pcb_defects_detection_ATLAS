@@ -79,6 +79,12 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, full
             
             targets_dst = np.array(targets_dst)
 
+    if path[-1] == "/" :
+        file_name = (path.split("/")[-2]).split(".")[0]
+    else :
+        file_name = (path.split("/")[-1]).split(".")[0]
+    np.savetxt(f"../output/data/targets_pos_{file_name}.txt", targets_dst, fmt='%d', delimiter=',')
+
     if verbose_lv>1 : console.log(f"Calcul des homographies...")
     
     valid_indices = [i for i, val in enumerate(targets_dst) if val[0] != -1]
