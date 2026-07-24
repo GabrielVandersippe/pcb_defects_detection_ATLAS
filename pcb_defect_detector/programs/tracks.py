@@ -25,9 +25,7 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, full
         targets_ref = np.array(data)
 
     if read_targets :
-        with open("../ModuleData/targets_pos.json") as f:
-            data = json.load(f)
-            targets_dst = np.array(data)
+        targets_dst = np.loadtxt("../ModuleData/targets_pos.txt", dtype=int, delimiter=",")
     else :
         if not override_targets and not full_image_mode:
             if verbose_lv>1 : console.log(f"Recherche de la position des mires sur l'image...")

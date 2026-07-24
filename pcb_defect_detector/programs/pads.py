@@ -19,9 +19,7 @@ def find_pads (path, draw = False, verbose = 0, config = {}, read_corners=False,
     shape = img.shape
     
     if read_corners :
-        with open("../ModuleData/corners_pos.json") as f:
-            data = json.load(f)
-            corners = np.array(data)
+        corners = np.loadtxt("../ModuleData/corners_pos.txt", dtype=int, delimiter=",")
 
     elif not full_image_mode:
         message_mg_pads()
