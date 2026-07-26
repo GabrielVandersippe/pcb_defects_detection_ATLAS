@@ -95,7 +95,6 @@ def main():
             config = json.load(f)
 
         if args.folder:
-            assert()
             config["pictures_folder"] = args.folder
         if args.format:
             config["pictures_format"] = args.format            

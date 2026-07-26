@@ -93,7 +93,7 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, full
         targets_dst = [targets_dst[i] for i in valid_indices]
         targets_ref = [targets_ref[i] for i in valid_indices]
 
-    H1 = cv.findHomography(targets_ref, targets_dst, cv.RANSAC)[0]
+    H1 = cv.findHomography(targets_ref, targets_dst, 0)[0]
     H2 = compute_homography_center(cv.imread(ref_unbonded),cv.imread(ref_bonded)) # TODO : ne pas le recalculer à chaque fois
     if verbose_lv>1 : console.log(f"Homographies calculées.")
 

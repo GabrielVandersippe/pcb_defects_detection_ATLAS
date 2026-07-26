@@ -66,7 +66,7 @@ def find_pads (path, draw = False, verbose = 0, config = {}, read_corners=False,
     np.savetxt(f"../output/data/corners_pos_{file_name}.txt", corners, fmt='%d', delimiter=',')
 
     if verbose>1 : console.log(f"Calcul des homographies...")
-    H = cv.findHomography(corners_ref, corners, cv.RANSAC)[0]
+    H = cv.findHomography(corners_ref, corners, 0)[0]
     if verbose>1 : console.log(f"Homographies calculées.")
 
     pads = {}
