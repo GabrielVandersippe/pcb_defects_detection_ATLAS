@@ -192,12 +192,17 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}, override_t
                         cv.circle(crit_endpoints_mask, (endpoint_location_chip[0] + ROI[0][0], endpoint_location_chip[1] + ROI[1][1]), 6, 1, 3)
                     else :
                         pad_idx = last_pad
-                        if pad_idx > expected_pad_idx :
+                        if (pad_idx > expected_pad_idx) and (n_detected != n_expected) :
                             list_missing.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)][0])
                             missing_in_a_row.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)][0])
                         else :
                             missing_in_a_row = []
-                        # cas pad_idx < expected_pad_idx ??
+                        if (pad_idx != expected_pad_idx) and (n_detected == n_expected) :
+                            nb_wires_off_pad += 1
+                            list_crit_pad.append(expected_pad_idx)
+                            cv.circle(crit_endpoints_mask, (endpoint_location_chip[0] + ROI[0][0], endpoint_location_chip[1] + ROI[1][1]), 6, 1, 3)
+                            
+                        
                         off_pad = False
                         if pad_idx < 2000 :
                             track_idx = map1[pad_idx - 1001] + 100
@@ -295,11 +300,18 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}, override_t
                         cv.circle(crit_endpoints_mask, (endpoint_location_chip[0] + ROI[2][0], endpoint_location_chip[1] + ROI[3][1]), 6, (255, 0, 0), 3)
                     else :
                         pad_idx = last_pad
-                        if pad_idx > expected_pad_idx :
-                            list_missing.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)][0])
-                            missing_in_a_row.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)][0])
+                        if (pad_idx > expected_pad_idx) and (n_detected != n_expected) : # vrai fil manquant
+                                list_missing.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)][0])
+                                missing_in_a_row.append(wires[wire_idx_pcb[0] + len(list_missing) - len(missing_in_a_row)][0])
                         else :
                             missing_in_a_row = []
+                        if (pad_idx != expected_pad_idx) and (n_detected == n_expected) : # fil cablé sur un mauvais pad
+                            print(pad_idx)
+                            print(expected_pad_idx)
+
+                            nb_wires_off_pad += 1
+                            list_crit_pad.append(pad_idx)
+                            cv.circle(crit_endpoints_mask, (endpoint_location_chip[0] + ROI[2][0], endpoint_location_chip[1] + ROI[3][1]), 6, (255, 0, 0), 3)
                         off_pad = False
                         if pad_idx < 4000 :
                             track_idx = map3[pad_idx - 3001] + 300
