@@ -6,7 +6,7 @@ from programs.find_targets import *
 from programs.debug_tools import *
 import json
 
-def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, full_image_mode = False, read_targets=False):
+def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, full_image_mode = False, read_targets=False, **kwargs):
     """
     Finds the location of the tracks for a given image, from their location on the reference image.
 
@@ -17,6 +17,9 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, full
     Returns:
     tracks - list of list of points: the positions of each track on the input image
     """
+    config = kwargs["config"]
+    lang = config["language"]
+
     ref_unbonded = "reference/Ref_img_unbonded.jpg"
     ref_bonded = "reference/Ref_img_bonded.jpg"
 
@@ -28,9 +31,12 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, full
         targets_dst = np.loadtxt("../ModuleData/targets_pos.txt", dtype=int, delimiter=",")
     else :
         if not override_targets and not full_image_mode:
-            if verbose_lv>1 : console.log(f"Recherche de la position des mires sur l'image...")
-            targets_dst = find_targets_wired(path, verbose_lv=verbose_lv, img_name = "Image câblée")        
-            if verbose_lv>1 : console.log(f"Positions des mires trouvées.")
+            if verbose_lv>1 and lang=='fr': console.log(f"Recherche de la position des mires sur l'image...")
+            elif verbose_lv>1: console.log(f"Detection of the position of the targets...")
+            targets_dst = find_targets_wired(path, verbose_lv=verbose_lv, img_name = "Image câblée", config=config)        
+            if verbose_lv>1 and lang=='fr' : console.log(f"Positions des mires trouvées.")
+            elif verbose_lv>1 : console.log(f"Found positions of the targets.")
+
         elif override_targets:
             #Logique pour sélectionner chacune des mires à la main
             cabled_img = cv.imread(path)
@@ -66,7 +72,8 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, full
             targets_dst = []
 
             message_mg_targets()
-            console.print("[bold red]*** Select targets in the order below ***[/]")
+            if lang=='fr' : console.print("[bold red]*** Sélectionner les mires dans l'ordre ci-dessous ***[/]")
+            else : console.print("[bold red]*** Select targets in the order below ***[/]")
             console.print("[red] # - - - - - - #\n | 1 · · · · 5 |\n | · · · · · · |\n | · 3 · · 7 · |\n | · 4 · · 8 · |\n | · · · · · · |\n | 2 · · · · 6 |\n # - - - - - - #[/]")
 
             for _ in range(8):
@@ -83,19 +90,22 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, full
         file_name = (path.split("/")[-1]).split(".")[0]
     np.savetxt(f"../output/data/targets_pos_{file_name}.txt", targets_dst, fmt='%d', delimiter=',')
 
-    if verbose_lv>1 : console.log(f"Calcul des homographies...")
-    
+    if verbose_lv>1 and lang=='fr' : console.log(f"Calcul des homographies...")
+    elif verbose_lv>1:console.log(f"Computation of homographies...")
+
     valid_indices = [i for i, val in enumerate(targets_dst) if val[0] != -1]
 
     if len(valid_indices) < len(targets_dst):
-        console.log(f"[bold red]WARNING: EXPERIMENTAL FEATURE🧪[/bold red][red]Not enough targets to perfectly match reference. Trying to calculate the homography with less targets.")
-    
-        targets_dst = [targets_dst[i] for i in valid_indices]
-        targets_ref = [targets_ref[i] for i in valid_indices]
+        if lang=='en':console.print(f"[bold red]WARNING: EXPERIMENTAL FEATURE🧪[/bold red][red]Not enough targets to perfectly match reference. Trying to calculate the homography with less targets.")
+        else:console.print(f"[bold red]ATTENTION : FONCTIONNALITÉ EXPERIMENTALE 🧪[/bold red][red]Pas suffisamment de mires pour relier la référence. Tentative de calcul de l'homographie avec moins de mires.")
+
+        targets_dst = np.array([targets_dst[i] for i in valid_indices])
+        targets_ref = np.array([targets_ref[i] for i in valid_indices])
 
     H1 = cv.findHomography(targets_ref, targets_dst, 0)[0]
     H2 = compute_homography_center(cv.imread(ref_unbonded),cv.imread(ref_bonded)) # TODO : ne pas le recalculer à chaque fois
-    if verbose_lv>1 : console.log(f"Homographies calculées.")
+    if verbose_lv>1 and lang=='fr': console.log(f"Homographies calculées.")
+    elif verbose_lv>1: console.log("Homographies computed.")
 
     tracks = {}
     if draw :

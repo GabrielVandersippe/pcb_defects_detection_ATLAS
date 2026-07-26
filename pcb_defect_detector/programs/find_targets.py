@@ -50,8 +50,15 @@ def mires_template_matching(img_input:np.ndarray, draw = False, verbose_lv=0, **
 
     template = cv.imread("reference/Template_Thresh_cropped.png", cv.IMREAD_GRAYSCALE)
 
-    img_name = kwargs.get('img_name')
-    if verbose_lv>2 and img_name : console.log(f"Détection des mires sur l'image : {img_name}.")
+    img_name = kwargs['img_name']
+    config = kwargs["config"]
+    lang = config["language"]
+
+    if verbose_lv>2 and img_name : 
+        if lang == 'fr' : 
+            console.log(f"Détection des mires sur l'image : {img_name}.") 
+        else: 
+            console.log(f"Target detection on image : {img_name}.") 
 
     # Preprocess
     gray = cv.cvtColor(img_input, cv.COLOR_BGR2GRAY)
@@ -103,23 +110,36 @@ def mires_template_matching(img_input:np.ndarray, draw = False, verbose_lv=0, **
         sorted_idx = np.argsort([res[pt[1], pt[0]] for pt in zip(*loc[::-1])])[::-1]
         slice_centers = unique_centers(slice_centers, sorted_idx, nbmires)
         
-        if verbose_lv>2 : console.log(f"Slice [{beg1}:{end1}, {beg2}:{end2}] : {len(slice_centers)} mires trouvées sur {nbmires} par template matching.")
+        if verbose_lv>2 : 
+            if lang=='fr':
+                console.log(f"Slice [{beg1}:{end1}, {beg2}:{end2}] : {len(slice_centers)} mires trouvées sur {nbmires} par template matching.")
+            else:
+                console.log(f"Slice [{beg1}:{end1}, {beg2}:{end2}] : {len(slice_centers)} targets found out of {nbmires} using template matching.")
         # S'il y a moins de slices que prevu, on prévient qu'il y a une erreur 
         if len(slice_centers) < nbmires:
+            if lang=='en':
+                console.log("[bold dark_orange]WARNING: Using circle detection to attempt to find the remaining targets.")
+            else:
+                console.log("[bold dark_orange]ATTENTION : Utilisation de détection de cercles pour tenter de trouver les mires manquantes.")
 
             # Option de secours : recherche de cercles sur le masque (Failsafe)
             circles = cv.HoughCircles(mask,cv.HOUGH_GRADIENT,1,minDist = 100,
                                     param1=300,param2=15,minRadius=15 ,maxRadius=30)
             if circles is not None:
                 circles = np.int32(np.around(circles))
-                for circle in circles[0,:nbmires]:
+                for circle in circles[0,:]:
                     center = (circle[0]+beg2%length,circle[1]+beg1%height)
                     slice_centers.append(center)
-                    # if draw:
-                    #     cv.circle(cimg, center, circle[2], (0,0,255), 3)
-                    #     cv.circle(cimg, center,2,(0,0,255),3)
 
-            if verbose_lv>2 : console.log(f"{len(slice_centers)} mires trouvées sur {nbmires} par recherche de cercles.")
+                # [0,1,2,...]
+                combined_idx = list(range(len(slice_centers)))
+                slice_centers = unique_centers(slice_centers, combined_idx, nbmires)
+
+            if verbose_lv>2 : 
+                if lang =='fr':
+                    console.log(f"{len(slice_centers)} mires trouvées sur {nbmires} par recherche de cercles.")
+                else:
+                    console.log(f"{len(slice_centers)} targets found out of {nbmires} using circle detection.")
 
             # Si rien trouvé, on renvoie un warning
         if len(slice_centers) < nbmires:
@@ -250,7 +270,7 @@ def find_targets_wired(path:str, draw=False, verbose_lv = 0, **kwargs):
 
     H = compute_homography_center(uncabled_img, cabled_img)
 
-    unwired_centers = mires_template_matching(uncabled_img, draw, verbose_lv=verbose_lv, kwargs = kwargs)
+    unwired_centers = mires_template_matching(uncabled_img, draw, verbose_lv=verbose_lv, **kwargs)
     wired_centers = warp_points(unwired_centers, H).astype(np.int32)
 
     return wired_centers

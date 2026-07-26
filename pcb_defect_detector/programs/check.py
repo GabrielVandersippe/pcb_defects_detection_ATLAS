@@ -120,7 +120,7 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}, override_t
             running_message = "Track detection..."
         
         with console.status(f"[bold blue]{running_message}[/bold blue]", spinner = 'dots'):
-            tracks = find_tracks(path, verbose_lv = verbose, override_targets=override_targets, full_image_mode = full_image_mode, read_targets=read_targets)
+            tracks = find_tracks(path, verbose_lv = verbose, override_targets=override_targets, full_image_mode = full_image_mode, read_targets=read_targets, config=config)
         if lang == "en" :
             print_info("Tracks detected.")
         else : 
