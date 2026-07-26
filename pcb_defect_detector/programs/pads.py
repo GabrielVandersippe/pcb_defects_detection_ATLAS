@@ -17,9 +17,14 @@ def find_pads (path, draw = False, verbose = 0, config = {}, read_corners=False,
     img = cv.imread(path).copy()
 
     shape = img.shape
+
+    if path[-1] == "/" :
+        file_name = (path.split("/")[-2]).split(".")[0]
+    else :
+        file_name = (path.split("/")[-1]).split(".")[0]
     
     if read_corners :
-        corners = np.loadtxt("../ModuleData/corners_pos.txt", dtype=int, delimiter=",")
+        corners = np.loadtxt(f"../output/data/corners_pos_{file_name}.txt", dtype=int, delimiter=",")
 
     elif not full_image_mode:
         message_mg_pads()
@@ -59,10 +64,6 @@ def find_pads (path, draw = False, verbose = 0, config = {}, read_corners=False,
         
         corners = np.array([corner_GA1, corner_GA2, corner_GA3, corner_GA4])
 
-    if path[-1] == "/" :
-        file_name = (path.split("/")[-2]).split(".")[0]
-    else :
-        file_name = (path.split("/")[-1]).split(".")[0]
     np.savetxt(f"../output/data/corners_pos_{file_name}.txt", corners, fmt='%d', delimiter=',')
 
     if verbose>1 : console.log(f"Calcul des homographies...")

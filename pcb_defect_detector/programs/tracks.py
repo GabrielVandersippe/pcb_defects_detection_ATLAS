@@ -27,8 +27,13 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, full
         data = json.load(f)
         targets_ref = np.array(data)
 
+    if path[-1] == "/" :
+        file_name = (path.split("/")[-2]).split(".")[0]
+    else :
+        file_name = (path.split("/")[-1]).split(".")[0]
+
     if read_targets :
-        targets_dst = np.loadtxt("../ModuleData/targets_pos.txt", dtype=int, delimiter=",")
+        targets_dst = np.loadtxt(f"../output/data/targets_pos_{file_name}.txt", dtype=int, delimiter=",")
     else :
         if not override_targets and not full_image_mode:
             if verbose_lv>1 and lang=='fr': console.log(f"Recherche de la position des mires sur l'image...")
@@ -84,10 +89,6 @@ def find_tracks(path, draw = False, verbose_lv = 0, override_targets=False, full
             
             targets_dst = np.array(targets_dst)
 
-    if path[-1] == "/" :
-        file_name = (path.split("/")[-2]).split(".")[0]
-    else :
-        file_name = (path.split("/")[-1]).split(".")[0]
     np.savetxt(f"../output/data/targets_pos_{file_name}.txt", targets_dst, fmt='%d', delimiter=',')
 
     if verbose_lv>1 and lang=='fr' : console.log(f"Calcul des homographies...")
