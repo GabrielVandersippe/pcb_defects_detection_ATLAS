@@ -84,10 +84,10 @@ def find_pads (path, draw = False, verbose = 0, config = {}, read_corners=False,
             pad_bonded = warp_points(pad, H).astype(np.int32)
             pads[int(pad_idx[3:])] = pad_bonded
     
-            if draw :
-                if len(pad_bonded)>0 :
-                    print(pad_bonded)
-                    cv.polylines(img,[np.array(pad_bonded).reshape((-1,1,2))], True, (0, 255, 0), 3)
+            # if draw :
+            #     if len(pad_bonded)>0 :
+            #         print(pad_bonded)
+            #         cv.polylines(img,[np.array(pad_bonded).reshape((-1,1,2))], True, (0, 255, 0), 3)
     if verbose>1 : console.log(f"Transposition des pads effectuée.")
 
     if draw :

@@ -7,6 +7,7 @@ from programs.debug_tools import *
 from programs.wire import *
 from programs.count import *
 from programs.tracks import *
+from math import isclose
 
 
 
@@ -245,7 +246,11 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False, **kwargs):
                     # XXX Peut être fait sans avoir a calculer edgex et edgey
                     
                     solderx_right = edgex_right + 15
-                    soldery_right = edgey_right - 15/np.tan(theta)
+                    if not isclose(theta, 0, abs_tol=1e-8):
+                        soldery_right = edgey_right - 15/np.tan(theta)
+                    else:
+                        soldery_right = edgey_right
+                        
                     edge_dict_pcb[label] = ((int(solderx_right),int(soldery_right)), [idx_wire])
                 else : 
                     edge_dict_pcb[label] = ((edgex_right,edgey_right), [idx_wire])
@@ -262,7 +267,11 @@ def find_shorts(mask, input_side, y_left_list, x_left, draw = False, **kwargs):
                     # XXX Peut être fait sans avoir a calculer edgex et edgey
                     
                     solderx_left = edgex_left + 5
-                    soldery_left = edgey_left - 5/np.tan(theta)
+                    if not isclose(theta, 0, abs_tol=1e-8):
+                        soldery_left = edgey_left - 5/np.tan(theta)
+                    else:
+                        soldery_left = edgey_left
+
                     edge_dict_chip[label] = ((int(solderx_left),int(soldery_left)), [idx_wire])
                 else : 
                     edge_dict_chip[label] = ((edgex_left,edgey_left), [idx_wire])  

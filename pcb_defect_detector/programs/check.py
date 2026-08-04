@@ -306,8 +306,6 @@ def run_check (path, iref = None, draw = False, verbose=0, config={}, override_t
                         else :
                             missing_in_a_row = []
                         if (pad_idx != expected_pad_idx) and (n_detected == n_expected) : # fil cablé sur un mauvais pad
-                            print(pad_idx)
-                            print(expected_pad_idx)
 
                             nb_wires_off_pad += 1
                             list_crit_pad.append(pad_idx)
